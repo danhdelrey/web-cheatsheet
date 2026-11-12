@@ -1,0 +1,2511 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Angular Cheatsheet</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../assets/site.js" data-page="angular"></script>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<meta name="description" content="Tra cú pháp nhanh khi code hằng ngày. Mặc định viết theo kiểu hiện đại: standalone component, signals, built-in control flow và functional API. Cú pháp cũ vẫn gặp nhiều trong code base được ghi chú kèm cách viết mới.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sidebar mục lục cố định bên trái + vùng nội dung dạng grid card; mobile: sidebar trượt ra từ menu */
+:root {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --surface-2: #eceef3;
+  --fg: #171923;
+  --muted: #5a5f70;
+  --line: #dde0e8;
+  --accent: #b81d55;
+  --accent-soft: #fbe7ee;
+  --new: #0d7565;
+  --new-soft: #dff2ee;
+  --warn: #8a5300;
+  --warn-soft: #fff4dc;
+  --warn-line: #eec36b;
+  --code-bg: #f7f8fb;
+  --tk-kw: #a3124f;
+  --tk-str: #1b6a3a;
+  --tk-fn: #2a4cb0;
+  --tk-cm: #7b8192;
+  --tk-num: #9a4a00;
+  --tk-attr: #6b3db3;
+  --tk-punc: #575d6e;
+  --shadow: 0 1px 2px rgba(23, 25, 35, .05), 0 2px 8px rgba(23, 25, 35, .04);
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --sidebar-w: 272px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1117; --surface: #161922; --surface-2: #1e222c; --fg: #e6e8ee; --muted: #9ba1b2; --line: #2a2f3b;
+    --accent: #ff6c9c; --accent-soft: #3a1726; --new: #52d0b4; --new-soft: #10302a;
+    --warn: #f2c46e; --warn-soft: #2b2312; --warn-line: #6a5223; --code-bg: #11141b;
+    --tk-kw: #ff7eab; --tk-str: #8ed6a0; --tk-fn: #86adff; --tk-cm: #6d7488; --tk-num: #f1aa6c; --tk-attr: #c6a8ff; --tk-punc: #a9afc1;
+    --shadow: 0 1px 2px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1117; --surface: #161922; --surface-2: #1e222c; --fg: #e6e8ee; --muted: #9ba1b2; --line: #2a2f3b;
+  --accent: #ff6c9c; --accent-soft: #3a1726; --new: #52d0b4; --new-soft: #10302a;
+  --warn: #f2c46e; --warn-soft: #2b2312; --warn-line: #6a5223; --code-bg: #11141b;
+  --tk-kw: #ff7eab; --tk-str: #8ed6a0; --tk-fn: #86adff; --tk-cm: #6d7488; --tk-num: #f1aa6c; --tk-attr: #c6a8ff; --tk-punc: #a9afc1;
+  --shadow: 0 1px 2px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg);
+}
+a { color: var(--accent); }
+code, kbd { font-family: var(--font-mono); font-size: .86em; }
+:not(pre) > code {
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: .05em .35em; white-space: nowrap;
+}
+td :not(pre) > code, .note :not(pre) > code { white-space: normal; }
+kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 .35em; background: var(--surface); color: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== Shell ===== */
+.shell { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--line); background: var(--surface);
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 14px;
+}
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-left: 6px; }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--accent); color: var(--surface); font-weight: 700; font-size: 15px; flex: none;
+}
+.brand-name { font-weight: 700; font-size: 16px; line-height: 1.2; }
+.brand-sub { font-size: 12px; color: var(--muted); }
+.nav { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.nav a {
+  display: grid; grid-template-columns: 26px 1fr; align-items: baseline;
+  padding: 6px 8px; border-radius: 7px; color: var(--muted); text-decoration: none; font-size: 14px; line-height: 1.35;
+}
+.nav a .num { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); opacity: .75; font-variant-numeric: tabular-nums; }
+.nav a:hover { background: var(--surface-2); color: var(--fg); }
+.nav a.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.nav a.active .num { color: var(--accent); opacity: 1; }
+.nav li.no-match a { opacity: .35; }
+.sidebar-foot { margin-top: 20px; padding: 12px 8px 0; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+
+.main { min-width: 0; }
+.toolbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.toolbar-inner {
+  max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+  padding-block: 10px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.icon-btn {
+  flex: none; width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); display: grid; place-items: center; cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn svg { width: 18px; height: 18px; }
+#menuBtn { display: none; }
+.search { position: relative; flex: 1; min-width: 0; max-width: 560px; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); pointer-events: none; }
+.search input {
+  width: 100%; height: 38px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  font: inherit; font-size: 14.5px; padding: 0 64px 0 36px;
+}
+.search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search .hint { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
+.result-count { font-size: 13px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.spacer { flex: 1; }
+
+.content {
+  max-width: 1240px; margin: 0 auto;
+  padding-block: 28px 80px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+
+/* ===== Hero ===== */
+.hero { display: grid; gap: 14px; margin-bottom: 36px; }
+.hero h1 { font-size: clamp(28px, 4vw, 38px); line-height: 1.12; margin: 0; letter-spacing: -.02em; text-wrap: balance; }
+.hero h1 span { color: var(--accent); }
+.hero p { margin: 0; color: var(--muted); max-width: 68ch; }
+.version-strip {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; margin-top: 6px;
+}
+.ver {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; min-width: 0;
+}
+.ver b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--new); margin-bottom: 2px; }
+.ver.cur b { color: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); align-items: center; }
+
+/* ===== Section ===== */
+.section { scroll-margin-top: 76px; margin-bottom: 52px; }
+.section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+.section-head .idx {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 6px; padding: 1px 7px; font-variant-numeric: tabular-nums;
+}
+.section h2 { font-size: 24px; line-height: 1.25; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+.section-intro { color: var(--muted); margin: 0 0 18px; max-width: 75ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 470px), 1fr)); gap: 16px; align-items: start; }
+.card {
+  min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow);
+}
+.card.wide { grid-column: 1 / -1; }
+.card[hidden] { display: none !important; }
+.card h3 { margin: 0; font-size: 16.5px; line-height: 1.3; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.card > p, .card li { margin: 0; font-size: 14.5px; }
+.card p + p { margin-top: -4px; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.tag {
+  font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; border-radius: 5px; padding: 2px 6px; line-height: 1.4;
+  background: var(--surface-2); color: var(--muted);
+}
+.tag.new { background: var(--new-soft); color: var(--new); }
+.tag.old { background: var(--surface-2); color: var(--muted); text-decoration: none; }
+.note {
+  border: 1px solid var(--warn-line); background: var(--warn-soft); border-radius: 9px; padding: 10px 12px; font-size: 14px; color: var(--fg);
+}
+.note strong:first-child { color: var(--warn); }
+.note ul { margin-top: 4px; }
+.tip { border-left: 3px solid var(--new); padding: 2px 0 2px 12px; font-size: 14px; color: var(--muted); }
+
+/* ===== Code ===== */
+.code { border: 1px solid var(--line); border-radius: 9px; background: var(--code-bg); overflow: hidden; min-width: 0; }
+.code-head {
+  display: flex; align-items: center; gap: 8px; padding: 5px 6px 5px 12px; border-bottom: 1px solid var(--line);
+  font-size: 12px; color: var(--muted);
+}
+.code-head .lang { font-family: var(--font-mono); font-weight: 500; letter-spacing: .02em; }
+.code-head .file { font-family: var(--font-mono); color: var(--fg); opacity: .8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.copy-btn {
+  margin-left: auto; flex: none; font: inherit; font-size: 12px; color: var(--muted); background: transparent;
+  border: 1px solid transparent; border-radius: 6px; padding: 3px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+}
+.copy-btn:hover { border-color: var(--line); color: var(--fg); background: var(--surface); }
+.copy-btn.done { color: var(--new); }
+.copy-btn svg { width: 13px; height: 13px; }
+.code pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; tab-size: 2; }
+.code pre code { font-size: inherit; color: var(--fg); background: none; border: 0; padding: 0; white-space: pre; }
+.token.comment, .token.prolog, .token.doctype, .token.cdata { color: var(--tk-cm); font-style: italic; }
+.token.keyword, .token.tag, .token.boolean, .token.important { color: var(--tk-kw); }
+.token.string, .token.attr-value, .token.template-string, .token.char, .token.regex { color: var(--tk-str); }
+.token.function, .token.class-name, .token.builtin { color: var(--tk-fn); }
+.token.number, .token.constant, .token.symbol { color: var(--tk-num); }
+.token.attr-name, .token.property, .token.decorator, .token.annotation, .token.parameter { color: var(--tk-attr); }
+.token.punctuation, .token.operator { color: var(--tk-punc); }
+.token.tag .token.punctuation { color: var(--tk-punc); }
+.token.decorator .token.function { color: var(--tk-attr); }
+
+/* ===== Tables ===== */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 9px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+th { background: var(--surface-2); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+td code { font-size: 12.5px; }
+
+/* ===== DI hierarchy diagram ===== */
+.stack { display: grid; gap: 6px; }
+.stack div {
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 13.5px; background: var(--surface-2);
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+}
+.stack div b { font-size: 13.5px; }
+.stack div span { color: var(--muted); font-size: 13px; }
+.stack .el { border-color: var(--accent); background: var(--accent-soft); }
+.stack .env { border-color: var(--new); background: var(--new-soft); }
+.stack .arrow { border: 0; background: none; padding: 0 12px; color: var(--muted); font-size: 12px; }
+
+/* ===== Empty search ===== */
+.empty { display: none; text-align: center; padding: 60px 16px; color: var(--muted); }
+.empty.show { display: block; }
+.empty b { color: var(--fg); display: block; font-size: 17px; margin-bottom: 4px; }
+
+.overlay { display: none; }
+
+/* ===== Mobile ===== */
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    position: fixed; z-index: 50; top: 0; left: 0; bottom: 0; width: min(86vw, 300px); height: auto;
+    transform: translateX(-102%); transition: transform .22s ease; box-shadow: 0 0 40px rgba(0,0,0,.25);
+  }
+  body.nav-open .sidebar { transform: none; }
+  body.nav-open .overlay { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(10, 12, 18, .45); }
+  #menuBtn { display: grid; }
+  .toolbar-inner { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .content { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-top: 22px; }
+  .search .hint, .result-count { display: none; }
+  .card { padding: 14px 14px 13px; }
+  .section h2 { font-size: 21px; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="overlay" id="overlay"></div>
+<div class="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Mục lục">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">A</div>
+      <div><div class="brand-name">Angular Cheatsheet</div><div class="brand-sub">v17+ · cập nhật tới v22</div></div>
+    </div>
+    <ul class="nav" id="nav">
+      <li><a href="#cli"><span class="num">01</span>CLI &amp; Naming</a></li>
+      <li><a href="#component"><span class="num">02</span>Component cơ bản</a></li>
+      <li><a href="#template"><span class="num">03</span>Template syntax</a></li>
+      <li><a href="#communication"><span class="num">04</span>Giao tiếp component</a></li>
+      <li><a href="#directives"><span class="num">05</span>Directives</a></li>
+      <li><a href="#pipes"><span class="num">06</span>Pipes</a></li>
+      <li><a href="#signals"><span class="num">07</span>Signals</a></li>
+      <li><a href="#di"><span class="num">08</span>Dependency Injection</a></li>
+      <li><a href="#cd"><span class="num">09</span>Change detection</a></li>
+      <li><a href="#rxjs"><span class="num">10</span>Async &amp; RxJS</a></li>
+      <li><a href="#http"><span class="num">11</span>HTTP</a></li>
+      <li><a href="#forms"><span class="num">12</span>Forms</a></li>
+      <li><a href="#routing"><span class="num">13</span>Routing</a></li>
+      <li><a href="#defer"><span class="num">14</span>Deferrable views</a></li>
+      <li><a href="#testing"><span class="num">15</span>Testing</a></li>
+      <li><a href="#migrate"><span class="num">16</span>Cũ → Mới</a></li>
+    </ul>
+    <div class="sidebar-foot">Nhấn <kbd>/</kbd> để tìm, <kbd>Esc</kbd> để xóa từ khóa.</div>
+  </aside>
+
+  <div class="main">
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="Mở mục lục" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <label class="search" for="searchInput">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="search" placeholder="Tìm: switchMap, @defer, inject, lưu ý…" autocomplete="off" spellcheck="false" aria-label="Tìm trong cheatsheet">
+          <span class="hint"><kbd>/</kbd></span>
+        </label>
+        <span class="result-count" id="resultCount" aria-live="polite"></span>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Đổi giao diện sáng/tối">
+          <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" hidden><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <main class="content" id="content">
+      <header class="hero">
+        <h1>Angular <span>Cheatsheet</span></h1>
+        <p>Tra cú pháp nhanh khi code hằng ngày. Mặc định viết theo kiểu hiện đại: standalone component, signals, built-in control flow và functional API. Cú pháp cũ vẫn gặp nhiều trong code base được ghi chú kèm cách viết mới.</p>
+        <div class="version-strip">
+          <div class="ver cur"><b>Angular 22 · 6/2026</b>Signal Forms, <code>resource</code>/<code>httpResource</code> stable; component mặc định <code>OnPush</code>; <code>HttpClient</code> dùng Fetch; có <code>@Service()</code>; strictTemplates bật sẵn.</div>
+          <div class="ver"><b>Angular 21 · 11/2025</b>Project mới zoneless mặc định; Vitest thay Karma/Jasmine; Signal Forms ở dạng experimental.</div>
+          <div class="ver"><b>Angular 17–20</b><code>@if/@for/@defer</code> (17), <code>@let</code> (18.1), signal input/output/query stable (19–20), zoneless stable (20.2).</div>
+        </div>
+        <div class="legend"><span><span class="tag new">mới</span> API mới / khuyến nghị</span><span><span class="tag old">cũ</span> cú pháp cũ, vẫn chạy</span><span>⚠️ lỗi hay gặp, best practice</span></div>
+      </header>
+
+      <div class="empty" id="emptyState"><b>Không tìm thấy kết quả</b>Thử từ khóa khác, ví dụ tên API như <code>linkedSignal</code> hoặc <code>canDeactivate</code>.</div>
+
+      <!-- ============ 01 CLI ============ -->
+      <section class="section" id="cli">
+        <div class="section-head"><span class="idx">01</span><h2>Angular CLI &amp; Naming convention</h2></div>
+        <p class="section-intro">Các lệnh dùng hằng ngày và quy tắc đặt tên để code base đồng nhất.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Lệnh CLI thường dùng</h3>
+            <p>Viết tắt: <code>g</code> = generate, <code>c</code> = component, <code>s</code> = service, <code>d</code> = directive, <code>p</code> = pipe.</p>
+            <script type="text/x-code" data-lang="bash">
+              # Tạo project & chạy dev server
+              ng new my-app --style=scss --ssr=false        # project mới đã standalone, zoneless (v21+)
+              ng serve -o --port 4300                       # -o: tự mở trình duyệt
+
+              # Generate
+              ng g c features/user/user-list                # component
+              ng g c shared/badge -t -s --skip-tests        # inline template (-t) + inline style (-s), không tạo file test
+              ng g s core/services/auth                     # service
+              ng g d shared/directives/highlight            # directive
+              ng g p shared/pipes/truncate                  # pipe
+              ng g guard core/guards/auth                   # functional guard (mặc định)
+              ng g interceptor core/interceptors/auth       # functional interceptor
+              ng g environments                             # tạo src/environments/*
+              ng g c user-card --dry-run                    # xem trước file sẽ tạo, không ghi gì
+
+              # Build / test / update
+              ng build                                      # mặc định configuration=production → dist/
+              ng build -c development                       # build dev, có source map
+              ng test                                       # Vitest (v21+), chạy ở watch mode
+              ng test --watch=false --coverage              # chạy 1 lần cho CI
+              ng update                                     # liệt kê package cần update
+              ng update @angular/core @angular/cli          # nâng lên major kế tiếp (từng major một)
+              ng add @angular/material                      # cài lib + chạy schematic cấu hình
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Khi nâng version, đi từng major một (20 → 21 → 22) và xem hướng dẫn tại <a href="https://angular.dev/update-guide" target="_blank" rel="noopener">angular.dev/update-guide</a>. Commit trước khi chạy <code>ng update</code> để dễ xem diff migration.</div>
+          </article>
+
+          <article class="card">
+            <h3>Flag generate hay dùng</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Flag</th><th>Tác dụng</th></tr></thead>
+              <tbody>
+                <tr><td><code>--skip-tests</code></td><td>Không tạo file <code>.spec.ts</code></td></tr>
+                <tr><td><code>-t</code> / <code>-s</code></td><td>Inline template / inline style</td></tr>
+                <tr><td><code>--flat</code></td><td>Không tạo thư mục riêng cho file</td></tr>
+                <tr><td><code>--dry-run</code></td><td>Chỉ in ra file sẽ tạo</td></tr>
+                <tr><td><code>--style=scss</code></td><td>Kiểu file style</td></tr>
+                <tr><td><code>--change-detection=OnPush</code></td><td>Đặt strategy (từ v22 OnPush đã là mặc định)</td></tr>
+                <tr><td><code>--type=component</code></td><td>Giữ hậu tố kiểu cũ <code>.component.ts</code> (v20+)</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Quy tắc đặt tên</h3>
+            <p>Từ v20, style guide và CLI bỏ hậu tố type cho component/directive/service. Nhiều team vẫn giữ kiểu cũ, quan trọng là thống nhất trong project.</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Loại</th><th>v20+ (mặc định)</th><th>Kiểu cũ</th></tr></thead>
+              <tbody>
+                <tr><td>Component</td><td><code>user-list.ts</code> → <code>UserList</code></td><td><code>user-list.component.ts</code> → <code>UserListComponent</code></td></tr>
+                <tr><td>Service</td><td><code>auth.ts</code> → <code>Auth</code></td><td><code>auth.service.ts</code> → <code>AuthService</code></td></tr>
+                <tr><td>Directive</td><td><code>highlight.ts</code> → <code>Highlight</code></td><td><code>highlight.directive.ts</code></td></tr>
+                <tr><td>Pipe</td><td><code>truncate-pipe.ts</code> → <code>TruncatePipe</code></td><td><code>truncate.pipe.ts</code></td></tr>
+                <tr><td>Guard</td><td><code>auth-guard.ts</code> → <code>authGuard</code></td><td><code>auth.guard.ts</code></td></tr>
+                <tr><td>Interceptor</td><td><code>auth-interceptor.ts</code> → <code>authInterceptor</code></td><td><code>auth.interceptor.ts</code></td></tr>
+              </tbody>
+            </table></div>
+            <ul>
+              <li>File & thư mục: <code>kebab-case</code>. Class: <code>PascalCase</code>. Hàm guard/interceptor/resolver: <code>camelCase</code>.</li>
+              <li>Selector component: prefix + kebab-case, vd. <code>app-user-list</code>. Selector directive: <code>[appHighlight]</code>. Tên pipe: <code>camelCase</code>.</li>
+            </ul>
+          </article>
+
+          <article class="card wide">
+            <h3>Cấu trúc thư mục theo feature</h3>
+            <p>Gom code theo tính năng thay vì theo loại file. <code>core/</code> chứa singleton dùng toàn app, <code>shared/</code> chứa UI tái sử dụng.</p>
+            <script type="text/x-code" data-lang="text">
+              src/app/
+              ├── app.ts / app.html / app.config.ts / app.routes.ts
+              ├── core/                 # singleton: services, interceptors, guards, models
+              │   ├── auth/auth.ts
+              │   └── interceptors/auth-interceptor.ts
+              ├── shared/               # component/directive/pipe dùng lại, không chứa business logic
+              │   ├── ui/button/button.ts
+              │   └── pipes/truncate-pipe.ts
+              └── features/
+                  └── user/
+                      ├── user.routes.ts      # lazy-load cả feature
+                      ├── data/user-api.ts
+                      ├── user-list/user-list.ts | .html | .scss | .spec.ts
+                      └── user-detail/user-detail.ts
+            </script>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 02 COMPONENT ============ -->
+      <section class="section" id="component">
+        <div class="section-head"><span class="idx">02</span><h2>Component cơ bản</h2></div>
+        <p class="section-intro">Component = class TypeScript + template + style. Standalone là mặc định từ v19, không cần NgModule.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Standalone component</h3>
+            <script type="text/x-code" data-lang="ts" data-file="user-card.ts">
+              import { Component, ChangeDetectionStrategy, input, signal, computed } from '@angular/core';
+              import { DatePipe } from '@angular/common';
+              import { RouterLink } from '@angular/router';
+
+              @Component({
+                selector: 'app-user-card',              // dùng: <app-user-card [user]="u" />
+                imports: [DatePipe, RouterLink],        // import trực tiếp những gì template dùng
+                templateUrl: './user-card.html',
+                styleUrl: './user-card.scss',           // 1 file; nhiều file dùng styleUrls
+                changeDetection: ChangeDetectionStrategy.OnPush, // mặc định từ v22
+              })
+              export class UserCard {
+                user = input.required<User>();
+                expanded = signal(false);
+                initials = computed(() =>
+                  this.user().name.split(' ').map(w => w[0]).join('')
+                );
+
+                toggle() {
+                  this.expanded.update(v => !v);
+                }
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Quên thêm component/pipe/directive vào <code>imports</code> là lỗi phổ biến nhất (vd. NG8001 "is not a known element"). Không cần ghi <code>standalone: true</code> từ v19.</div>
+          </article>
+
+          <article class="card">
+            <h3>Bootstrap app (main.ts &amp; app.config.ts)</h3>
+            <p>Mọi provider toàn app khai báo trong <code>appConfig</code>, thay cho <code>AppModule</code>.</p>
+            <script type="text/x-code" data-lang="ts" data-file="main.ts">
+              import { bootstrapApplication } from '@angular/platform-browser';
+              import { App } from './app/app';
+              import { appConfig } from './app/app.config';
+
+              bootstrapApplication(App, appConfig).catch(err => console.error(err));
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+              import { provideRouter, withComponentInputBinding } from '@angular/router';
+              import { provideHttpClient, withInterceptors } from '@angular/common/http';
+              import { routes } from './app.routes';
+              import { authInterceptor } from './core/interceptors/auth-interceptor';
+
+              export const appConfig: ApplicationConfig = {
+                providers: [
+                  provideBrowserGlobalErrorListeners(),
+                  provideRouter(routes, withComponentInputBinding()),
+                  provideHttpClient(withInterceptors([authInterceptor])),
+                ],
+              };
+            </script>
+          </article>
+
+          <article class="card wide">
+            <h3>Lifecycle hooks: dùng khi nào</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Hook</th><th>Chạy khi</th><th>Dùng để</th></tr></thead>
+              <tbody>
+                <tr><td><code>constructor</code></td><td>Tạo instance, input chưa có giá trị</td><td><code>inject()</code>, tạo <code>effect</code>, đăng ký <code>afterNextRender</code>. Không đọc input ở đây.</td></tr>
+                <tr><td><code>ngOnChanges</code></td><td>Trước <code>ngOnInit</code> và mỗi khi input (kiểu <code>@Input</code>) đổi reference</td><td>Phản ứng với input thay đổi. Với signal input, dùng <code>computed</code>/<code>effect</code> thay thế.</td></tr>
+                <tr><td><code>ngOnInit</code></td><td>1 lần, sau lần set input đầu tiên</td><td>Gọi API ban đầu, khởi tạo logic cần input.</td></tr>
+                <tr><td><code>ngDoCheck</code></td><td>Mỗi lần change detection</td><td>Hiếm dùng. Tự kiểm tra thay đổi; dễ làm chậm app.</td></tr>
+                <tr><td><code>ngAfterContentInit</code></td><td>1 lần, sau khi nội dung <code>&lt;ng-content&gt;</code> được project</td><td>Đọc <code>contentChild</code> kiểu cũ.</td></tr>
+                <tr><td><code>ngAfterViewInit</code></td><td>1 lần, sau khi view và view con render</td><td>Truy cập DOM, khởi tạo lib bên thứ 3 (chart, map), đọc <code>@ViewChild</code>.</td></tr>
+                <tr><td><code>ngAfterViewChecked</code></td><td>Sau mỗi lần check view</td><td>Hiếm dùng. Không đổi state ở đây (lỗi NG0100).</td></tr>
+                <tr><td><code>ngOnDestroy</code></td><td>Trước khi component bị hủy</td><td>Hủy subscription, timer, listener ngoài Angular. Thay thế: <code>DestroyRef.onDestroy()</code>.</td></tr>
+                <tr><td><code>afterNextRender</code> <span class="tag new">mới</span></td><td>1 lần sau render kế tiếp, chỉ trên browser</td><td>Thao tác DOM an toàn với SSR. <code>afterEveryRender</code> (tên cũ <code>afterRender</code>) chạy sau mọi lần render.</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Hook kiểu class</h3>
+            <script type="text/x-code" data-lang="ts">
+              export class Chart implements OnChanges, OnInit, AfterViewInit, OnDestroy {
+                @Input() data: number[] = [];
+                @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
+                private chart?: ChartLib;
+
+                ngOnChanges(changes: SimpleChanges) {
+                  // bỏ qua lần đầu vì chart chưa được tạo
+                  if (changes['data'] && !changes['data'].firstChange) this.chart?.update(this.data);
+                }
+                ngOnInit() { /* input đã có giá trị → gọi API, setup */ }
+                ngAfterViewInit() {
+                  this.chart = new ChartLib(this.canvas.nativeElement, this.data); // DOM đã sẵn sàng
+                }
+                ngOnDestroy() { this.chart?.destroy(); }
+              }
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Cách viết hiện đại với signals <span class="tag new">mới</span></h3>
+            <script type="text/x-code" data-lang="ts">
+              export class Chart {
+                data = input<number[]>([]);
+                canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+                private chart?: ChartLib;
+
+                constructor() {
+                  // 1 lần sau render đầu tiên, chỉ chạy trên browser (an toàn với SSR)
+                  afterNextRender(() => {
+                    this.chart = new ChartLib(this.canvas().nativeElement, this.data());
+                  });
+                  // thay ngOnChanges: tự chạy lại khi data() đổi
+                  effect(() => this.chart?.update(this.data()));
+                  // thay ngOnDestroy
+                  inject(DestroyRef).onDestroy(() => this.chart?.destroy());
+                }
+              }
+            </script>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 03 TEMPLATE ============ -->
+      <section class="section" id="template">
+        <div class="section-head"><span class="idx">03</span><h2>Template syntax</h2></div>
+        <p class="section-intro">Binding dữ liệu giữa class và DOM, cùng built-in control flow thay cho <code>*ngIf</code>/<code>*ngFor</code>.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Các loại binding</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Loại</th><th>Cú pháp</th><th>Hướng</th><th>Ghi chú</th></tr></thead>
+              <tbody>
+                <tr><td>Interpolation</td><td><code>{{ user().name }}</code></td><td>class → view</td><td>Kết quả luôn chuyển thành chuỗi</td></tr>
+                <tr><td>Property</td><td><code>[disabled]="saving()"</code></td><td>class → view</td><td>Gán DOM property hoặc input của component</td></tr>
+                <tr><td>Attribute</td><td><code>[attr.aria-label]="label"</code></td><td>class → view</td><td>Cho attribute không có DOM property: <code>aria-*</code>, <code>colspan</code>, <code>data-*</code></td></tr>
+                <tr><td>Class</td><td><code>[class.active]="on"</code> · <code>[class]="{ a: x, b: y }"</code></td><td>class → view</td><td>Thay được <code>NgClass</code></td></tr>
+                <tr><td>Style</td><td><code>[style.width.px]="w"</code> · <code>[style]="{ color: c }"</code></td><td>class → view</td><td>Có thể kèm đơn vị: <code>.px</code>, <code>.%</code>, <code>.rem</code></td></tr>
+                <tr><td>Event</td><td><code>(click)="save($event)"</code></td><td>view → class</td><td>Key filter: <code>(keyup.enter)</code>, <code>(keydown.shift.tab)</code></td></tr>
+                <tr><td>Two-way</td><td><code>[(value)]="x"</code></td><td>hai chiều</td><td>= <code>[value]="x" (valueChange)="x = $event"</code></td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Binding trong template</h3>
+            <script type="text/x-code" data-lang="html">
+              <!-- Interpolation -->
+              <h1>Xin chào {{ user().name }}</h1>
+
+              <!-- Property binding -->
+              <img [src]="avatarUrl()" [alt]="user().name" />
+              <button [disabled]="saving()">Lưu</button>
+
+              <!-- Attribute binding -->
+              <td [attr.colspan]="span" [attr.aria-label]="label"></td>
+
+              <!-- Class & style -->
+              <li [class.done]="todo.done" [class]="{ urgent: todo.urgent, muted: !todo.active }"></li>
+              <div [style.width.px]="width()" [style.background-color]="color"></div>
+
+              <!-- Event + template reference variable -->
+              <input #q (keyup.enter)="search(q.value)" />
+              <button (click)="search(q.value)">Tìm</button>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không gọi hàm nặng trong template (<code>{{ calcTotal() }}</code>), vì nó chạy mỗi lần change detection. Dùng <code>computed()</code> hoặc pure pipe. Gọi signal <code>user()</code> thì không sao.</div>
+          </article>
+
+          <article class="card">
+            <h3>Two-way binding: <code>[( )]</code> và <code>model()</code></h3>
+            <p><code>model()</code> tạo một input có thể ghi ngược lên cha. Cha dùng banana-in-a-box <code>[( )]</code>.</p>
+            <script type="text/x-code" data-lang="ts" data-file="quantity-picker.ts">
+              @Component({
+                selector: 'app-quantity-picker',
+                template: `
+                  <button (click)="qty.update(q => q - 1)" [disabled]="qty() <= 1">−</button>
+                  <span>{{ qty() }}</span>
+                  <button (click)="qty.update(q => q + 1)">+</button>
+                `,
+              })
+              export class QuantityPicker {
+                qty = model(1);           // tự sinh output "qtyChange"
+              }
+            </script>
+            <script type="text/x-code" data-lang="html" data-file="cart.html">
+              <!-- quantity có thể là signal hoặc field thường -->
+              <app-quantity-picker [(qty)]="quantity" />
+
+              <!-- ngModel cho input HTML (cần import FormsModule) -->
+              <input [(ngModel)]="keyword" name="keyword" />
+            </script>
+            <div class="tip">Kiểu cũ: <code>@Input() qty</code> + <code>@Output() qtyChange = new EventEmitter()</code>. Tên output phải là <code>tên input + Change</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3>Template reference variables (<code>#ref</code>)</h3>
+            <p>Tham chiếu tới phần tử DOM, component, hoặc directive (qua <code>exportAs</code>) ngay trong template.</p>
+            <script type="text/x-code" data-lang="html">
+              <!-- #ref tới element DOM -->
+              <input #email type="email" />
+              <button (click)="invite(email.value); email.value = ''">Mời</button>
+
+              <!-- #ref tới component: gọi public method -->
+              <app-video-player #player src="intro.mp4" />
+              <button (click)="player.play()">Play</button>
+
+              <!-- #ref tới directive qua exportAs -->
+              <form #f="ngForm" (ngSubmit)="save(f.value)">…</form>
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Control flow: <code>@if</code>, <code>@switch</code></h3>
+            <script type="text/x-code" data-lang="html">
+              @if (user(); as u) {
+                <p>{{ u.name }}</p>
+              } @else if (loading()) {
+                <app-spinner />
+              } @else {
+                <p>Chưa đăng nhập</p>
+              }
+
+              @switch (status()) {
+                @case ('active') { <span class="badge ok">Hoạt động</span> }
+                @case ('banned') { <span class="badge err">Bị khóa</span> }
+                @default { <span>Không rõ</span> }
+              }
+            </script>
+            <div class="tip">Kiểu cũ: <code>*ngIf="user as u; else loading"</code>, <code>[ngSwitch]</code> + <code>*ngSwitchCase</code>. Migrate tự động: <code>ng g @angular/core:control-flow</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3>Control flow: <code>@for</code>, <code>@let</code></h3>
+            <script type="text/x-code" data-lang="html">
+              <ul>
+                @for (item of items(); track item.id; let i = $index, last = $last) {
+                  <li [class.last]="last">{{ i + 1 }}. {{ item.name }}</li>
+                } @empty {
+                  <li>Không có dữ liệu</li>
+                }
+              </ul>
+              <!-- biến có sẵn: $index, $count, $first, $last, $even, $odd -->
+
+              <!-- @let: khai báo biến cục bộ trong template (v18.1+) -->
+              @let total = cart().items.length;
+              @let user = user$ | async;
+              <p>{{ user?.name }} có {{ total }} sản phẩm</p>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> <code>track</code> là bắt buộc. Dùng id ổn định (<code>track item.id</code>); chỉ dùng <code>track $index</code> khi danh sách tĩnh. Track sai làm DOM bị tạo lại toàn bộ, mất focus và trạng thái input.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 04 COMMUNICATION ============ -->
+      <section class="section" id="communication">
+        <div class="section-head"><span class="idx">04</span><h2>Giao tiếp giữa các component</h2></div>
+        <p class="section-intro">Cha → con qua input, con → cha qua output, truyền nội dung qua <code>ng-content</code>, và truy cập con qua query.</p>
+        <div class="grid">
+          <article class="card">
+            <h3><code>input()</code> / <code>output()</code> <span class="tag new">mới</span></h3>
+            <script type="text/x-code" data-lang="ts" data-file="product-item.ts">
+              import { Component, input, output, booleanAttribute } from '@angular/core';
+
+              export class ProductItem {
+                product = input.required<Product>();               // bắt buộc
+                showPrice = input(true);                            // có default
+                compact = input(false, { transform: booleanAttribute }); // <app-product-item compact />
+                label = input('', { alias: 'itemLabel' });          // tên ngoài: [itemLabel]
+
+                addToCart = output<Product>();
+                removed = output<void>();
+
+                add() {
+                  this.addToCart.emit(this.product());             // đọc input: gọi như hàm
+                }
+              }
+            </script>
+            <script type="text/x-code" data-lang="html" data-file="product-list.html">
+              <app-product-item
+                [product]="p"
+                compact
+                itemLabel="Hot"
+                (addToCart)="cart.add($event)"
+                (removed)="reload()" />
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Signal input là read-only trong component con. Cần sửa giá trị cục bộ thì dùng <code>model()</code> hoặc <code>linkedSignal(() => this.product())</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>@Input</code> / <code>@Output</code> <span class="tag old">cũ</span></h3>
+            <script type="text/x-code" data-lang="ts">
+              export class ProductItem {
+                @Input({ required: true }) product!: Product;
+                @Input({ transform: booleanAttribute }) compact = false;
+                @Input('itemLabel') label = '';
+                @Output() addToCart = new EventEmitter<Product>();
+
+                add() {
+                  this.addToCart.emit(this.product);   // đọc như field thường
+                }
+              }
+            </script>
+            <div class="tip">Migrate tự động: <code>ng g @angular/core:signal-input-migration</code> và <code>ng g @angular/core:output-migration</code>.</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th><code>input()</code></th><th><code>@Input()</code></th></tr></thead>
+              <tbody>
+                <tr><td>Đọc giá trị</td><td><code>this.x()</code></td><td><code>this.x</code></td></tr>
+                <tr><td>Phản ứng khi đổi</td><td><code>computed</code> / <code>effect</code></td><td><code>ngOnChanges</code> / setter</td></tr>
+                <tr><td>Bắt buộc</td><td><code>input.required()</code></td><td><code>{ required: true }</code> + <code>!</code></td></tr>
+                <tr><td>OnPush tự cập nhật</td><td>Có</td><td>Chỉ khi đổi reference</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Content projection với <code>ng-content</code></h3>
+            <p>Cho phép component cha "nhét" nội dung vào trong component con. Multi-slot dùng <code>select</code> (CSS selector).</p>
+            <script type="text/x-code" data-lang="ts" data-file="card.ts">
+              @Component({
+                selector: 'app-card',
+                template: `
+                  <header><ng-content select="[card-title]" /></header>
+                  <section><ng-content /></section>           <!-- slot mặc định: phần còn lại -->
+                  <footer>
+                    <ng-content select=".actions">
+                      <button>Đóng</button>                    <!-- fallback khi không truyền (v18+) -->
+                    </ng-content>
+                  </footer>
+                `,
+              })
+              export class Card {}
+            </script>
+            <script type="text/x-code" data-lang="html">
+              <app-card>
+                <h3 card-title>Hóa đơn #1024</h3>
+                <p>Nội dung vào slot mặc định.</p>
+                <div class="actions"><button>Thanh toán</button></div>
+              </app-card>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Nội dung luôn được khởi tạo dù <code>ng-content</code> nằm trong <code>@if</code> đang false. Cần render có điều kiện hoặc lặp lại nhiều lần thì dùng <code>ng-template</code> + <code>ngTemplateOutlet</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3>Query: <code>viewChild</code> / <code>viewChildren</code> / <code>contentChild</code></h3>
+            <p><code>view*</code> tìm trong template của chính component. <code>content*</code> tìm trong nội dung được project qua <code>ng-content</code>.</p>
+            <script type="text/x-code" data-lang="ts">
+              export class Gallery {
+                search = viewChild<ElementRef<HTMLInputElement>>('search');   // #search trong template
+                player = viewChild.required(VideoPlayer);                      // theo kiểu component
+                items = viewChildren(GalleryItem);                             // Signal<readonly GalleryItem[]>
+                header = contentChild(CardHeader);
+                tabs = contentChildren(Tab, { descendants: true });
+
+                activeCount = computed(() => this.items().filter(i => i.active()).length);
+
+                constructor() {
+                  afterNextRender(() => this.search()?.nativeElement.focus());
+                }
+              }
+            </script>
+            <div class="tip">Kiểu cũ: <code>@ViewChild('search') search!: ElementRef</code>, chỉ có giá trị từ <code>ngAfterViewInit</code> (trừ khi <code>{ static: true }</code>). Migrate: <code>ng g @angular/core:signal-queries-migration</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 05 DIRECTIVES ============ -->
+      <section class="section" id="directives">
+        <div class="section-head"><span class="idx">05</span><h2>Directives</h2></div>
+        <p class="section-intro">Directive gắn hành vi vào phần tử có sẵn. Attribute directive đổi giao diện/hành vi; structural directive thêm/bớt phần tử khỏi DOM.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Built-in: <code>NgClass</code>, <code>NgStyle</code></h3>
+            <script type="text/x-code" data-lang="html">
+              <!-- NgClass / NgStyle (phải import NgClass, NgStyle) -->
+              <div [ngClass]="{ active: isActive(), disabled: isDisabled() }"></div>
+              <div [ngStyle]="{ 'font-size.px': size(), color: color() }"></div>
+
+              <!-- Khuyến nghị: binding gốc, không cần import, nhanh hơn -->
+              <div [class]="{ active: isActive(), disabled: isDisabled() }"></div>
+              <div [class.active]="isActive()"></div>
+              <div [style]="{ 'font-size': size() + 'px', color: color() }"></div>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Docs Angular khuyên dùng <code>[class]</code>/<code>[style]</code> thay cho <code>NgClass</code>/<code>NgStyle</code>. Hai cách có thể dùng chung trên một phần tử.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>host</code> thay cho <code>@HostBinding</code> / <code>@HostListener</code></h3>
+            <p>Host binding gắn property/class/style và host listener nghe event trên chính phần tử mà directive đặt lên. Nhờ vậy logic chỉ viết một lần trong directive và dùng lại cho bất kỳ thẻ HTML nào (<code>&lt;p&gt;</code>, <code>&lt;td&gt;</code>, <code>&lt;li&gt;</code>…).</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Mục đích</th><th><code>host: { }</code> <span class="tag new">mới</span></th><th>Decorator <span class="tag old">cũ</span></th></tr></thead>
+              <tbody>
+                <tr><td>Property</td><td><code>'[disabled]': 'busy()'</code></td><td><code>@HostBinding('disabled')</code></td></tr>
+                <tr><td>Class</td><td><code>'[class.open]': 'open()'</code></td><td><code>@HostBinding('class.open')</code></td></tr>
+                <tr><td>Style</td><td><code>'[style.color]': 'c()'</code></td><td><code>@HostBinding('style.color')</code></td></tr>
+                <tr><td>Attribute tĩnh</td><td><code>role: 'button'</code></td><td>—</td></tr>
+                <tr><td>Event</td><td><code>'(click)': 'onClick($event)'</code></td><td><code>@HostListener('click', ['$event'])</code></td></tr>
+                <tr><td>Event global</td><td><code>'(document:keydown.escape)': 'close()'</code></td><td><code>@HostListener('document:keydown.escape')</code></td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Attribute directive: highlight</h3>
+            <script type="text/x-code" data-lang="ts" data-file="highlight.ts">
+              import { Directive, input, signal } from '@angular/core';
+
+              @Directive({
+                selector: '[appHighlight]',
+                host: {
+                  '[style.backgroundColor]': 'active() ? color() : null',
+                  '(mouseenter)': 'active.set(true)',
+                  '(mouseleave)': 'active.set(false)',
+                },
+              })
+              export class Highlight {
+                // <p appHighlight> → chuỗi rỗng → dùng màu mặc định
+                color = input('#fff3a3', {
+                  alias: 'appHighlight',
+                  transform: (v: string | undefined) => v || '#fff3a3',
+                });
+                active = signal(false);
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              <!-- 1 directive, dùng lại cho mọi loại phần tử -->
+              <p appHighlight>Đoạn văn</p>
+              <td appHighlight="lightblue">Ô bảng</td>
+              <li [appHighlight]="theme().accent">Mục danh sách</li>
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="kiểu cũ">
+              export class Highlight {
+                @Input('appHighlight') color = '#fff3a3';
+                @HostBinding('style.backgroundColor') bg: string | null = null;
+                @HostListener('mouseenter') onEnter() { this.bg = this.color || '#fff3a3'; }
+                @HostListener('mouseleave') onLeave() { this.bg = null; }
+              }
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Attribute directive: click-outside</h3>
+            <p>Đóng dropdown/popover khi click ra ngoài. Lắng nghe <code>document:click</code> qua <code>host</code>, không cần tự <code>addEventListener</code> và gỡ listener.</p>
+            <script type="text/x-code" data-lang="ts" data-file="click-outside.ts">
+              import { Directive, ElementRef, inject, output } from '@angular/core';
+
+              @Directive({
+                selector: '[appClickOutside]',
+                host: { '(document:click)': 'onDocumentClick($event)' },
+              })
+              export class ClickOutside {
+                private el = inject<ElementRef<HTMLElement>>(ElementRef);
+                clickOutside = output<MouseEvent>({ alias: 'appClickOutside' });
+
+                onDocumentClick(event: MouseEvent) {
+                  if (!this.el.nativeElement.contains(event.target as Node)) {
+                    this.clickOutside.emit(event);
+                  }
+                }
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              @if (open()) {
+                <div class="dropdown" (appClickOutside)="open.set(false)">…</div>
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Nút mở dropdown nằm ngoài phần tử, nên click mở cũng có thể bị coi là "click outside". Đặt directive trên wrapper chứa cả nút lẫn menu, hoặc dùng <code>$event.stopPropagation()</code> ở nút mở.</div>
+          </article>
+
+          <article class="card wide">
+            <h3>Structural directive tự viết</h3>
+            <p>Dùng <code>TemplateRef</code> (nội dung bên trong) và <code>ViewContainerRef</code> (vị trí chèn) để quyết định có render hay không. Dấu <code>*</code> là cú pháp rút gọn cho <code>&lt;ng-template&gt;</code>.</p>
+            <script type="text/x-code" data-lang="ts" data-file="if-role.ts">
+              import { Directive, TemplateRef, ViewContainerRef, effect, inject, input } from '@angular/core';
+
+              @Directive({ selector: '[appIfRole]' })
+              export class IfRole {
+                private tpl = inject(TemplateRef<unknown>);
+                private vcr = inject(ViewContainerRef);
+                private auth = inject(AuthService);
+
+                role = input.required<string>({ alias: 'appIfRole' });
+
+                constructor() {
+                  effect(() => {
+                    this.vcr.clear();
+                    if (this.auth.hasRole(this.role())) {   // hasRole đọc signal → effect tự chạy lại khi user đổi
+                      this.vcr.createEmbeddedView(this.tpl);
+                    }
+                  });
+                }
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              <button *appIfRole="'admin'" (click)="delete()">Xóa</button>
+
+              <!-- tương đương -->
+              <ng-template [appIfRole]="'admin'"><button>Xóa</button></ng-template>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Mỗi phần tử chỉ có một structural directive (<code>*</code>). Cần kết hợp thì bọc thêm <code>&lt;ng-container&gt;</code>. Với điều kiện/lặp thông thường, ưu tiên <code>@if</code>/<code>@for</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 06 PIPES ============ -->
+      <section class="section" id="pipes">
+        <div class="section-head"><span class="idx">06</span><h2>Pipes</h2></div>
+        <p class="section-intro">Pipe biến đổi giá trị ngay trong template: <code>{{ value | pipe:arg1:arg2 }}</code>. Built-in pipe import từ <code>@angular/common</code>.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Built-in pipes thường dùng</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Pipe</th><th>Ví dụ</th><th>Kết quả (locale <code>vi</code>)</th></tr></thead>
+              <tbody>
+                <tr><td><code>date</code></td><td><code>{{ d | date:'dd/MM/yyyy HH:mm' }}</code></td><td>12/11/2026 11:32</td></tr>
+                <tr><td><code>currency</code></td><td><code>{{ 1500000 | currency:'VND':'symbol':'1.0-0' }}</code></td><td>1.500.000 ₫</td></tr>
+                <tr><td><code>number</code></td><td><code>{{ 3.14159 | number:'1.0-2' }}</code></td><td>3,14</td></tr>
+                <tr><td><code>percent</code></td><td><code>{{ 0.256 | percent:'1.1-1' }}</code></td><td>25,6%</td></tr>
+                <tr><td><code>uppercase</code> · <code>titlecase</code></td><td><code>{{ 'nguyễn văn a' | titlecase }}</code></td><td>Nguyễn Văn A</td></tr>
+                <tr><td><code>slice</code></td><td><code>@for (x of items | slice:0:5; track x.id)</code></td><td>5 phần tử đầu</td></tr>
+                <tr><td><code>json</code></td><td><code>&lt;pre&gt;{{ form.value | json }}&lt;/pre&gt;</code></td><td>Debug object</td></tr>
+                <tr><td><code>keyvalue</code></td><td><code>@for (e of map | keyvalue; track e.key)</code></td><td>Lặp object/Map</td></tr>
+                <tr><td><code>async</code></td><td><code>{{ user$ | async }}</code></td><td>Subscribe + tự unsubscribe</td></tr>
+              </tbody>
+            </table></div>
+            <p>Format digit <code>'1.0-2'</code> = tối thiểu 1 chữ số phần nguyên, 0–2 chữ số thập phân.</p>
+          </article>
+
+          <article class="card">
+            <h3>Đăng ký locale tiếng Việt</h3>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              import { LOCALE_ID } from '@angular/core';
+              import { registerLocaleData } from '@angular/common';
+              import localeVi from '@angular/common/locales/vi';
+
+              registerLocaleData(localeVi);
+
+              export const appConfig: ApplicationConfig = {
+                providers: [
+                  { provide: LOCALE_ID, useValue: 'vi' },
+                  { provide: DEFAULT_CURRENCY_CODE, useValue: 'VND' },
+                ],
+              };
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Custom pipe</h3>
+            <script type="text/x-code" data-lang="ts" data-file="truncate-pipe.ts">
+              import { Pipe, PipeTransform } from '@angular/core';
+
+              @Pipe({ name: 'truncate' })          // pure: true là mặc định
+              export class TruncatePipe implements PipeTransform {
+                transform(value: string | null | undefined, limit = 50, suffix = '…'): string {
+                  if (!value) return '';
+                  return value.length > limit ? value.slice(0, limit).trimEnd() + suffix : value;
+                }
+              }
+
+              // Dùng: imports: [TruncatePipe]
+              // {{ post.body | truncate:100 }}   {{ title | truncate:20:'...' }}
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Pure và impure pipe</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th>Pure (mặc định)</th><th>Impure <code>pure: false</code></th></tr></thead>
+              <tbody>
+                <tr><td>Chạy lại khi</td><td>Input đổi giá trị primitive hoặc đổi reference</td><td>Mỗi lần change detection</td></tr>
+                <tr><td>Hiệu năng</td><td>Tốt, có cache</td><td>Tốn, dễ chậm</td></tr>
+                <tr><td>Ví dụ</td><td><code>date</code>, <code>currency</code>, custom</td><td><code>async</code>, <code>json</code>, <code>keyvalue</code></td></tr>
+              </tbody>
+            </table></div>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Pure pipe không chạy lại khi bạn <code>push()</code> vào mảng cũ. Hãy tạo mảng mới (<code>[...items, x]</code>) thay vì chuyển sang impure.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>async</code> pipe</h3>
+            <p>Subscribe Observable/Promise, trả về giá trị mới nhất, tự unsubscribe khi component bị hủy và báo change detection.</p>
+            <script type="text/x-code" data-lang="html">
+              @if (user$ | async; as user) {
+                <h2>{{ user.name }}</h2>
+              } @else {
+                <app-skeleton />
+              }
+
+              <!-- Gom nhiều stream để chỉ subscribe một lần -->
+              @let vm = vm$ | async;
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Mỗi lần dùng <code>| async</code> là một subscription riêng. Gọi <code>obs$ | async</code> 3 lần với HTTP sẽ gửi 3 request. Dùng <code>@let</code>, <code>as</code>, hoặc <code>toSignal()</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 07 SIGNALS ============ -->
+      <section class="section" id="signals">
+        <div class="section-head"><span class="idx">07</span><h2>Signals</h2></div>
+        <p class="section-intro">Signal là giá trị reactive: đọc bằng cách gọi <code>count()</code>, Angular tự biết template/computed nào phụ thuộc vào nó để cập nhật đúng chỗ.</p>
+        <div class="grid">
+          <article class="card">
+            <h3><code>signal</code>, <code>computed</code></h3>
+            <script type="text/x-code" data-lang="ts">
+              import { signal, computed } from '@angular/core';
+
+              export class Cart {
+                items = signal<CartItem[]>([]);
+                discount = signal(0);
+
+                // computed: chỉ đọc, lazy, có cache, tự tính lại khi dependency đổi
+                subtotal = computed(() => this.items().reduce((s, i) => s + i.price * i.qty, 0));
+                total = computed(() => this.subtotal() * (1 - this.discount()));
+
+                add(item: CartItem) {
+                  this.items.update(list => [...list, item]);   // tạo mảng mới
+                }
+                clear() {
+                  this.items.set([]);
+                }
+                readonly itemsRO = this.items.asReadonly();      // expose ra ngoài mà không cho set
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không mutate trực tiếp (<code>this.items().push(x)</code>). Signal so sánh bằng <code>Object.is</code>, cùng reference thì không báo thay đổi. Luôn dùng <code>set</code>/<code>update</code> với object/mảng mới.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>effect</code></h3>
+            <p>Chạy side effect khi signal đổi: ghi localStorage, log, đồng bộ với API ngoài Angular. Phải tạo trong injection context (constructor/field).</p>
+            <script type="text/x-code" data-lang="ts">
+              export class Settings {
+                theme = signal<'light' | 'dark'>('light');
+
+                constructor() {
+                  effect(() => {
+                    localStorage.setItem('theme', this.theme());   // tự track theme()
+                  });
+
+                  effect((onCleanup) => {
+                    const id = setInterval(() => this.ping(), 30_000);
+                    onCleanup(() => clearInterval(id));            // chạy trước lần kế tiếp và khi destroy
+                  });
+                }
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không dùng <code>effect</code> để tính state từ state khác, hãy dùng <code>computed</code> hoặc <code>linkedSignal</code>. Đọc signal mà không muốn track thì bọc trong <code>untracked(() => ...)</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>linkedSignal</code></h3>
+            <p>Giống <code>computed</code> nhưng ghi được. Tự reset theo nguồn khi nguồn đổi, giữa các lần đó người dùng vẫn <code>set</code> được.</p>
+            <script type="text/x-code" data-lang="ts">
+              export class ShippingPicker {
+                options = input.required<string[]>();
+
+                // reset về option đầu mỗi khi danh sách options đổi
+                selected = linkedSignal(() => this.options()[0]);
+
+                // dạng đầy đủ: giữ lựa chọn cũ nếu nó vẫn còn trong danh sách mới
+                selectedSmart = linkedSignal<string[], string>({
+                  source: this.options,
+                  computation: (opts, prev) =>
+                    prev && opts.includes(prev.value) ? prev.value : opts[0],
+                });
+
+                choose(o: string) {
+                  this.selected.set(o);
+                }
+              }
+            </script>
+          </article>
+
+          <article class="card">
+            <h3><code>resource</code> / <code>rxResource</code> <span class="tag new">stable v22</span></h3>
+            <p>Signal cho dữ liệu async: tự gọi lại khi <code>params</code> đổi, có sẵn trạng thái loading/error. Gọi HTTP thì xem <code>httpResource</code> ở mục 11.</p>
+            <script type="text/x-code" data-lang="ts">
+              query = signal('');
+
+              results = resource({
+                params: () => ({ q: this.query() }),            // trả undefined → không load
+                loader: ({ params, abortSignal }) =>
+                  fetch(`/api/search?q=${params.q}`, { signal: abortSignal }).then(r => r.json()),
+              });
+
+              // Phiên bản Observable
+              user = rxResource({
+                params: () => this.userId(),
+                stream: ({ params: id }) => this.api.getById(id),
+              });
+
+              // results.value()  results.isLoading()  results.error()  results.reload()
+            </script>
+          </article>
+
+          <article class="card wide">
+            <h3>Khi nào dùng Signal, khi nào dùng Observable</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Tình huống</th><th>Chọn</th><th>Lý do</th></tr></thead>
+              <tbody>
+                <tr><td>State của component/service (UI state, form state, cart)</td><td>Signal</td><td>Luôn có giá trị hiện tại, đồng bộ, không cần subscribe</td></tr>
+                <tr><td>Giá trị dẫn xuất (tổng tiền, filter list)</td><td><code>computed</code></td><td>Có cache, tự tính lại</td></tr>
+                <tr><td>Fetch dữ liệu theo tham số</td><td><code>httpResource</code> / <code>resource</code></td><td>Có loading/error, tự hủy request cũ</td></tr>
+                <tr><td>Luồng sự kiện theo thời gian (gõ phím, websocket, polling)</td><td>Observable</td><td>Cần <code>debounceTime</code>, <code>switchMap</code>, retry…</td></tr>
+                <tr><td>Kết hợp nhiều request, hủy/xếp hàng request</td><td>Observable</td><td>Map operators của RxJS</td></tr>
+                <tr><td>Kết quả cuối hiển thị trên template</td><td>Signal (<code>toSignal</code>)</td><td>Hợp với OnPush/zoneless, không cần <code>async</code> pipe</td></tr>
+              </tbody>
+            </table></div>
+            <p>Quy tắc ngắn: <b>state → signal, event/stream → RxJS</b>, nối hai bên bằng <code>toSignal</code>/<code>toObservable</code> (mục 10).</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 08 DI ============ -->
+      <section class="section" id="di">
+        <div class="section-head"><span class="idx">08</span><h2>Dependency Injection</h2></div>
+        <p class="section-intro">Angular tạo và cấp instance cho bạn. Bạn khai báo <em>provider</em> ở đâu thì instance sống ở phạm vi đó.</p>
+        <div class="grid">
+          <article class="card">
+            <h3><code>@Injectable</code>, <code>@Service</code>, <code>inject()</code></h3>
+            <script type="text/x-code" data-lang="ts">
+              // Singleton toàn app, tree-shakable (không dùng thì không vào bundle)
+              @Injectable({ providedIn: 'root' })
+              export class CartStore {
+                private http = inject(HttpClient);
+              }
+
+              // v22+: viết gọn tương đương, yêu cầu dùng inject() thay vì constructor injection
+              @Service()
+              export class CartStore {
+                private http = inject(HttpClient);
+              }
+
+              // Inject ở component / directive / service khác
+              export class Checkout {
+                private cart = inject(CartStore);
+                private logger = inject(Logger, { optional: true });   // null nếu không có provider
+                private parent = inject(ParentPanel, { skipSelf: true, optional: true });
+              }
+            </script>
+            <div class="tip">Kiểu cũ: <code>constructor(private cart: CartStore) {}</code>. Migrate: <code>ng g @angular/core:inject</code>; chuyển sang <code>@Service</code>: <code>ng g @angular/core:service</code> (v22.1).</div>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> <code>inject()</code> chỉ gọi được trong injection context: field initializer, constructor, factory, hoặc trong <code>runInInjectionContext()</code>. Gọi trong <code>ngOnInit</code> hay callback sẽ lỗi NG0203.</div>
+          </article>
+
+          <article class="card">
+            <h3>Hierarchical injector</h3>
+            <p>Khi <code>inject(X)</code>, Angular tìm từ dưới lên: element injector của chính nó → các element cha → environment injector → root. Gặp provider đầu tiên thì dừng.</p>
+            <div class="stack">
+              <div class="el"><b>Element injector</b><span><code>providers</code> trong <code>@Component</code>/<code>@Directive</code> của chính nó</span></div>
+              <div class="arrow">↓ không thấy thì đi lên</div>
+              <div class="el"><b>Element injector cha</b><span>component cha, ông… theo cây DOM</span></div>
+              <div class="arrow">↓</div>
+              <div class="env"><b>Route environment injector</b><span><code>providers</code> trong Route (lazy route)</span></div>
+              <div class="arrow">↓</div>
+              <div class="env"><b>Root environment injector</b><span><code>providedIn: 'root'</code>, <code>appConfig.providers</code></span></div>
+              <div class="arrow">↓</div>
+              <div><b>Platform → NullInjector</b><span>không tìm thấy → lỗi NG0201 "No provider for X"</span></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3><code>InjectionToken</code> &amp; các loại provider</h3>
+            <p>Dùng token khi thứ cần inject không phải class: config, hằng số, hàm.</p>
+            <script type="text/x-code" data-lang="ts">
+              export interface AppConfig { apiUrl: string; pageSize: number }
+              export const APP_CONFIG = new InjectionToken<AppConfig>('APP_CONFIG');
+
+              // Token có sẵn giá trị mặc định, không cần khai báo provider
+              export const PAGE_SIZE = new InjectionToken<number>('PAGE_SIZE', {
+                providedIn: 'root',
+                factory: () => 20,
+              });
+
+              providers: [
+                { provide: APP_CONFIG, useValue: { apiUrl: '/api', pageSize: 20 } },
+                { provide: Logger, useClass: environment.production ? SilentLogger : ConsoleLogger },
+                { provide: StorageService, useFactory: () => {
+                    const platformId = inject(PLATFORM_ID);
+                    return isPlatformBrowser(platformId) ? new LocalStore() : new MemoryStore();
+                } },
+                { provide: Notifier, useExisting: ToastService },   // alias: cùng 1 instance
+              ]
+
+              // Dùng
+              private config = inject(APP_CONFIG);
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>So sánh các loại provider</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Loại</th><th>Cung cấp</th><th>Dùng khi</th></tr></thead>
+              <tbody>
+                <tr><td><code>useClass</code></td><td>Instance mới của class khác</td><td>Thay implementation (mock, theo môi trường)</td></tr>
+                <tr><td><code>useValue</code></td><td>Giá trị có sẵn</td><td>Config, hằng số, object mock trong test</td></tr>
+                <tr><td><code>useFactory</code></td><td>Kết quả của hàm</td><td>Cần logic để quyết định instance, có thể <code>inject()</code> bên trong</td></tr>
+                <tr><td><code>useExisting</code></td><td>Trỏ tới provider khác</td><td>Alias: 2 token dùng chung 1 instance</td></tr>
+                <tr><td><code>multi: true</code></td><td>Gom thành mảng</td><td>Nhiều provider cho cùng token (plugin, validator)</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card wide">
+            <h3>Singleton và instance riêng</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Cách khai báo provider</th><th>Số instance</th><th>Ví dụ dùng</th></tr></thead>
+              <tbody>
+                <tr><td><code>providedIn: 'root'</code> / <code>@Service()</code></td><td>1 instance toàn app</td><td>AuthService, API service, global store</td></tr>
+                <tr><td><code>appConfig.providers</code></td><td>1 instance toàn app</td><td>Provider của thư viện (<code>provideHttpClient</code>…)</td></tr>
+                <tr><td><code>providers</code> trong Route</td><td>1 instance cho route đó và các route con</td><td>Store dùng riêng cho feature lazy-load</td></tr>
+                <tr><td><code>providers</code> trong <code>@Component</code></td><td>Mỗi instance component có 1 instance riêng, dùng chung cho các con</td><td>Store cho từng form editor, từng tab</td></tr>
+                <tr><td><code>viewProviders</code></td><td>Như trên, nhưng nội dung project qua <code>ng-content</code> không thấy</td><td>Ẩn service nội bộ khỏi content</td></tr>
+              </tbody>
+            </table></div>
+            <script type="text/x-code" data-lang="ts">
+              @Injectable()   // không providedIn → phải khai báo ở providers
+              export class TodoEditorStore {
+                draft = signal<Todo | null>(null);
+              }
+
+              @Component({
+                selector: 'app-todo-editor',
+                providers: [TodoEditorStore],   // mở 2 editor = 2 store độc lập
+                template: `<app-todo-fields /><app-todo-actions />`, // con inject() nhận cùng store
+              })
+              export class TodoEditor {}
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Service có <code>providedIn: 'root'</code> mà vẫn bị khai báo thêm trong <code>providers</code> của component sẽ tạo instance thứ hai, khiến state "không đồng bộ". Đây là nguyên nhân hay gặp khi data cập nhật ở chỗ này mà chỗ khác không thấy.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 09 CD ============ -->
+      <section class="section" id="cd">
+        <div class="section-head"><span class="idx">09</span><h2>Change detection</h2></div>
+        <p class="section-intro">Cơ chế Angular so sánh lại binding và cập nhật DOM. Hai câu hỏi: <em>khi nào</em> CD chạy (zone.js hay zoneless) và <em>component nào</em> được check (Eager hay OnPush).</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Eager (Default) và OnPush</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th><code>Eager</code> (trước v22 tên là <code>Default</code>)</th><th><code>OnPush</code> (mặc định từ v22)</th></tr></thead>
+              <tbody>
+                <tr><td>Được check khi</td><td>Mỗi lần CD chạy ở bất kỳ đâu trong app</td><td>Chỉ khi: input đổi reference, event trong template/host của nó, signal đọc trong template đổi, <code>async</code> pipe emit, gọi <code>markForCheck()</code></td></tr>
+                <tr><td>Mutate object</td><td>UI vẫn cập nhật</td><td>UI <b>không</b> cập nhật nếu reference giữ nguyên</td></tr>
+                <tr><td>Hiệu năng</td><td>Kém dần khi app lớn</td><td>Tốt, bỏ qua cả nhánh cây không đổi</td></tr>
+                <tr><td>Khi nào dùng</td><td>Code cũ dựa vào mutate, chưa kịp refactor</td><td>Mọi component mới, nhất là khi dùng signals</td></tr>
+              </tbody>
+            </table></div>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Khi <code>ng update</code> lên v22, migration tự thêm <code>ChangeDetectionStrategy.Eager</code> vào component cũ chưa khai báo strategy để giữ hành vi. Nên dần chuyển sang OnPush.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>markForCheck</code> với OnPush</h3>
+            <p>Khi dữ liệu đến từ <code>subscribe()</code> thủ công (không qua signal/async pipe), component OnPush không biết mà cập nhật.</p>
+            <script type="text/x-code" data-lang="ts">
+              @Component({ changeDetection: ChangeDetectionStrategy.OnPush, /* ... */ })
+              export class Orders {
+                private cdr = inject(ChangeDetectorRef);
+                private api = inject(OrderApi);
+                orders: Order[] = [];
+
+                load() {
+                  this.api.getAll().subscribe(list => {
+                    this.orders = list;
+                    this.cdr.markForCheck();   // đánh dấu component + các cha cần check lại
+                  });
+                }
+              }
+
+              // Cách tốt hơn: dùng signal, không cần markForCheck
+              orders = toSignal(this.api.getAll(), { initialValue: [] });
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>zone.js và zoneless</h3>
+            <p>zone.js vá mọi API async (setTimeout, Promise, event) để tự chạy CD sau mỗi tác vụ. Zoneless bỏ cơ chế đó: CD chỉ chạy khi Angular được báo rõ ràng.</p>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              // Project tạo từ v21+: đã zoneless, không cần làm gì
+
+              // Project cũ (v20+) muốn bật zoneless
+              providers: [provideZonelessChangeDetection()]
+              // + gỡ "zone.js" khỏi polyfills trong angular.json, gỡ package zone.js
+
+              // Muốn giữ zone.js
+              providers: [provideZoneChangeDetection({ eventCoalescing: true })]
+            </script>
+            <p>Ở chế độ zoneless, CD được kích hoạt bởi: <code>signal.set/update</code> được template đọc, event listener trong template/host, <code>async</code> pipe, <code>markForCheck()</code>, <code>ComponentRef.setInput()</code>.</p>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Code gán field trong <code>setTimeout</code>/<code>subscribe</code> từng "tự chạy" nhờ zone.js sẽ không cập nhật UI khi zoneless. Chuyển sang signal. Trong test, dùng <code>await fixture.whenStable()</code> thay cho <code>fixture.detectChanges()</code>.</div>
+          </article>
+
+          <article class="card wide">
+            <h3>Signals ảnh hưởng change detection thế nào</h3>
+            <ul>
+              <li>Template đọc signal → Angular ghi nhận component đó là "consumer". Khi signal đổi, chỉ component đó được đánh dấu cần check, không phải cả cây.</li>
+              <li>Signal + OnPush + zoneless là tổ hợp hiệu quả nhất: không cần <code>markForCheck</code>, không cần zone.js, không check thừa.</li>
+              <li><code>computed</code> có cache: template gọi <code>total()</code> nhiều lần cũng chỉ tính một lần cho mỗi thay đổi.</li>
+              <li>Đổi signal trong lúc đang render (vd. trong <code>computed</code> hoặc getter template) gây lỗi NG0600. Đổi state trong event handler, <code>effect</code>, hoặc callback async.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 10 RXJS ============ -->
+      <section class="section" id="rxjs">
+        <div class="section-head"><span class="idx">10</span><h2>Async &amp; RxJS</h2></div>
+        <p class="section-intro">Đi theo mạch: Promise → Event Loop → async/await → Observable → Operators. Hiểu event loop giúp đoán đúng thứ tự chạy của code async.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>1 · Promise</h3>
+            <p>Đại diện cho <b>một</b> giá trị trong tương lai. Chạy ngay khi tạo (eager), không hủy được.</p>
+            <script type="text/x-code" data-lang="ts">
+              function delay(ms: number) {
+                return new Promise<void>(resolve => setTimeout(resolve, ms));
+              }
+
+              fetch('/api/users')
+                .then(res => {
+                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                  return res.json() as Promise<User[]>;
+                })
+                .then(users => console.log(users.length))
+                .catch(err => console.error(err))
+                .finally(() => console.log('xong'));
+
+              // Chạy song song
+              const [a, b] = await Promise.all([getA(), getB()]);       // 1 cái lỗi → reject cả
+              const results = await Promise.allSettled([getA(), getB()]); // lấy cả kết quả lỗi
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>2 · Event Loop</h3>
+            <p>JS chạy một luồng. Sau khi call stack trống, engine chạy <b>toàn bộ microtask</b> (Promise callback, <code>queueMicrotask</code>) trước, rồi mới lấy <b>một macrotask</b> (setTimeout, event, I/O).</p>
+            <script type="text/x-code" data-lang="ts">
+              console.log('1 · sync');
+              setTimeout(() => console.log('4 · macrotask (setTimeout)'), 0);
+              Promise.resolve().then(() => console.log('3 · microtask (Promise)'));
+              console.log('2 · sync');
+
+              // Kết quả: 1 → 2 → 3 → 4
+            </script>
+            <div class="tip">zone.js hoạt động bằng cách bọc chính các task này để biết khi nào chạy change detection.</div>
+          </article>
+
+          <article class="card">
+            <h3>3 · async / await</h3>
+            <p>Cú pháp viết Promise như code tuần tự. <code>await</code> tạm dừng hàm, phần sau chạy như một microtask.</p>
+            <script type="text/x-code" data-lang="ts">
+              async function loadProfile(id: string): Promise<Profile> {
+                try {
+                  const user = await api.getUser(id);          // tuần tự: cần user trước
+                  const [posts, friends] = await Promise.all([ // song song: độc lập nhau
+                    api.getPosts(id),
+                    api.getFriends(id),
+                  ]);
+                  return { user, posts, friends };
+                } catch (err) {
+                  console.error(err);
+                  throw err;
+                }
+              }
+
+              // Observable → Promise khi cần await (lấy 1 giá trị)
+              const user = await firstValueFrom(this.http.get<User>('/api/me'));
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> <code>await</code> trong vòng <code>for</code> làm các request chạy nối tiếp. Request độc lập thì gom vào <code>Promise.all</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3>4 · Observable</h3>
+            <p>Luồng <b>nhiều</b> giá trị theo thời gian. Lazy (chỉ chạy khi subscribe), hủy được (unsubscribe), biến đổi bằng operator.</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th>Promise</th><th>Observable</th></tr></thead>
+              <tbody>
+                <tr><td>Số giá trị</td><td>1</td><td>0..n</td></tr>
+                <tr><td>Bắt đầu chạy</td><td>Ngay khi tạo</td><td>Khi subscribe</td></tr>
+                <tr><td>Hủy</td><td>Không</td><td><code>unsubscribe()</code></td></tr>
+                <tr><td>Biến đổi</td><td><code>then</code></td><td>Operators: <code>map</code>, <code>switchMap</code>…</td></tr>
+              </tbody>
+            </table></div>
+            <script type="text/x-code" data-lang="ts">
+              const ticks$ = new Observable<number>(subscriber => {
+                let n = 0;
+                const id = setInterval(() => subscriber.next(n++), 1000);
+                return () => clearInterval(id);        // teardown khi unsubscribe
+              });
+
+              const sub = ticks$.subscribe({
+                next: v => console.log(v),
+                error: e => console.error(e),
+                complete: () => console.log('done'),
+              });
+              sub.unsubscribe();
+            </script>
+          </article>
+
+          <article class="card wide">
+            <h3>Subject, BehaviorSubject, ReplaySubject</h3>
+            <p>Subject vừa là Observable vừa phát được giá trị (<code>next</code>), dùng để multicast cho nhiều subscriber.</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Loại</th><th>Giá trị ban đầu</th><th>Subscriber mới nhận được</th><th>Dùng cho</th></tr></thead>
+              <tbody>
+                <tr><td><code>Subject</code></td><td>Không</td><td>Chỉ giá trị phát <b>sau</b> khi subscribe</td><td>Event bus, trigger (<code>refresh$</code>)</td></tr>
+                <tr><td><code>BehaviorSubject</code></td><td>Bắt buộc</td><td>Giá trị hiện tại ngay lập tức, có <code>.value</code></td><td>State (kiểu cũ, nay thường dùng signal)</td></tr>
+                <tr><td><code>ReplaySubject(n)</code></td><td>Không</td><td><code>n</code> giá trị gần nhất</td><td>Cache, lịch sử ngắn</td></tr>
+              </tbody>
+            </table></div>
+            <script type="text/x-code" data-lang="ts">
+              const refresh$ = new Subject<void>();
+              const user$ = new BehaviorSubject<User | null>(null);
+              const logs$ = new ReplaySubject<string>(3);
+
+              refresh$.next();
+              user$.next({ id: 1, name: 'Ada' });
+              console.log(user$.value);              // đọc đồng bộ
+
+              // Expose ra ngoài dạng chỉ đọc
+              readonly user = this.user$.asObservable();
+            </script>
+          </article>
+
+          <article class="card wide">
+            <h3>5 · RxJS operators thường dùng</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Operator</th><th>Mô tả</th><th>Ví dụ</th></tr></thead>
+              <tbody>
+                <tr><td><code>map</code></td><td>Biến đổi từng giá trị</td><td><code>map(u =&gt; u.name)</code></td></tr>
+                <tr><td><code>filter</code></td><td>Chỉ cho qua giá trị thỏa điều kiện</td><td><code>filter(e =&gt; e.key === 'Enter')</code></td></tr>
+                <tr><td><code>tap</code></td><td>Side effect, không đổi giá trị (log, set loading)</td><td><code>tap(() =&gt; this.loading.set(true))</code></td></tr>
+                <tr><td><code>switchMap</code></td><td>Map sang Observable mới, <b>hủy</b> cái cũ</td><td><code>switchMap(q =&gt; this.api.search(q))</code></td></tr>
+                <tr><td><code>mergeMap</code></td><td>Map sang Observable mới, chạy <b>song song</b></td><td><code>mergeMap(id =&gt; this.api.delete(id))</code></td></tr>
+                <tr><td><code>concatMap</code></td><td>Map sang Observable mới, chạy <b>tuần tự</b>, giữ thứ tự</td><td><code>concatMap(item =&gt; this.api.save(item))</code></td></tr>
+                <tr><td><code>exhaustMap</code></td><td>Bỏ qua giá trị mới khi cái cũ chưa xong</td><td><code>exhaustMap(() =&gt; this.api.login(dto))</code></td></tr>
+                <tr><td><code>debounceTime</code></td><td>Chờ ngừng phát N ms rồi mới cho qua</td><td><code>debounceTime(300)</code></td></tr>
+                <tr><td><code>distinctUntilChanged</code></td><td>Bỏ giá trị trùng với giá trị liền trước</td><td><code>distinctUntilChanged()</code></td></tr>
+                <tr><td><code>catchError</code></td><td>Bắt lỗi, trả Observable thay thế hoặc ném tiếp</td><td><code>catchError(() =&gt; of([]))</code></td></tr>
+                <tr><td><code>combineLatest</code></td><td>Phát mảng giá trị mới nhất mỗi khi một nguồn đổi (cần tất cả đã phát ít nhất 1 lần)</td><td><code>combineLatest([user$, settings$])</code></td></tr>
+                <tr><td><code>forkJoin</code></td><td>Chờ tất cả <b>complete</b>, phát 1 lần kết quả cuối (như <code>Promise.all</code>)</td><td><code>forkJoin({ user: u$, posts: p$ })</code></td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>So sánh 4 map operators</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Operator</th><th>Khi có giá trị mới mà request cũ chưa xong</th><th>Dùng cho</th></tr></thead>
+              <tbody>
+                <tr><td><code>switchMap</code></td><td>Hủy request cũ, chạy request mới</td><td>Search typeahead, load theo route param</td></tr>
+                <tr><td><code>mergeMap</code></td><td>Chạy đồng thời cả hai</td><td>Xóa nhiều item, upload nhiều file</td></tr>
+                <tr><td><code>concatMap</code></td><td>Xếp hàng, chạy sau khi cái cũ xong</td><td>Lưu theo thứ tự, auto-save</td></tr>
+                <tr><td><code>exhaustMap</code></td><td>Bỏ qua cái mới</td><td>Nút submit/login chống double-click</td></tr>
+              </tbody>
+            </table></div>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không dùng <code>switchMap</code> cho POST/PUT/DELETE: request bị hủy phía client có thể đã chạy xong phía server. Dùng <code>concatMap</code> hoặc <code>exhaustMap</code>.</div>
+          </article>
+
+          <article class="card">
+            <h3>Ví dụ kết hợp: ô tìm kiếm</h3>
+            <script type="text/x-code" data-lang="ts">
+              export class UserSearch {
+                private api = inject(UserApi);
+                query = new FormControl('', { nonNullable: true });
+
+                results = toSignal(
+                  this.query.valueChanges.pipe(
+                    map(q => q.trim()),
+                    debounceTime(300),                // chờ người dùng ngừng gõ
+                    distinctUntilChanged(),           // không gọi lại nếu chuỗi y hệt
+                    filter(q => q.length === 0 || q.length >= 2),
+                    switchMap(q =>
+                      q ? this.api.search(q).pipe(catchError(() => of([]))) : of([])
+                    ),
+                  ),
+                  { initialValue: [] as User[] },
+                );
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Đặt <code>catchError</code> <b>bên trong</b> <code>switchMap</code>. Đặt ở ngoài thì lỗi đầu tiên làm stream complete, ô tìm kiếm ngừng hoạt động.</div>
+          </article>
+
+          <article class="card">
+            <h3>Unsubscribe đúng cách</h3>
+            <script type="text/x-code" data-lang="ts">
+              import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+              export class Dashboard {
+                private destroyRef = inject(DestroyRef);
+                private route = inject(ActivatedRoute);
+
+                constructor() {
+                  // trong injection context: không cần tham số
+                  interval(30_000).pipe(takeUntilDestroyed()).subscribe(() => this.refresh());
+                }
+
+                ngOnInit() {
+                  // ngoài constructor: phải truyền DestroyRef
+                  this.route.queryParamMap
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe(p => this.filter.set(p.get('q') ?? ''));
+                }
+              }
+            </script>
+            <ul>
+              <li>Không cần unsubscribe: <code>HttpClient</code> (complete sau 1 response), <code>async</code> pipe, <code>toSignal</code>.</li>
+              <li>Cần unsubscribe: <code>interval</code>, <code>fromEvent</code>, <code>valueChanges</code>, Subject của service sống lâu hơn component.</li>
+              <li>Kiểu cũ: <code>private destroy$ = new Subject&lt;void&gt;()</code> + <code>takeUntil(this.destroy$)</code> + <code>next()/complete()</code> trong <code>ngOnDestroy</code>.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3><code>toSignal</code> / <code>toObservable</code></h3>
+            <script type="text/x-code" data-lang="ts">
+              import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+
+              // Observable → Signal (tự subscribe/unsubscribe theo vòng đời component)
+              users = toSignal(this.api.getAll(), { initialValue: [] });
+              params = toSignal(this.route.paramMap);          // Signal<ParamMap | undefined>
+
+              // Signal → Observable (để dùng operator RxJS)
+              query = signal('');
+              results = toSignal(
+                toObservable(this.query).pipe(
+                  debounceTime(300),
+                  switchMap(q => this.api.search(q)),
+                ),
+                { initialValue: [] },
+              );
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không có <code>initialValue</code> thì signal có kiểu <code>T | undefined</code>. Observable đồng bộ (BehaviorSubject) có thể dùng <code>{ requireSync: true }</code> để bỏ <code>undefined</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 11 HTTP ============ -->
+      <section class="section" id="http">
+        <div class="section-head"><span class="idx">11</span><h2>HTTP</h2></div>
+        <p class="section-intro"><code>HttpClient</code> trả về Observable lạnh: chỉ gửi request khi subscribe, và complete sau một response.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Setup &amp; CRUD service</h3>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              provideHttpClient(
+                withInterceptors([authInterceptor, loggingInterceptor, errorInterceptor]),
+                // withFetch()  ← v22 đã là mặc định; v21 trở xuống nên bật để chạy tốt với SSR
+                // withXhr()    ← v22+: quay lại XHR khi cần progress của upload
+              )
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="user-api.ts">
+              @Injectable({ providedIn: 'root' })
+              export class UserApi {
+                private http = inject(HttpClient);
+                private base = '/api/users';
+
+                getAll(q = '', page = 1) {
+                  return this.http.get<User[]>(this.base, { params: { q, page } });
+                }
+                getById(id: string) {
+                  return this.http.get<User>(`${this.base}/${id}`);
+                }
+                create(body: CreateUserDto) {
+                  return this.http.post<User>(this.base, body);
+                }
+                update(id: string, body: User) {
+                  return this.http.put<User>(`${this.base}/${id}`, body);       // thay toàn bộ
+                }
+                patch(id: string, changes: Partial<User>) {
+                  return this.http.patch<User>(`${this.base}/${id}`, changes);  // sửa một phần
+                }
+                remove(id: string) {
+                  return this.http.delete<void>(`${this.base}/${id}`);
+                }
+              }
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Headers, params, options</h3>
+            <script type="text/x-code" data-lang="ts">
+              // HttpParams: immutable, mỗi lần set trả object mới
+              let params = new HttpParams().set('sort', 'name').set('page', 2);
+              if (status) params = params.append('status', status);
+
+              const headers = new HttpHeaders({ 'X-Request-Id': crypto.randomUUID() });
+
+              this.http.get<User[]>('/api/users', { params, headers });
+
+              // Lấy cả status + header của response
+              this.http.get<User[]>('/api/users', { observe: 'response' })
+                .subscribe(res => console.log(res.status, res.headers.get('X-Total-Count'), res.body));
+
+              // Tải file
+              this.http.get('/api/report.pdf', { responseType: 'blob' });
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Không subscribe thì không có request nào được gửi. Ngược lại, subscribe 2 lần = 2 request.</div>
+          </article>
+
+          <article class="card">
+            <h3>Xử lý lỗi</h3>
+            <script type="text/x-code" data-lang="ts">
+              this.api.getAll().pipe(
+                retry({ count: 2, delay: 500 }),            // thử lại với lỗi mạng tạm thời
+                catchError((err: HttpErrorResponse) => {
+                  if (err.status === 0) {
+                    this.error.set('Mất kết nối mạng');    // lỗi phía client / network
+                  } else if (err.status === 404) {
+                    this.error.set('Không tìm thấy');
+                  } else {
+                    this.error.set(err.error?.message ?? `Lỗi ${err.status}`);
+                  }
+                  return of([] as User[]);                 // giá trị dự phòng
+                }),
+                finalize(() => this.loading.set(false)),
+              ).subscribe(users => this.users.set(users));
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Chỉ <code>retry</code> request idempotent (GET, PUT). Retry POST có thể tạo bản ghi trùng.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>httpResource</code> <span class="tag new">stable v22</span></h3>
+            <p>Gọi GET dạng signal: tự gửi lại khi signal trong URL đổi, tự hủy request cũ, có sẵn trạng thái.</p>
+            <script type="text/x-code" data-lang="ts">
+              export class UserDetail {
+                id = input.required<string>();             // nhận từ route param
+
+                user = httpResource<User>(() => `/api/users/${this.id()}`);
+
+                // dạng đầy đủ; trả undefined → bỏ qua, không gửi request
+                orders = httpResource<Order[]>(() =>
+                  this.id() ? { url: '/api/orders', params: { userId: this.id() } } : undefined,
+                  { defaultValue: [] },
+                );
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              @if (user.isLoading()) { <app-spinner /> }
+              @else if (user.error()) { <p>Không tải được</p> <button (click)="user.reload()">Thử lại</button> }
+              @else if (user.hasValue()) { <h2>{{ user.value().name }}</h2> }
+            </script>
+            <div class="tip">Dùng cho đọc dữ liệu (GET). Thao tác ghi (POST/PUT/DELETE) vẫn gọi <code>HttpClient</code> rồi <code>reload()</code> resource.</div>
+          </article>
+
+          <article class="card wide">
+            <h3>Functional interceptor</h3>
+            <p>Hàm chặn mọi request/response. Request đi qua theo thứ tự trong mảng, response đi ngược lại.</p>
+            <script type="text/x-code" data-lang="ts" data-file="interceptors.ts">
+              import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+
+              // 1. Gắn token
+              export const authInterceptor: HttpInterceptorFn = (req, next) => {
+                const token = inject(AuthService).token();             // signal
+                if (!token || req.url.includes('/auth/')) return next(req);
+                return next(req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }));
+              };
+
+              // 2. Logging thời gian request
+              export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
+                const started = performance.now();
+                return next(req).pipe(
+                  finalize(() => console.log(`${req.method} ${req.urlWithParams} ${Math.round(performance.now() - started)}ms`)),
+                );
+              };
+
+              // 3. Xử lý lỗi tập trung
+              export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+                const router = inject(Router);                        // inject ở đầu hàm, không trong callback
+                const toast = inject(ToastService);
+                return next(req).pipe(
+                  catchError((err: HttpErrorResponse) => {
+                    if (err.status === 401) router.navigate(['/login']);
+                    else if (err.status === 0 || err.status >= 500) toast.error('Máy chủ đang gặp sự cố, thử lại sau');
+                    return throwError(() => err);                      // ném tiếp cho nơi gọi tự xử lý
+                  }),
+                );
+              };
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Request là immutable, luôn <code>req.clone({...})</code>. Gọi <code>inject()</code> ở thân hàm interceptor, không gọi bên trong <code>pipe</code>/<code>subscribe</code>. Kiểu cũ class <code>implements HttpInterceptor</code> + <code>HTTP_INTERCEPTORS</code> cần <code>withInterceptorsFromDi()</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 12 FORMS ============ -->
+      <section class="section" id="forms">
+        <div class="section-head"><span class="idx">12</span><h2>Forms</h2></div>
+        <p class="section-intro">Ba cách: template-driven (logic trong template), reactive (logic trong class, dựa trên Observable) và Signal Forms (dựa trên signals, stable từ v22).</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Nên dùng loại nào</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th>Template-driven</th><th>Reactive</th><th>Signal Forms <span class="tag new">v22</span></th></tr></thead>
+              <tbody>
+                <tr><td>Import</td><td><code>FormsModule</code></td><td><code>ReactiveFormsModule</code></td><td><code>FormField</code> từ <code>@angular/forms/signals</code></td></tr>
+                <tr><td>Model nằm ở</td><td>Template (<code>ngModel</code>)</td><td>Class (<code>FormGroup</code>)</td><td>Một <code>signal</code> chứa object</td></tr>
+                <tr><td>Type safety</td><td>Yếu</td><td>Tốt (typed forms)</td><td>Tốt nhất</td></tr>
+                <tr><td>Form động, FormArray</td><td>Khó</td><td>Tốt</td><td>Tốt (<code>applyEach</code>)</td></tr>
+                <tr><td>Unit test</td><td>Khó (cần render)</td><td>Dễ</td><td>Dễ</td></tr>
+                <tr><td>Phù hợp</td><td>Form nhỏ: login, search, liên hệ</td><td>Form phức tạp trong code base hiện có</td><td>Form mới trên v22+, app zoneless</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Template-driven</h3>
+            <script type="text/x-code" data-lang="html" data-file="contact.html">
+              <form #f="ngForm" (ngSubmit)="send(f)" novalidate>
+                <input name="email" type="email" [(ngModel)]="model.email"
+                       #email="ngModel" required email />
+                @if (email.invalid && (email.touched || f.submitted)) {
+                  @if (email.hasError('required')) { <small>Bắt buộc nhập email</small> }
+                  @if (email.hasError('email')) { <small>Email không hợp lệ</small> }
+                }
+
+                <textarea name="message" [(ngModel)]="model.message" required minlength="10"></textarea>
+
+                <button type="submit" [disabled]="f.invalid">Gửi</button>
+              </form>
+            </script>
+            <script type="text/x-code" data-lang="ts">
+              @Component({ imports: [FormsModule], templateUrl: './contact.html' })
+              export class Contact {
+                model = { email: '', message: '' };
+                send(form: NgForm) {
+                  if (form.invalid) return;
+                  console.log(form.value);
+                  form.resetForm();
+                }
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Trong <code>&lt;form&gt;</code>, mỗi <code>ngModel</code> phải có <code>name</code>, nếu không sẽ báo lỗi.</div>
+          </article>
+
+          <article class="card">
+            <h3>Trạng thái form &amp; control</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Thuộc tính</th><th>Ý nghĩa</th><th>CSS class</th></tr></thead>
+              <tbody>
+                <tr><td><code>valid</code> / <code>invalid</code></td><td>Qua / không qua validator</td><td><code>ng-valid</code> / <code>ng-invalid</code></td></tr>
+                <tr><td><code>pending</code></td><td>Async validator đang chạy</td><td><code>ng-pending</code></td></tr>
+                <tr><td><code>touched</code> / <code>untouched</code></td><td>Đã blur khỏi control chưa</td><td><code>ng-touched</code></td></tr>
+                <tr><td><code>dirty</code> / <code>pristine</code></td><td>Người dùng đã sửa giá trị chưa</td><td><code>ng-dirty</code></td></tr>
+                <tr><td><code>disabled</code></td><td>Bị vô hiệu, không tính vào <code>value</code></td><td>—</td></tr>
+                <tr><td><code>errors</code></td><td>Object lỗi, vd. <code>{ required: true }</code></td><td>—</td></tr>
+              </tbody>
+            </table></div>
+            <p>Hiện lỗi khi <code>invalid &amp;&amp; (touched || submitted)</code> để không báo đỏ ngay lúc form vừa mở.</p>
+          </article>
+
+          <article class="card wide">
+            <h3>Reactive forms: FormBuilder, FormGroup, FormArray</h3>
+            <script type="text/x-code" data-lang="ts" data-file="profile-form.ts">
+              import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+              @Component({ imports: [ReactiveFormsModule], templateUrl: './profile-form.html' })
+              export class ProfileForm {
+                private fb = inject(NonNullableFormBuilder);   // reset() trả về giá trị ban đầu thay vì null
+                private api = inject(UserApi);
+
+                form = this.fb.group({
+                  name: ['', [Validators.required, Validators.maxLength(50)]],
+                  email: ['', {
+                    validators: [Validators.required, Validators.email],
+                    asyncValidators: [uniqueEmail(this.api)],
+                    updateOn: 'blur',                           // chỉ validate khi blur
+                  }],
+                  address: this.fb.group({ city: [''], zip: ['', Validators.pattern(/^\d{5,6}$/)] }),
+                  phones: this.fb.array([this.fb.control('')]),
+                  password: ['', [Validators.required, Validators.minLength(8)]],
+                  confirm: [''],
+                }, { validators: passwordMatch });              // validator cấp group (so sánh 2 field)
+
+                get phones() { return this.form.controls.phones; }
+                addPhone() { this.phones.push(this.fb.control('')); }
+                removePhone(i: number) { this.phones.removeAt(i); }
+
+                submit() {
+                  if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+                  const value = this.form.getRawValue();          // gồm cả field disabled, có kiểu đầy đủ
+                  this.api.save(value).subscribe();
+                }
+              }
+            </script>
+            <script type="text/x-code" data-lang="html" data-file="profile-form.html">
+              <form [formGroup]="form" (ngSubmit)="submit()">
+                <input formControlName="name" />
+                @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+                  <small>Bắt buộc nhập tên</small>
+                }
+
+                <input formControlName="email" />
+                @if (form.controls.email.pending) { <small>Đang kiểm tra…</small> }
+                @if (form.controls.email.hasError('emailTaken')) { <small>Email đã được dùng</small> }
+
+                <div formGroupName="address">
+                  <input formControlName="city" />
+                  <input formControlName="zip" />
+                </div>
+
+                <div formArrayName="phones">
+                  @for (ctrl of phones.controls; track ctrl; let i = $index) {
+                    <input [formControlName]="i" />
+                    <button type="button" (click)="removePhone(i)">Xóa</button>
+                  }
+                </div>
+                <button type="button" (click)="addPhone()">+ Số điện thoại</button>
+
+                @if (form.hasError('mismatch')) { <small>Mật khẩu không khớp</small> }
+                <button type="submit">Lưu</button>
+              </form>
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong>
+              <ul>
+                <li><code>form.value</code> bỏ qua control đang disabled, dùng <code>getRawValue()</code> nếu cần đủ.</li>
+                <li><code>setValue</code> yêu cầu đủ mọi field, <code>patchValue</code> cho phép một phần.</li>
+                <li>Với FormArray, <code>track ctrl</code> (theo object control) tốt hơn <code>track $index</code> khi có xóa phần tử.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Custom validator (sync &amp; cross-field)</h3>
+            <script type="text/x-code" data-lang="ts" data-file="validators.ts">
+              import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+
+              // Validator có tham số → factory trả về ValidatorFn
+              export function forbiddenName(name: string): ValidatorFn {
+                return (control: AbstractControl): ValidationErrors | null =>
+                  control.value?.toLowerCase() === name.toLowerCase()
+                    ? { forbiddenName: { value: control.value } }
+                    : null;                                    // null = hợp lệ
+              }
+
+              // Cross-field: đặt ở FormGroup, đọc nhiều control
+              export const passwordMatch: ValidatorFn = (group) => {
+                const pass = group.get('password')?.value;
+                const confirm = group.get('confirm')?.value;
+                return pass === confirm ? null : { mismatch: true };
+              };
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Async validator</h3>
+            <script type="text/x-code" data-lang="ts">
+              import { AsyncValidatorFn } from '@angular/forms';
+
+              export function uniqueEmail(api: UserApi): AsyncValidatorFn {
+                return (control) =>
+                  timer(400).pipe(                              // debounce: control đổi giá trị → timer cũ bị hủy
+                    switchMap(() => api.emailExists(control.value)),
+                    map(exists => (exists ? { emailTaken: true } : null)),
+                    catchError(() => of(null)),                 // lỗi mạng → không chặn người dùng
+                  );
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Async validator chỉ chạy khi mọi sync validator đã qua. Observable trả về phải <b>complete</b> (HTTP thì tự complete; Subject hay <code>valueChanges</code> thì cần <code>take(1)</code>), nếu không control kẹt ở <code>pending</code>.</div>
+          </article>
+
+          <article class="card wide">
+            <h3>Signal Forms <span class="tag new">stable v22</span></h3>
+            <p>Model là một signal; <code>form()</code> tạo cây field có state dạng signal; validation khai báo trong schema function. Không cần subscribe, hợp với zoneless.</p>
+            <script type="text/x-code" data-lang="ts" data-file="login.ts">
+              import { Component, inject, signal } from '@angular/core';
+              import { form, FormField, required, email, minLength, submit } from '@angular/forms/signals';
+
+              interface LoginData { email: string; password: string }
+
+              @Component({
+                selector: 'app-login',
+                imports: [FormField],
+                template: `
+                  <form (submit)="onSubmit($event)" novalidate>
+                    <input type="email" [formField]="loginForm.email" />
+                    @if (loginForm.email().touched() && loginForm.email().invalid()) {
+                      @for (err of loginForm.email().errors(); track err.kind) {
+                        <small>{{ err.message }}</small>
+                      }
+                    }
+
+                    <input type="password" [formField]="loginForm.password" />
+
+                    <button type="submit" [disabled]="loginForm().invalid()">Đăng nhập</button>
+                  </form>
+                `,
+              })
+              export class Login {
+                private auth = inject(AuthService);
+
+                model = signal<LoginData>({ email: '', password: '' });
+
+                loginForm = form(this.model, (path) => {
+                  required(path.email, { message: 'Bắt buộc nhập email' });
+                  email(path.email, { message: 'Email không hợp lệ' });
+                  required(path.password, { message: 'Bắt buộc nhập mật khẩu' });
+                  minLength(path.password, 8, { message: 'Tối thiểu 8 ký tự' });
+                });
+
+                onSubmit(event: Event) {
+                  event.preventDefault();
+                  submit(this.loginForm, {
+                    action: async () => {
+                      await this.auth.login(this.model());     // chỉ chạy khi form hợp lệ
+                    },
+                  });
+                }
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> API Signal Forms đổi tên nhiều lần trong giai đoạn experimental (v21: <code>[field]</code> → <code>[formField]</code>). Bài viết hoặc ví dụ cũ có thể dùng tên cũ, đối chiếu với <a href="https://angular.dev/essentials/signal-forms" target="_blank" rel="noopener">angular.dev</a>. Field đọc bằng cách gọi: <code>loginForm.email().value()</code>, <code>.valid()</code>, <code>.errors()</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 13 ROUTING ============ -->
+      <section class="section" id="routing">
+        <div class="section-head"><span class="idx">13</span><h2>Routing</h2></div>
+        <p class="section-intro">Ánh xạ URL tới component. Khai báo mảng <code>Routes</code>, đăng ký bằng <code>provideRouter</code>, hiển thị tại <code>&lt;router-outlet /&gt;</code>.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Cấu hình routes</h3>
+            <script type="text/x-code" data-lang="ts" data-file="app.routes.ts">
+              import { Routes } from '@angular/router';
+
+              export const routes: Routes = [
+                { path: '', redirectTo: 'home', pathMatch: 'full' },            // redirect
+                { path: 'home', component: Home, title: 'Trang chủ' },          // title đặt <title> tab
+
+                { path: 'users/:id', component: UserDetail,                    // route param
+                  resolve: { user: userResolver } },
+
+                { path: 'products', component: ProductsShell, children: [      // nested routes
+                  { path: '', component: ProductList },                        // /products
+                  { path: ':id', component: ProductDetail },                   // /products/42
+                ]},
+
+                { path: 'settings',                                            // lazy 1 component
+                  loadComponent: () => import('./settings/settings').then(m => m.Settings) },
+
+                { path: 'admin',                                               // lazy cả feature
+                  canActivate: [authGuard],
+                  loadChildren: () => import('./admin/admin.routes').then(m => m.ADMIN_ROUTES) },
+
+                { path: '**', component: NotFound },                           // wildcard 404: luôn đặt CUỐI
+              ];
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Router khớp route theo thứ tự <b>đầu tiên</b> trong mảng. <code>'**'</code> phải nằm cuối. <code>redirectTo</code> với path rỗng cần <code>pathMatch: 'full'</code>, nếu không mọi URL đều bị redirect.</div>
+          </article>
+
+          <article class="card">
+            <h3>Outlet, routerLink, routerLinkActive</h3>
+            <script type="text/x-code" data-lang="html" data-file="app.html">
+              <nav>
+                <a routerLink="/home" routerLinkActive="active"
+                   [routerLinkActiveOptions]="{ exact: true }">Trang chủ</a>
+                <a [routerLink]="['/users', user.id]" [queryParams]="{ tab: 'orders' }"
+                   routerLinkActive="active" ariaCurrentWhenActive="page">Đơn hàng</a>
+                <a routerLink="../" >Quay lại</a>   <!-- đường dẫn tương đối -->
+              </nav>
+
+              <router-outlet />
+            </script>
+            <p>Component cần <code>imports: [RouterLink, RouterLinkActive, RouterOutlet]</code>. Route con hiển thị tại <code>&lt;router-outlet /&gt;</code> nằm trong component cha (vd. <code>ProductsShell</code>).</p>
+          </article>
+
+          <article class="card">
+            <h3>Lấy params &amp; query params</h3>
+            <script type="text/x-code" data-lang="ts">
+              // Cách 1: withComponentInputBinding() (khai báo trong provideRouter)
+              // → route param, query param, resolve data, data tự map vào input cùng tên
+              export class UserDetail {
+                id = input.required<string>();     // /users/:id
+                tab = input<string>();             // ?tab=orders
+                user = input<User>();              // từ resolve: { user: ... }
+              }
+
+              // Cách 2: ActivatedRoute
+              export class UserDetail2 {
+                private route = inject(ActivatedRoute);
+
+                id = toSignal(this.route.paramMap.pipe(map(p => p.get('id')!)));
+                tab = toSignal(this.route.queryParamMap.pipe(map(q => q.get('tab') ?? 'info')));
+
+                // snapshot: chỉ đọc 1 lần, không cập nhật khi chỉ đổi param trên cùng component
+                idOnce = this.route.snapshot.paramMap.get('id');
+              }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Đi từ <code>/users/1</code> sang <code>/users/2</code>, Angular tái sử dụng component, nên <code>snapshot</code> không đổi. Dùng Observable/input signal. Từ v22, route con kế thừa param của cha mặc định (<code>paramsInheritanceStrategy: 'always'</code>).</div>
+          </article>
+
+          <article class="card">
+            <h3>Điều hướng bằng code</h3>
+            <script type="text/x-code" data-lang="ts">
+              private router = inject(Router);
+              private route = inject(ActivatedRoute);
+
+              // Mảng segment (an toàn với giá trị có ký tự đặc biệt)
+              this.router.navigate(['/users', id], { queryParams: { tab: 'orders' } });
+
+              // Tương đối với route hiện tại
+              this.router.navigate(['edit'], { relativeTo: this.route });
+
+              // Giữ query param hiện tại, không thêm vào history
+              this.router.navigate([], { queryParams: { page: 2 }, queryParamsHandling: 'merge', replaceUrl: true });
+
+              // URL đầy đủ dạng chuỗi
+              this.router.navigateByUrl('/login?returnUrl=%2Fcheckout');
+
+              // Cả hai trả về Promise<boolean>: false nếu bị guard chặn
+              const ok = await this.router.navigate(['/admin']);
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Guards</h3>
+            <script type="text/x-code" data-lang="ts" data-file="guards.ts">
+              import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
+
+              export const authGuard: CanActivateFn = (route, state) => {
+                const auth = inject(AuthService);
+                const router = inject(Router);
+                return auth.isLoggedIn()
+                  ? true
+                  : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } }); // redirect
+              };
+
+              // Factory: guard có tham số
+              export const roleGuard = (role: string): CanActivateFn =>
+                () => inject(AuthService).hasRole(role);
+
+              // Chặn rời trang khi form chưa lưu
+              export interface HasUnsavedChanges { hasUnsavedChanges(): boolean }
+              export const unsavedGuard: CanDeactivateFn<HasUnsavedChanges> = (component) =>
+                !component.hasUnsavedChanges() || confirm('Bạn có thay đổi chưa lưu. Rời trang?');
+
+              // routes: { path: 'admin', canActivate: [authGuard, roleGuard('admin')], ... }
+              //         { path: 'edit', component: Editor, canDeactivate: [unsavedGuard] }
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Trả về <code>UrlTree</code> thay vì gọi <code>router.navigate()</code> trong guard để tránh điều hướng chồng chéo. Guard chỉ để cải thiện UX, phân quyền thật phải kiểm tra ở backend.</div>
+          </article>
+
+          <article class="card">
+            <h3>Các loại guard &amp; resolver</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Loại</th><th>Chạy khi</th></tr></thead>
+              <tbody>
+                <tr><td><code>canActivate</code></td><td>Trước khi vào route</td></tr>
+                <tr><td><code>canActivateChild</code></td><td>Trước khi vào bất kỳ route con nào</td></tr>
+                <tr><td><code>canDeactivate</code></td><td>Trước khi rời route</td></tr>
+                <tr><td><code>canMatch</code></td><td>Khi khớp route; false → thử route kế tiếp, lazy chunk không tải</td></tr>
+                <tr><td><code>resolve</code></td><td>Lấy dữ liệu trước khi render component</td></tr>
+              </tbody>
+            </table></div>
+            <script type="text/x-code" data-lang="ts" data-file="user-resolver.ts">
+              export const userResolver: ResolveFn<User> = (route) =>
+                inject(UserApi).getById(route.paramMap.get('id')!);
+
+              // Nhận dữ liệu: user = input<User>()  (với withComponentInputBinding)
+              // hoặc: inject(ActivatedRoute).data.pipe(map(d => d['user']))
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Resolver chậm làm trang "đứng" vì router chờ xong mới chuyển. Với dữ liệu lớn, render trang trước và load bằng <code>httpResource</code> kèm skeleton.</div>
+          </article>
+
+          <article class="card">
+            <h3>Lazy loading feature</h3>
+            <script type="text/x-code" data-lang="ts" data-file="admin/admin.routes.ts">
+              export const ADMIN_ROUTES: Routes = [
+                {
+                  path: '',
+                  component: AdminShell,
+                  providers: [AdminStore],          // instance riêng cho cả nhánh admin
+                  children: [
+                    { path: '', redirectTo: 'users', pathMatch: 'full' },
+                    { path: 'users', loadComponent: () => import('./users/users').then(m => m.Users) },
+                    { path: 'audit', loadComponent: () => import('./audit/audit').then(m => m.Audit) },
+                  ],
+                },
+              ];
+
+              // Tải trước các route lazy khi rảnh
+              provideRouter(routes, withPreloading(PreloadAllModules))
+            </script>
+            <div class="tip">Nếu file export <code>default</code>, có thể viết gọn: <code>loadComponent: () =&gt; import('./settings/settings')</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 14 DEFER ============ -->
+      <section class="section" id="defer">
+        <div class="section-head"><span class="idx">14</span><h2>Deferrable views</h2></div>
+        <p class="section-intro"><code>@defer</code> tách phần template (cùng component, directive, pipe bên trong) thành chunk riêng và chỉ tải khi trigger xảy ra. Giảm bundle ban đầu mà không cần sửa routing.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Cấu trúc đầy đủ</h3>
+            <script type="text/x-code" data-lang="html">
+              @defer (on viewport; prefetch on idle) {
+                <app-sales-chart [data]="sales()" />      <!-- tải chunk khi cuộn tới -->
+              } @placeholder (minimum 300ms) {
+                <div class="chart-skeleton">Biểu đồ doanh thu</div>  <!-- hiện trước khi trigger -->
+              } @loading (after 100ms; minimum 500ms) {
+                <app-spinner />                           <!-- hiện khi đang tải chunk -->
+              } @error {
+                <p>Không tải được biểu đồ</p>
+              }
+            </script>
+            <ul>
+              <li><code>@placeholder (minimum 300ms)</code>: placeholder hiện ít nhất 300ms, tránh nháy.</li>
+              <li><code>@loading (after 100ms; minimum 500ms)</code>: chỉ hiện spinner nếu tải lâu hơn 100ms, và khi đã hiện thì giữ ít nhất 500ms.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Triggers</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Trigger</th><th>Tải khi</th></tr></thead>
+              <tbody>
+                <tr><td><code>on idle</code></td><td>Trình duyệt rảnh (mặc định nếu không ghi trigger)</td></tr>
+                <tr><td><code>on viewport</code></td><td>Placeholder (hoặc <code>on viewport(ref)</code>) lọt vào màn hình</td></tr>
+                <tr><td><code>on interaction</code></td><td>Người dùng click/keydown vào placeholder hoặc ref</td></tr>
+                <tr><td><code>on hover</code></td><td>Di chuột/focus vào placeholder hoặc ref</td></tr>
+                <tr><td><code>on immediate</code></td><td>Ngay sau khi trang render xong</td></tr>
+                <tr><td><code>on timer(2s)</code></td><td>Sau một khoảng thời gian</td></tr>
+                <tr><td><code>when cond</code></td><td>Biểu thức <code>cond</code> thành true (chỉ một lần)</td></tr>
+                <tr><td><code>prefetch on …</code></td><td>Tải trước chunk, render khi trigger chính xảy ra</td></tr>
+              </tbody>
+            </table></div>
+          </article>
+
+          <article class="card">
+            <h3>Ví dụ hay dùng</h3>
+            <script type="text/x-code" data-lang="html">
+              <!-- Comment section: chỉ tải khi người dùng bấm -->
+              <button #showComments>Xem bình luận</button>
+              @defer (on interaction(showComments); prefetch on hover(showComments)) {
+                <app-comments [postId]="post().id" />
+              } @placeholder {
+                <span></span>
+              }
+
+              <!-- Tải khi điều kiện đúng, nhiều trigger = OR -->
+              @defer (when isAdmin(); on timer(5s)) {
+                <app-admin-tools />
+              }
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>⚠️ Lưu ý khi dùng <code>@defer</code></h3>
+            <div class="note"><ul>
+              <li>Component bên trong phải là standalone và <b>không</b> được tham chiếu ở chỗ khác ngoài block (vd. <code>viewChild(SalesChart)</code>, dùng ở template ngoài). Nếu có, nó bị tải eager và <code>@defer</code> mất tác dụng.</li>
+              <li><code>on viewport</code>, <code>on hover</code>, <code>on interaction</code> không có ref thì cần <code>@placeholder</code> có <b>một</b> phần tử gốc.</li>
+              <li>Khi SSR, server chỉ render <code>@placeholder</code>. Dùng <code>hydrate on viewport</code> (incremental hydration) nếu muốn render đầy đủ ở server rồi hydrate dần.</li>
+              <li>Không defer nội dung nằm ngay màn hình đầu tiên (above the fold), sẽ gây layout shift.</li>
+            </ul></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 15 TESTING ============ -->
+      <section class="section" id="testing">
+        <div class="section-head"><span class="idx">15</span><h2>Testing</h2></div>
+        <p class="section-intro">Từ v21 project mới dùng Vitest. API <code>TestBed</code> vẫn giữ nguyên; thay đổi chính là <code>await fixture.whenStable()</code> thay cho <code>detectChanges()</code> ở chế độ zoneless.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Component test</h3>
+            <script type="text/x-code" data-lang="ts" data-file="user-card.spec.ts">
+              import { TestBed } from '@angular/core/testing';
+              import { UserCard } from './user-card';
+
+              describe('UserCard', () => {
+                it('hiển thị tên và chữ viết tắt', async () => {
+                  const fixture = TestBed.createComponent(UserCard);
+                  fixture.componentRef.setInput('user', { id: 1, name: 'Ada Lovelace' }); // set signal input
+                  await fixture.whenStable();
+
+                  const el: HTMLElement = fixture.nativeElement;
+                  expect(el.textContent).toContain('Ada Lovelace');
+                  expect(fixture.componentInstance.initials()).toBe('AL');
+                });
+
+                it('emit khi bấm nút', async () => {
+                  const fixture = TestBed.createComponent(ProductItem);
+                  fixture.componentRef.setInput('product', mockProduct);
+                  const spy = vi.fn();
+                  fixture.componentInstance.addToCart.subscribe(spy);
+
+                  fixture.nativeElement.querySelector('button').click();
+                  expect(spy).toHaveBeenCalledWith(mockProduct);
+                });
+              });
+            </script>
+          </article>
+
+          <article class="card">
+            <h3>Service + HTTP test</h3>
+            <script type="text/x-code" data-lang="ts" data-file="user-api.spec.ts">
+              import { provideHttpClient } from '@angular/common/http';
+              import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+
+              describe('UserApi', () => {
+                let api: UserApi;
+                let http: HttpTestingController;
+
+                beforeEach(() => {
+                  TestBed.configureTestingModule({
+                    providers: [provideHttpClient(), provideHttpClientTesting()],  // thứ tự này
+                  });
+                  api = TestBed.inject(UserApi);
+                  http = TestBed.inject(HttpTestingController);
+                });
+
+                afterEach(() => http.verify());        // không còn request nào chưa xử lý
+
+                it('gọi GET /api/users', () => {
+                  let result: User[] | undefined;
+                  api.getAll().subscribe(r => (result = r));
+
+                  const req = http.expectOne(r => r.url === '/api/users');
+                  expect(req.request.method).toBe('GET');
+                  req.flush([{ id: 1, name: 'Ada' }]);
+
+                  expect(result).toHaveLength(1);
+                });
+              });
+            </script>
+            <div class="tip">Mock dependency: <code>providers: [{ provide: AuthService, useValue: { isLoggedIn: () =&gt; true } }]</code>. Chuyển từ Karma: <code>ng g @angular/core:migrate-karma-to-vitest</code>.</div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 16 MIGRATE ============ -->
+      <section class="section" id="migrate">
+        <div class="section-head"><span class="idx">16</span><h2>Bảng tra nhanh: cú pháp cũ → mới</h2></div>
+        <p class="section-intro">Gặp code cũ trong project, tra bảng này để biết cách viết tương ứng hiện nay. Nhiều mục có schematic migrate tự động.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>Cũ → Mới</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Cũ</th><th>Mới</th><th>Migrate tự động</th></tr></thead>
+              <tbody>
+                <tr><td><code>NgModule</code> + <code>declarations</code></td><td>Standalone + <code>imports</code></td><td><code>ng g @angular/core:standalone</code></td></tr>
+                <tr><td><code>*ngIf</code> · <code>*ngFor</code> · <code>[ngSwitch]</code></td><td><code>@if</code> · <code>@for (…; track …)</code> · <code>@switch</code></td><td><code>ng g @angular/core:control-flow</code></td></tr>
+                <tr><td><code>@Input()</code></td><td><code>input()</code> / <code>input.required()</code></td><td><code>ng g @angular/core:signal-input-migration</code></td></tr>
+                <tr><td><code>@Output() x = new EventEmitter()</code></td><td><code>output()</code></td><td><code>ng g @angular/core:output-migration</code></td></tr>
+                <tr><td><code>@Input</code> + <code>@Output xChange</code></td><td><code>model()</code></td><td>—</td></tr>
+                <tr><td><code>@ViewChild</code> · <code>@ContentChild</code></td><td><code>viewChild()</code> · <code>contentChild()</code></td><td><code>ng g @angular/core:signal-queries-migration</code></td></tr>
+                <tr><td><code>@HostBinding</code> · <code>@HostListener</code></td><td><code>host: { … }</code> trong metadata</td><td>—</td></tr>
+                <tr><td><code>constructor(private x: X)</code></td><td><code>private x = inject(X)</code></td><td><code>ng g @angular/core:inject</code></td></tr>
+                <tr><td><code>@Injectable({ providedIn: 'root' })</code></td><td><code>@Service()</code> (v22+)</td><td><code>ng g @angular/core:service</code> (v22.1)</td></tr>
+                <tr><td><code>class AuthGuard implements CanActivate</code></td><td><code>const authGuard: CanActivateFn</code></td><td>—</td></tr>
+                <tr><td><code>HttpInterceptor</code> + <code>HTTP_INTERCEPTORS</code></td><td><code>HttpInterceptorFn</code> + <code>withInterceptors()</code></td><td>—</td></tr>
+                <tr><td><code>HttpClientModule</code> · <code>RouterModule.forRoot()</code></td><td><code>provideHttpClient()</code> · <code>provideRouter()</code></td><td>—</td></tr>
+                <tr><td><code>loadChildren</code> trỏ tới NgModule</td><td><code>loadChildren</code> trả <code>Routes</code> / <code>loadComponent</code></td><td><code>ng g @angular/core:route-lazy-loading</code></td></tr>
+                <tr><td><code>destroy$</code> + <code>takeUntil</code></td><td><code>takeUntilDestroyed()</code></td><td>—</td></tr>
+                <tr><td><code>BehaviorSubject</code> làm state</td><td><code>signal()</code> + <code>computed()</code></td><td>—</td></tr>
+                <tr><td><code>ngOnChanges</code> cho input</td><td><code>computed()</code> / <code>effect()</code> / <code>linkedSignal()</code></td><td>—</td></tr>
+                <tr><td>zone.js</td><td>Zoneless (mặc định từ v21)</td><td>—</td></tr>
+                <tr><td><code>ChangeDetectionStrategy.Default</code></td><td><code>OnPush</code> (mặc định v22) hoặc <code>Eager</code></td><td>Tự thêm khi <code>ng update</code> lên v22</td></tr>
+                <tr><td>Karma + Jasmine</td><td>Vitest</td><td><code>ng g @angular/core:migrate-karma-to-vitest</code></td></tr>
+                <tr><td>Reactive Forms</td><td>Signal Forms (tùy chọn, v22 stable)</td><td>Có lớp tương thích <code>@angular/forms/signals/compat</code></td></tr>
+              </tbody>
+            </table></div>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Chạy migration trên branch riêng, mỗi schematic một commit, chạy test sau từng bước. Tên schematic có thể khác giữa các version, kiểm tra bằng <code>ng g @angular/core: --help</code> hoặc docs của version bạn đang dùng.</div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="../assets/vendor/prism/prism.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-typescript.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-bash.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var THEME_KEY = 'cheatsheet-theme';
+
+  /* ---------- Theme ---------- */
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function effectiveTheme() {
+    return root.getAttribute('data-theme') || (mq && mq.matches ? 'dark' : 'light');
+  }
+  var iconMoon = document.getElementById('iconMoon');
+  var iconSun = document.getElementById('iconSun');
+  function syncThemeIcon() {
+    var dark = effectiveTheme() === 'dark';
+    iconMoon.hidden = dark;
+    iconSun.hidden = !dark;
+  }
+  document.getElementById('themeBtn').addEventListener('click', function () {
+    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    syncThemeIcon();
+  });
+  if (mq && mq.addEventListener) mq.addEventListener('change', syncThemeIcon);
+  syncThemeIcon();
+
+  /* ---------- Code blocks ---------- */
+  var LANG = { ts: 'typescript', html: 'markup', bash: 'bash', text: 'none' };
+  var LABEL = { ts: 'TypeScript', html: 'HTML', bash: 'Terminal', text: 'Text' };
+  var copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+  var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+
+  function dedent(src) {
+    var lines = src.replace(/\r/g, '').split('\n');
+    while (lines.length && !lines[0].trim()) lines.shift();
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+    var indent = Infinity;
+    lines.forEach(function (l) {
+      if (l.trim()) indent = Math.min(indent, l.match(/^ */)[0].length);
+    });
+    if (!isFinite(indent)) indent = 0;
+    return lines.map(function (l) { return l.slice(indent); }).join('\n');
+  }
+
+  function fallbackSelect(pre) {
+    var range = document.createRange();
+    range.selectNodeContents(pre);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  var blocks = document.querySelectorAll('script[type="text/x-code"]');
+  Array.prototype.forEach.call(blocks, function (s) {
+    var key = s.getAttribute('data-lang') || 'text';
+    var file = s.getAttribute('data-file');
+    var text = dedent(s.textContent);
+
+    var wrap = document.createElement('div');
+    wrap.className = 'code';
+    var head = document.createElement('div');
+    head.className = 'code-head';
+    var lang = document.createElement('span');
+    lang.className = 'lang';
+    lang.textContent = LABEL[key] || key;
+    head.appendChild(lang);
+    if (file) {
+      var f = document.createElement('span');
+      f.className = 'file';
+      f.textContent = '· ' + file;
+      head.appendChild(f);
+    }
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.innerHTML = copyIcon + '<span>Copy</span>';
+    btn.setAttribute('aria-label', 'Copy đoạn code');
+    head.appendChild(btn);
+
+    var pre = document.createElement('pre');
+    var code = document.createElement('code');
+    code.className = 'language-' + (LANG[key] || 'none');
+    code.textContent = text;
+    pre.appendChild(code);
+    wrap.appendChild(head);
+    wrap.appendChild(pre);
+    s.parentNode.replaceChild(wrap, s);
+
+    btn.addEventListener('click', function () {
+      function done(ok) {
+        btn.classList.toggle('done', ok);
+        btn.innerHTML = (ok ? checkIcon : copyIcon) + '<span>' + (ok ? 'Đã copy' : 'Đã chọn, nhấn Ctrl+C') + '</span>';
+        setTimeout(function () {
+          btn.classList.remove('done');
+          btn.innerHTML = copyIcon + '<span>Copy</span>';
+        }, 1800);
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallbackSelect(pre); done(false); });
+      } catch (e) {
+        fallbackSelect(pre);
+        done(false);
+      }
+    });
+
+    if (window.Prism && LANG[key] && LANG[key] !== 'none' && Prism.languages[LANG[key]]) {
+      try { Prism.highlightElement(code); } catch (e) {}
+    }
+  });
+
+  /* ---------- Mobile sidebar ---------- */
+  var body = document.body;
+  var menuBtn = document.getElementById('menuBtn');
+  function setNav(open) {
+    body.classList.toggle('nav-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+  }
+  menuBtn.addEventListener('click', function () { setNav(!body.classList.contains('nav-open')); });
+  document.getElementById('overlay').addEventListener('click', function () { setNav(false); });
+  document.querySelectorAll('#nav a').forEach(function (a) {
+    a.addEventListener('click', function () { setNav(false); });
+  });
+
+  /* ---------- Scroll spy ---------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+  var navLinks = {};
+  document.querySelectorAll('#nav a').forEach(function (a) { navLinks[a.getAttribute('href').slice(1)] = a; });
+  function setActive(id) {
+    Object.keys(navLinks).forEach(function (k) { navLinks[k].classList.toggle('active', k === id); });
+  }
+  function spy() {
+    var offset = 110, current = null;
+    for (var i = 0; i < sections.length; i++) {
+      var sec = sections[i];
+      if (sec.hidden) continue;
+      if (sec.getBoundingClientRect().top - offset <= 0) current = sec.id;
+    }
+    if (!current) {
+      for (var j = 0; j < sections.length; j++) if (!sections[j].hidden) { current = sections[j].id; break; }
+    }
+    if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 4) {
+      for (var k = sections.length - 1; k >= 0; k--) if (!sections[k].hidden) { current = sections[k].id; break; }
+    }
+    if (current) setActive(current);
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { spy(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', spy);
+  spy();
+
+  /* ---------- Search ---------- */
+  function norm(s) {
+    return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  }
+  var index = sections.map(function (sec) {
+    var head = norm(sec.querySelector('.section-head').textContent);
+    var cards = Array.prototype.slice.call(sec.querySelectorAll('.card')).map(function (c) {
+      return { el: c, text: norm(c.textContent) + ' ' + head };
+    });
+    return { el: sec, cards: cards, link: navLinks[sec.id] };
+  });
+  var totalCards = index.reduce(function (n, s) { return n + s.cards.length; }, 0);
+  var input = document.getElementById('searchInput');
+  var countEl = document.getElementById('resultCount');
+  var emptyEl = document.getElementById('emptyState');
+
+  function runSearch() {
+    var q = norm(input.value.trim());
+    var terms = q ? q.split(/\s+/) : [];
+    var shown = 0;
+    index.forEach(function (s) {
+      var visibleInSection = 0;
+      s.cards.forEach(function (c) {
+        var match = terms.every(function (t) { return c.text.indexOf(t) !== -1; });
+        c.el.hidden = !match;
+        if (match) visibleInSection++;
+      });
+      s.el.hidden = visibleInSection === 0;
+      if (s.link) s.link.parentNode.classList.toggle('no-match', visibleInSection === 0);
+      shown += visibleInSection;
+    });
+    countEl.textContent = terms.length ? shown + '/' + totalCards + ' mục' : '';
+    emptyEl.classList.toggle('show', terms.length > 0 && shown === 0);
+    spy();
+  }
+  input.addEventListener('input', function () {
+    runSearch();
+    if (input.value.trim()) {
+      var first = index.find(function (s) { return !s.el.hidden; });
+      var hero = document.querySelector('.hero');
+      if (first && hero.getBoundingClientRect().bottom < 0) {
+        first.el.scrollIntoView({ block: 'start' });
+      }
+    }
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { input.value = ''; runSearch(); input.blur(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+    if (e.key === 'Escape') setNav(false);
+  });
+})();
+</script>
+</body>
+</html>

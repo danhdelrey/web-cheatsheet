@@ -1,0 +1,3123 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CSS cho dev Flutter &amp; Compose</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../assets/site.js" data-page="css"></script>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<meta name="description" content="Tra nhanh CSS qua những thứ bạn đã quen: Row/Column, Stack, Modifier, ThemeData. Mỗi mục có snippet copy được, dòng đối chiếu với Flutter/Compose và những chỗ dễ mang thói quen sai sang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: sidebar mục lục cố định (Grid 2 cột) + cột đọc ~72ch; mỗi section là một container query context.
+   Màu sắc lấy cảm hứng từ DevTools: box model dùng đúng bộ màu margin/border/padding/content. */
+:root {
+  --bg: #f3f6f7;
+  --surface: #ffffff;
+  --sunken: #eaeff1;
+  --ink: #132027;
+  --muted: #55646c;
+  --line: #d5dee2;
+  --accent: #0a776d;
+  --accent-ink: #ffffff;
+  --accent-soft: #d8efeb;
+  --map-bg: #e7eff9;
+  --map-ink: #1b3657;
+  --fl: #0a5cad;
+  --cp: #27713a;
+  --warn-bg: #fbf0db;
+  --warn-ink: #573700;
+  --code-bg: #eef2f4;
+  --code-ink: #1b282e;
+  --tk-comment: #67777f;
+  --tk-sel: #8236a8;
+  --tk-prop: #0a5cad;
+  --tk-val: #974010;
+  --tk-num: #0a776d;
+  --tk-at: #a82962;
+  --tk-punc: #5b6a72;
+  --hl: #ffdf80;
+  --d1: #0a776d;
+  --d2: #2f69d6;
+  --d3: #bf4f25;
+  --d4: #8248cc;
+  --d5: #9a7300;
+  --d-ink: #ffffff;
+  --bm-margin: #f6cfa3;
+  --bm-border: #fbe1a4;
+  --bm-padding: #c8d6a0;
+  --bm-content: #9cc3cf;
+  --bm-ink: #2a2a2a;
+  --shadow: 0 1px 2px rgb(16 32 40 / .06), 0 6px 20px rgb(16 32 40 / .07);
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --step--1: .8125rem;
+  --step-0: .9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.375rem;
+  --step-3: clamp(1.55rem, 1.2rem + 1.2vw, 1.95rem);
+  --step-4: clamp(2rem, 1.35rem + 2.4vw, 2.85rem);
+  --radius: 10px;
+  --side-w: 276px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1316; --surface: #131b1f; --sunken: #0f171a; --ink: #e2eaed; --muted: #93a3ab; --line: #24323a;
+    --accent: #3fc4b4; --accent-ink: #062521; --accent-soft: #123430;
+    --map-bg: #13223a; --map-ink: #c9dcf5; --fl: #7fb7ff; --cp: #7fd197;
+    --warn-bg: #2c220e; --warn-ink: #f3d9a6;
+    --code-bg: #0b1114; --code-ink: #d6e1e6;
+    --tk-comment: #6f838c; --tk-sel: #d29cf2; --tk-prop: #82bcff; --tk-val: #f0a46b; --tk-num: #5fd6c5; --tk-at: #f27fae; --tk-punc: #8a9aa2;
+    --hl: #6a5414;
+    --d1: #20a596; --d2: #4d82e6; --d3: #d4683d; --d4: #9a67e0; --d5: #b98f12; --d-ink: #ffffff;
+    --bm-margin: #6e4d2a; --bm-border: #6f5d2b; --bm-padding: #4c5a2f; --bm-content: #2f5763; --bm-ink: #f1f1f1;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1316; --surface: #131b1f; --sunken: #0f171a; --ink: #e2eaed; --muted: #93a3ab; --line: #24323a;
+  --accent: #3fc4b4; --accent-ink: #062521; --accent-soft: #123430;
+  --map-bg: #13223a; --map-ink: #c9dcf5; --fl: #7fb7ff; --cp: #7fd197;
+  --warn-bg: #2c220e; --warn-ink: #f3d9a6;
+  --code-bg: #0b1114; --code-ink: #d6e1e6;
+  --tk-comment: #6f838c; --tk-sel: #d29cf2; --tk-prop: #82bcff; --tk-val: #f0a46b; --tk-num: #5fd6c5; --tk-at: #f27fae; --tk-punc: #8a9aa2;
+  --hl: #6a5414;
+  --d1: #20a596; --d2: #4d82e6; --d3: #d4683d; --d4: #9a67e0; --d5: #b98f12; --d-ink: #ffffff;
+  --bm-margin: #6e4d2a; --bm-border: #6f5d2b; --bm-padding: #4c5a2f; --bm-content: #2f5763; --bm-ink: #f1f1f1;
+  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .35);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+::highlight(search) { background-color: var(--hl); color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+p { margin: 0; max-inline-size: 72ch; }
+ul, ol { margin: 0; padding-inline-start: 1.25em; }
+li + li { margin-block-start: 4px; }
+:not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: .86em;
+  background: var(--sunken);
+  border: 1px solid var(--line);
+  padding: .05em .35em;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+kbd {
+  font: 500 11px/1 var(--font-mono);
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--muted);
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ---------- App shell ---------- */
+.app {
+  display: grid;
+  grid-template-columns: var(--side-w) minmax(0, 1fr);
+  min-block-size: 100dvh;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+}
+.side-head {
+  display: grid;
+  gap: 14px;
+  padding: 20px 16px 14px 0;
+  border-block-end: 1px solid var(--line);
+}
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  margin-inline-end: auto;   /* = Spacer() */
+  min-inline-size: 0;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: -.04em;
+  flex: none;
+}
+.brand-text { display: grid; line-height: 1.2; min-inline-size: 0; }
+.brand-text b { font-family: var(--font-display); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-text span { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  block-size: 34px;
+  padding-inline: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  flex: none;
+  &:hover { background: var(--sunken); }
+  & svg { inline-size: 16px; block-size: 16px; }
+}
+.menu-btn { display: none; }
+.search {
+  position: relative;
+  & svg { position: absolute; inset-block: 0; inset-inline-start: 10px; margin-block: auto; inline-size: 16px; block-size: 16px; color: var(--muted); pointer-events: none; }
+  & kbd { position: absolute; inset-inline-end: 8px; inset-block-start: 50%; translate: 0 -50%; }
+  &:has(input:focus) kbd { opacity: 0; }
+}
+.search input {
+  inline-size: 100%;
+  block-size: 38px;
+  padding-inline: 34px 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 14px;
+  &::placeholder { color: var(--muted); }
+  &:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+}
+.search-status { font-size: 12px; color: var(--muted); min-block-size: 1em; margin-block-start: -6px; }
+.search-status:empty { display: none; }
+
+.toc {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 12px 24px 0;
+  scrollbar-gutter: stable;
+}
+.toc ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 1px; }
+.toc li + li { margin: 0; }
+.toc a {
+  display: grid;
+  grid-template-columns: 2.2ch minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 10px;
+  border-radius: 7px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.35;
+  & .n { font: 500 11px/1 var(--font-mono); color: var(--muted); opacity: .8; font-variant-numeric: tabular-nums; }
+  & .c { font: 500 11px/1 var(--font-mono); color: var(--accent); }
+  &:hover { background: var(--sunken); color: var(--ink); }
+  &[aria-current="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+  &[aria-current="true"] .n { color: var(--accent); opacity: 1; }
+  &.dim { opacity: .38; }
+}
+
+.content {
+  padding-block: 40px 120px;
+  padding-inline: clamp(20px, 4vw, 64px) max(16px, env(safe-area-inset-right, 0px));
+  min-inline-size: 0;
+}
+.inner { max-inline-size: 880px; }
+
+@media (width < 900px) {
+  html { scroll-padding-top: calc(118px + env(safe-area-inset-top, 0px)); }
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    top: env(safe-area-inset-top, 0px);
+    block-size: auto;
+    z-index: 30;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--line);
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-shadow: var(--shadow);
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto;
+    height: env(safe-area-inset-top, 0px);
+    z-index: 31;
+    background: var(--surface);
+  }
+  .side-head { padding: 10px 0; gap: 10px; border-block-end: 0; }
+  .brand-text span { display: none; }
+  .menu-btn { display: inline-flex; }
+  .toc {
+    display: none;
+    max-block-size: 62dvh;
+    border-block-start: 1px solid var(--line);
+    padding: 8px 0 16px;
+  }
+  .sidebar.open .toc { display: block; }
+  .content { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); padding-block-start: 28px; }
+}
+.theme-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#theme-btn { inline-size: 34px; justify-content: center; padding: 0; }
+
+/* ---------- Hero ---------- */
+.hero { display: grid; gap: 14px; padding-block-end: 36px; }
+.eyebrow { font: 600 12px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.hero h1 { font-size: var(--step-4); line-height: 1.05; letter-spacing: -.02em; }
+.hero-lead { font-size: var(--step-1); color: var(--muted); max-inline-size: 62ch; }
+.rosetta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 1px;
+  margin-block-start: 8px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rosetta a {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--ink);
+  &:hover { background: var(--sunken); }
+  & .from { font: 500 12px/1.3 var(--font-mono); color: var(--muted); }
+  & .to { font: 600 14px/1.3 var(--font-mono); color: var(--accent); }
+}
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); align-items: center; }
+
+/* ---------- Sections & entries ---------- */
+.section {
+  container: sec / inline-size;
+  padding-block: 44px 8px;
+  border-block-start: 1px solid var(--line);
+}
+.sec-head { display: grid; gap: 6px; padding-block-end: 6px; }
+.sec-num { font: 600 12px/1 var(--font-mono); color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+.section h2 { font-size: var(--step-3); line-height: 1.15; letter-spacing: -.01em; }
+.sec-intro { color: var(--muted); }
+
+.entry {
+  padding-block: 26px 4px;
+  & + .entry { border-block-start: 1px dashed var(--line); }
+  & > * + * { margin-block-start: 12px; }   /* "lobotomized owl": khoảng cách đều giữa các con */
+}
+.entry h3 {
+  font-size: var(--step-1);
+  line-height: 1.3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  & code { font-size: .8em; font-weight: 500; }
+}
+.entry h4 { font: 600 14px/1.3 var(--font-body); margin: 18px 0 0; }
+
+/* Callouts */
+.note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.55;
+  & > div > * + * { margin-block-start: 6px; }
+}
+.note-tag { font-weight: 600; font-size: 12.5px; letter-spacing: .01em; white-space: nowrap; }
+.map { background: var(--map-bg); color: var(--map-ink); }
+.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.note :not(pre) > code { background: color-mix(in oklab, var(--surface) 70%, transparent); border-color: color-mix(in oklab, currentColor 18%, transparent); }
+.fl { color: var(--fl); font-weight: 600; }
+.cp { color: var(--cp); font-weight: 600; }
+@container sec (width > 640px) {
+  .note { grid-template-columns: 10.5rem minmax(0, 1fr); }
+  .note-tag { padding-block-start: 1px; }
+}
+
+/* Code blocks (JS bọc pre vào .code) */
+.code {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  overflow: hidden;
+  min-inline-size: 0;
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px 4px 12px;
+  border-block-end: 1px solid var(--line);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.copy-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font: 500 12px/1 var(--font-body);
+  cursor: pointer;
+  &:hover { background: var(--surface); border-color: var(--line); color: var(--ink); }
+  &.ok { color: var(--accent); }
+}
+pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font: 13px/1.65 var(--font-mono);
+  color: var(--code-ink);
+  tab-size: 2;
+  & code { font: inherit; }
+}
+.token.comment, .token.prolog, .token.doctype { color: var(--tk-comment); font-style: italic; }
+.token.selector, .token.class-name, .token.tag, .token.keyword { color: var(--tk-sel); }
+.token.property, .token.attr-name, .token.builtin { color: var(--tk-prop); }
+.token.string, .token.attr-value, .token.url, .token.char { color: var(--tk-val); }
+.token.number, .token.boolean, .token.function, .token.hexcode, .token.unit { color: var(--tk-num); }
+.token.atrule, .token.rule, .token.important, .token.annotation { color: var(--tk-at); }
+.token.punctuation, .token.operator { color: var(--tk-punc); }
+.token.tag .token.tag, .token.tag .token.punctuation { color: inherit; }
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+table { border-collapse: collapse; inline-size: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; line-height: 1.45; }
+th, td { text-align: start; padding: 8px 12px; border-block-end: 1px solid var(--line); vertical-align: top; }
+th { background: var(--sunken); font-weight: 600; white-space: nowrap; font-size: 12.5px; }
+tbody tr:last-child td { border-block-end: 0; }
+td:first-child { white-space: nowrap; }
+td code { white-space: nowrap; }
+td.wrap, td.wrap code { white-space: normal; }
+
+/* ---------- Demos & playgrounds ---------- */
+.demo {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+.demo-cap { font: 500 12px/1.4 var(--font-mono); color: var(--muted); }
+.pg {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.pg-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-block-end: 1px solid var(--line);
+  font: 600 13px/1.3 var(--font-body);
+  & span { font: 500 12px/1 var(--font-mono); color: var(--muted); }
+}
+.pg-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px 12px;
+  padding: 12px 14px;
+  background: var(--sunken);
+  border-block-end: 1px solid var(--line);
+}
+.ctl { display: grid; gap: 4px; font: 500 11.5px/1.2 var(--font-mono); color: var(--muted); }
+.ctl select, .ctl input[type="text"] {
+  inline-size: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 13px/1.2 var(--font-mono);
+}
+.ctl-check { display: flex; align-items: center; gap: 8px; font: 500 12px/1.3 var(--font-mono); color: var(--ink); align-self: end; padding-block-end: 6px; }
+:root { accent-color: var(--accent); }
+.pg-stage { padding: 16px; }
+.pg-out { display: grid; grid-template-columns: minmax(0, 1fr); border-block-start: 1px solid var(--line); }
+.pg-out .code { border: 0; border-radius: 0; }
+.pg-out .code + .code { border-block-start: 1px solid var(--line); }
+.pg-equiv .code { border: 0; border-radius: 0; }
+.pg-equiv .code + .code { border-block-start: 1px solid var(--line); }
+.pg-out > .code + .pg-equiv { border-block-start: 1px solid var(--line); }
+@container sec (width > 680px) {
+  .pg-equiv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pg-equiv .code + .code { border-block-start: 0; border-inline-start: 1px solid var(--line); }
+}
+
+.frame {
+  border: 1.5px dashed color-mix(in oklab, var(--muted) 70%, transparent);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--muted) 30%, transparent) 1px, transparent 0) 0 0 / 14px 14px,
+    color-mix(in oklab, var(--accent) 4%, var(--surface));
+}
+.box {
+  display: grid;
+  place-items: center;
+  min-inline-size: 42px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: var(--d1);
+  color: var(--d-ink);
+  font: 600 13px/1.2 var(--font-mono);
+  &:nth-child(5n + 2) { background: var(--d2); }
+  &:nth-child(5n + 3) { background: var(--d3); }
+  &:nth-child(5n + 4) { background: var(--d4); }
+  &:nth-child(5n + 5) { background: var(--d5); }
+}
+#flex-demo { display: flex; block-size: 230px; padding: 8px; }
+#flex-demo .box:nth-child(1) { padding-block: 22px; }
+#flex-demo .box:nth-child(2) { font-size: 20px; }
+#flex-demo .box:nth-child(3) { padding-inline: 26px; }
+#flex-demo .box:nth-child(4) { padding-block: 16px; font-size: 11px; }
+#flex-demo .box.grow { outline: 2px solid var(--ink); outline-offset: -2px; }
+
+.resizable {
+  resize: horizontal;
+  overflow: auto;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 180px;
+  padding: 8px;
+}
+.size-read { font: 500 12px/1 var(--font-mono); color: var(--muted); }
+#grid-demo { display: grid; }
+#grid-demo .box { min-block-size: 48px; }
+
+/* Position playground */
+.pos-stage { position: relative; block-size: 260px; padding: 0; overflow: hidden; }
+.pos-stage::before {
+  content: "tổ tiên · position: relative";
+  position: absolute; inset-inline-end: 8px; inset-block-end: 6px;
+  font: 500 11px/1 var(--font-mono); color: var(--muted);
+}
+.pos-parent {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  margin: 46px 0 0 clamp(16px, 8%, 70px);
+  inline-size: min(300px, 75%);
+  block-size: 170px;
+  padding: 10px;
+  border: 2px solid var(--d2);
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--d2) 14%, var(--surface));
+  &::before {
+    content: attr(data-label);
+    flex-basis: 100%;
+    font: 600 11px/1 var(--font-mono);
+    color: var(--d2);
+  }
+}
+#pos-b { background: var(--d3); box-shadow: 0 0 0 2px var(--surface); }
+
+/* Stacking context demo */
+.stack-stage { position: relative; block-size: 200px; overflow: hidden; }
+.sc-a {
+  position: relative;
+  inline-size: 58%;
+  margin: 18px 0 0 16px;
+  padding: 12px;
+  block-size: 120px;
+  border-radius: 8px;
+  background: var(--d2);
+  color: var(--d-ink);
+  font: 600 13px/1.4 var(--font-mono);
+  &.t-opacity { opacity: .97; }
+  &.t-transform { transform: translateZ(0); }
+  &.t-isolate { isolation: isolate; }
+  &.t-zindex { z-index: 0; }
+}
+.sc-pop {
+  position: absolute;
+  z-index: 10;
+  inset-inline-start: 60%;
+  inset-block-start: 56px;
+  inline-size: 72%;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--d5);
+  color: var(--d-ink);
+  box-shadow: var(--shadow);
+}
+.sc-b {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: 16px;
+  inset-block-start: 36px;
+  inline-size: 40%;
+  block-size: 140px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--d3);
+  color: var(--d-ink);
+  font: 600 13px/1.4 var(--font-mono);
+  text-align: end;
+  display: grid;
+  align-content: end;
+}
+.result-line { font-size: 13.5px; padding: 10px 14px; border-block-start: 1px solid var(--line); background: var(--sunken); }
+
+/* Box model visual */
+.bm { display: grid; font: 500 11.5px/1.2 var(--font-mono); color: var(--bm-ink); text-align: center; max-inline-size: 460px; }
+.bm div { position: relative; padding: 26px 22px 18px; border-radius: 4px; }
+.bm span { position: absolute; inset-block-start: 6px; inset-inline-start: 8px; }
+.bm-margin { background: var(--bm-margin); border: 1px dashed color-mix(in oklab, var(--bm-ink) 40%, transparent); }
+.bm-border { background: var(--bm-border); outline: 2px solid color-mix(in oklab, var(--bm-ink) 55%, transparent); }
+.bm-padding { background: var(--bm-padding); }
+.bm .bm-content { background: var(--bm-content); padding: 22px 10px; font-size: 13px; }
+
+/* Misc small demos */
+.row-demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.mini { display: grid; gap: 6px; flex: 1 1 160px; min-inline-size: 0; }
+.mini .frame { block-size: 110px; }
+.flow-demo { padding: 12px; font-size: 13px; }
+.flow-demo .b { display: block; background: color-mix(in oklab, var(--d2) 22%, transparent); border: 1px solid var(--d2); padding: 4px 8px; margin-block: 4px; border-radius: 4px; }
+.flow-demo .i { background: color-mix(in oklab, var(--d3) 22%, transparent); border: 1px solid var(--d3); padding: 2px 6px; border-radius: 4px; }
+.flow-demo .ib { display: inline-block; inline-size: 90px; background: color-mix(in oklab, var(--d1) 22%, transparent); border: 1px solid var(--d1); padding: 2px 6px; border-radius: 4px; }
+
+.spec-calc { display: grid; gap: 12px; }
+.spec-calc input {
+  inline-size: 100%;
+  padding: 10px 12px;
+  font: 15px/1.3 var(--font-mono);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.spec-out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.spec-col {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--sunken);
+  & b { font: 600 28px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  & span { font: 500 11.5px/1.3 var(--font-mono); color: var(--muted); }
+  &:nth-child(1) b { color: var(--d3); }
+  &:nth-child(2) b { color: var(--d2); }
+  &:nth-child(3) b { color: var(--d1); }
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font: 500 12px/1.2 var(--font-mono);
+  cursor: pointer;
+  &:hover { border-color: var(--accent); color: var(--accent); }
+}
+
+.cq-wrap { container-type: inline-size; }
+.cq-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  & .thumb { aspect-ratio: 16 / 9; border-radius: 6px; background: linear-gradient(135deg, var(--d1), var(--d2)); }
+  & h5 { margin: 0; font: 600 15px/1.3 var(--font-display); }
+  & p { font-size: 13px; color: var(--muted); }
+}
+@container (width > 420px) {
+  .cq-card { grid-template-columns: 160px minmax(0, 1fr); align-items: start; }
+  .cq-card .thumb { aspect-ratio: 1; }
+}
+
+.trans-box {
+  inline-size: 96px;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: var(--d2);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1), background-color .3s, border-radius .3s;
+}
+.trans-demo:hover .trans-box, .trans-demo:focus-within .trans-box { transform: translateX(min(140px, 30vw)) rotate(90deg) scale(.8); background: var(--d3); border-radius: 50%; }
+.spinner {
+  inline-size: 36px; aspect-ratio: 1; border-radius: 50%;
+  border: 4px solid color-mix(in oklab, var(--accent) 25%, transparent);
+  border-block-start-color: var(--accent);
+  animation: spin .8s linear infinite;
+}
+.pulse { inline-size: 36px; aspect-ratio: 1; border-radius: 50%; background: var(--d3); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes spin { to { rotate: 1turn; } }
+@keyframes pulse { 0%, 100% { scale: .7; opacity: .5; } 50% { scale: 1; opacity: 1; } }
+
+.clamp-demo { max-inline-size: 360px; font-size: 13.5px; }
+.clamp-demo p { padding: 8px 10px; background: var(--sunken); border-radius: 6px; }
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.line-clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+
+.snap-demo {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 72%;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  padding-block-end: 8px;
+  & > div { scroll-snap-align: start; block-size: 90px; border-radius: 8px; display: grid; place-items: center; color: var(--d-ink); font: 600 14px var(--font-mono); background: var(--d1); }
+  & > div:nth-child(2) { background: var(--d2); }
+  & > div:nth-child(3) { background: var(--d3); }
+  & > div:nth-child(4) { background: var(--d4); }
+}
+.sticky-demo {
+  block-size: 160px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  & h6 { position: sticky; top: 0; margin: 0; padding: 6px 10px; background: var(--accent); color: var(--accent-ink); font: 600 12px/1.3 var(--font-mono); }
+  & p { padding: 6px 10px; border-block-end: 1px solid var(--line); max-inline-size: none; }
+}
+.accent-demo { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; font-size: 13.5px; }
+.accent-demo label { display: inline-flex; gap: 6px; align-items: center; }
+
+.btn-demo {
+  --btn-bg: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--accent-ink);
+  font: 600 14px/1 var(--font-body);
+  cursor: pointer;
+  transition: background-color .15s, transform .1s;
+  &:hover { background: color-mix(in oklab, var(--btn-bg) 85%, var(--ink)); }
+  &:active { transform: translateY(1px); }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  &:disabled { opacity: .45; cursor: not-allowed; }
+}
+.center-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr)); gap: 10px; }
+.center-grid .frame { block-size: 96px; position: relative; }
+.center-grid .dot { inline-size: 34px; aspect-ratio: 1; border-radius: 6px; background: var(--d3); }
+.c1 { display: grid; place-items: center; }
+.c2 { display: flex; justify-content: center; align-items: center; }
+.c3 .dot { position: absolute; inset: 0; margin: auto; }
+.c4 .dot { position: absolute; top: 50%; left: 50%; translate: -50% -50%; }
+
+.empty-state {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  margin-block-start: 24px;
+}
+.empty-state b { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="side-head">
+    <div class="brand-row">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">{css}</span>
+        <span class="brand-text"><b>CSS cho dev Flutter</b><span>Cheatsheet · đối chiếu Compose</span></span>
+      </a>
+      <button class="icon-btn" id="theme-btn" type="button" aria-label="Đổi giao diện">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>
+        <span class="theme-label">Hệ thống</span>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="toc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+        Mục lục
+      </button>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <input id="search" type="search" placeholder="Tìm: flex, z-index, Stack…" aria-label="Tìm trong cheatsheet" autocomplete="off" spellcheck="false">
+      <kbd aria-hidden="true">/</kbd>
+    </div>
+    <p class="search-status" id="search-status" aria-live="polite"></p>
+  </div>
+  <nav class="toc" id="toc" aria-label="Mục lục">
+    <ol>
+      <li><a href="#mental"><span class="n">01</span><span>Mental model</span><span class="c"></span></a></li>
+      <li><a href="#selectors"><span class="n">02</span><span>Selectors &amp; cascade</span><span class="c"></span></a></li>
+      <li><a href="#box"><span class="n">03</span><span>Box model &amp; đơn vị</span><span class="c"></span></a></li>
+      <li><a href="#display"><span class="n">04</span><span>Display &amp; normal flow</span><span class="c"></span></a></li>
+      <li><a href="#flex"><span class="n">05</span><span>Flexbox</span><span class="c"></span></a></li>
+      <li><a href="#grid"><span class="n">06</span><span>Grid</span><span class="c"></span></a></li>
+      <li><a href="#position"><span class="n">07</span><span>Positioning &amp; z-index</span><span class="c"></span></a></li>
+      <li><a href="#sizing"><span class="n">08</span><span>Sizing &amp; overflow</span><span class="c"></span></a></li>
+      <li><a href="#typo"><span class="n">09</span><span>Typography</span><span class="c"></span></a></li>
+      <li><a href="#color"><span class="n">10</span><span>Màu, nền, viền, bóng</span><span class="c"></span></a></li>
+      <li><a href="#theme"><span class="n">11</span><span>Custom properties &amp; theming</span><span class="c"></span></a></li>
+      <li><a href="#responsive"><span class="n">12</span><span>Responsive</span><span class="c"></span></a></li>
+      <li><a href="#motion"><span class="n">13</span><span>Transform &amp; animation</span><span class="c"></span></a></li>
+      <li><a href="#modern"><span class="n">14</span><span>CSS hiện đại nên biết</span><span class="c"></span></a></li>
+      <li><a href="#a11y"><span class="n">15</span><span>Tương tác &amp; accessibility</span><span class="c"></span></a></li>
+      <li><a href="#patterns"><span class="n">16</span><span>Pattern hay dùng</span><span class="c"></span></a></li>
+      <li><a href="#debug"><span class="n">17</span><span>Debug</span><span class="c"></span></a></li>
+    </ol>
+  </nav>
+</aside>
+
+<main class="content" id="top">
+<div class="inner">
+
+<header class="hero">
+  <p class="eyebrow">Cheatsheet · CSS hiện đại</p>
+  <h1>CSS cho dev Flutter &amp; Compose</h1>
+  <p class="hero-lead">Tra nhanh CSS qua những thứ bạn đã quen: Row/Column, Stack, Modifier, ThemeData. Mỗi mục có snippet copy được, dòng đối chiếu với Flutter/Compose và những chỗ dễ mang thói quen sai sang.</p>
+  <nav class="rosetta" aria-label="Đối chiếu nhanh">
+    <a href="#flex"><span class="from">Row / Column</span><span class="to">display: flex</span></a>
+    <a href="#flex"><span class="from">Expanded / Modifier.weight(1f)</span><span class="to">flex: 1</span></a>
+    <a href="#position"><span class="from">Stack + Positioned</span><span class="to">position: absolute</span></a>
+    <a href="#grid"><span class="from">LazyVerticalGrid(Adaptive)</span><span class="to">repeat(auto-fill, minmax())</span></a>
+    <a href="#theme"><span class="from">ThemeData / MaterialTheme</span><span class="to">--custom-property</span></a>
+    <a href="#responsive"><span class="from">LayoutBuilder</span><span class="to">@container</span></a>
+    <a href="#motion"><span class="from">AnimatedContainer</span><span class="to">transition</span></a>
+    <a href="#color"><span class="from">ClipRRect + BoxDecoration</span><span class="to">border-radius + overflow: clip</span></a>
+  </nav>
+  <div class="legend">
+    <span><b>📱 Flutter / Compose</b>: phép đối chiếu và chỗ nó lệch</span>
+    <span><b>⚠️ Lưu ý</b>: lỗi hay gặp, best practice</span>
+    <span>Nhấn <kbd>/</kbd> để tìm</span>
+  </div>
+</header>
+
+<!-- ============ 01 MENTAL MODEL ============ -->
+<section class="section" id="mental">
+  <div class="sec-head">
+    <span class="sec-num">01 · Đọc trước</span>
+    <h2>Mental model: CSS khác Flutter/Compose thế nào</h2>
+    <p class="sec-intro">Phần lớn sự khó chịu với CSS đến từ việc mang mô hình "widget tự mang style, cha đặt kích thước cho con" sang một hệ thống mà style chảy từ nhiều nguồn và layout mặc định là dòng chữ.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Cascade: style đến từ nhiều nơi</h3>
+    <p>Trong Flutter, style là tham số bạn truyền thẳng vào widget. Trong CSS, nhiều rule ở nhiều file cùng nhắm vào một phần tử, và trình duyệt chọn giá trị thắng <b>cho từng property riêng lẻ</b> theo thứ tự: nguồn &amp; <code>!important</code> → <code>@layer</code> → specificity → thứ tự xuất hiện.</p>
+<pre><code class="language-css">/* Bốn rule cùng nhắm vào &lt;button class="btn"&gt; nằm trong .toolbar */
+button        { color: black; padding: 8px; } /* 0-0-1 */
+.btn          { color: blue; }                 /* 0-1-0: thắng button */
+.toolbar .btn { color: green; }                /* 0-2-0: thắng .btn */
+.btn          { color: red; }                  /* 0-1-0: viết sau nhưng vẫn THUA .toolbar .btn */
+
+/* Kết quả: color: green; padding: 8px
+   (padding không bị rule nào ghi đè nên vẫn lấy từ rule đầu) */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="fl">Flutter</span>: <code>Text(style: TextStyle(…))</code> gắn style chặt vào widget; chỉ <code>DefaultTextStyle</code>/<code>Theme</code> là "chảy" xuống. <span class="cp">Compose</span>: thứ tự Modifier tạo ra các lớp lồng nhau (<code>padding</code> trước hay sau <code>background</code> cho kết quả khác). CSS không có chuỗi modifier: thứ tự property trong một rule không tạo lớp, chỉ property trùng tên viết sau ghi đè property trước.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Mỗi property được tính riêng. Một rule có thể thắng <code>color</code> mà không đụng tới <code>padding</code>. Khi style không như ý, mở DevTools → <b>Computed</b> để xem giá trị cuối đến từ rule nào.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Inheritance: chỉ nhóm chữ mới chảy xuống</h3>
+    <p>Một số property tự truyền từ cha xuống mọi con cháu: chủ yếu nhóm chữ (<code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>text-align</code>) cùng <code>visibility</code>, <code>cursor</code>. Nhóm hình học và trang trí (margin, padding, border, background, width, display) không kế thừa.</p>
+<pre><code class="language-css">.card {
+  color: #334155;           /* kế thừa: mọi chữ bên trong có màu này */
+  font: 15px/1.5 system-ui; /* kế thừa */
+  padding: 16px;            /* KHÔNG kế thừa: chỉ .card có padding */
+  border: 1px solid #ddd;   /* KHÔNG kế thừa */
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống <code>DefaultTextStyle</code> / <code>IconTheme</code> trong <span class="fl">Flutter</span> và <code>LocalContentColor</code> / <code>LocalTextStyle</code> trong <span class="cp">Compose</span>: chỉ thuộc tính về chữ chảy xuống cây.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Form control (<code>button</code>, <code>input</code>, <code>select</code>) không kế thừa font theo mặc định. Luôn có <code>font: inherit</code> trong reset.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Normal flow thay cho "constraints go down"</h3>
+    <p>Không có Row/Column ngầm. Mặc định phần tử nằm trong <b>normal flow</b>: block xếp dọc và lấp đầy chiều ngang của cha; inline chảy trên dòng như chữ. Chiều ngang đi từ cha xuống, chiều cao đi từ nội dung lên.</p>
+    <div class="demo flow-demo">
+      <span class="demo-cap">Kết quả của snippet bên dưới</span>
+      <div><span class="b">Block: rộng 100% cha, cao vừa nội dung</span><span class="b">Block thứ hai tự xuống dòng, không cần Column</span>Đoạn văn có <span class="i">inline</span> và <span class="i">chữ đậm</span> chảy cùng dòng, còn <span class="ib">inline-block</span> nhận được width.</div>
+    </div>
+<pre><code class="language-markup">&lt;div&gt;Block: rộng 100% cha, cao vừa nội dung&lt;/div&gt;
+&lt;div&gt;Block thứ hai tự xuống dòng, không cần Column&lt;/div&gt;
+&lt;p&gt;Đoạn văn có &lt;a href="#"&gt;inline&lt;/a&gt; và &lt;strong&gt;chữ đậm&lt;/strong&gt; chảy cùng dòng.&lt;/p&gt;</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Flutter: "constraints go down, sizes go up, parent sets position". CSS giống ở <b>trục ngang</b>: block có <code>width: auto</code> lấp đầy cha (như constraint chặt theo chiều ngang). <b>Trục dọc</b> thì khác: chiều cao mặc định là "wrap content", cha không ép chiều cao xuống con.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Vì chiều cao đi từ dưới lên, <code>height: 100%</code> chỉ hoạt động khi cha có chiều cao xác định. Muốn con lấp đầy chiều cao, cho cha <code>display: flex</code>/<code>grid</code> (con tự stretch) hoặc dùng <code>flex: 1</code>, tương tự <code>Expanded</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>User-agent styles và reset tối thiểu</h3>
+    <p>Trình duyệt có sẵn stylesheet mặc định: <code>body</code> có margin 8px, <code>h1</code> to và có margin, <code>ul</code> có padding, <code>button</code> có font riêng. Hầu như dự án nào cũng bắt đầu bằng một reset nhỏ như sau.</p>
+<pre><code class="language-css">*, *::before, *::after { box-sizing: border-box; } /* width tính cả padding + border */
+body { margin: 0; min-height: 100dvh; }
+h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+img, svg, video, canvas { display: block; max-width: 100%; } /* bỏ khe hở dưới ảnh inline */
+button, input, select, textarea { font: inherit; color: inherit; }
+:where(h1, h2, h3) { text-wrap: balance; line-height: 1.2; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Gần với việc đặt <code>ThemeData</code>/<code>MaterialTheme</code> gốc cho toàn app, khác ở chỗ ở đây bạn đang <em>gỡ</em> mặc định của trình duyệt chứ không chỉ khai báo theme.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Margin collapse</h3>
+    <p>Margin dọc của hai block liền kề không cộng lại mà gộp thành giá trị lớn hơn. Margin-top của con đầu tiên còn có thể "lọt" ra ngoài cha nếu cha không có padding hoặc border.</p>
+<pre><code class="language-css">.a { margin-bottom: 24px; }
+.b { margin-top: 16px; }   /* khoảng cách thật giữa .a và .b = 24px, không phải 40px */
+
+/* Cách tránh: dùng gap. Margin collapse không xảy ra trong flex/grid */
+.stack { display: flex; flex-direction: column; gap: 16px; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>SizedBox(height: 24)</code> + <code>SizedBox(height: 16)</code> trong Column luôn ra 40. Margin CSS không hành xử như SizedBox; <code>gap</code> thì có (giống <code>Column(spacing:)</code> / <code>Arrangement.spacedBy</code>).</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Chỉ margin dọc trong normal flow mới collapse. Margin ngang, flex/grid item, phần tử absolute thì không. Cha có <code>display: flow-root</code>, padding hoặc border sẽ chặn margin của con lọt ra ngoài.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 02 SELECTORS ============ -->
+<section class="section" id="selectors">
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Selectors &amp; cascade</h2>
+    <p class="sec-intro">Selector là "query" chọn phần tử để áp style. Hiểu specificity là hiểu vì sao rule của bạn không thắng.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Các loại selector</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Loại</th><th>Ví dụ</th><th>Chọn</th></tr></thead>
+      <tbody>
+        <tr><td>Type</td><td><code>button</code></td><td>mọi thẻ <code>&lt;button&gt;</code></td></tr>
+        <tr><td>Class</td><td><code>.card</code></td><td>phần tử có <code>class="card"</code>, cách dùng chính</td></tr>
+        <tr><td>ID</td><td><code>#app</code></td><td>phần tử <code>id="app"</code>; specificity rất cao, hạn chế dùng để style</td></tr>
+        <tr><td>Attribute</td><td><code>[disabled]</code>, <code>[type="email"]</code></td><td>có thuộc tính / đúng giá trị</td></tr>
+        <tr><td>Attribute pattern</td><td><code>[href^="https"]</code>, <code>[class*="icon-"]</code></td><td>bắt đầu bằng / chứa chuỗi</td></tr>
+        <tr><td>Data attribute</td><td><code>[data-state="open"]</code></td><td>dùng làm "state" cho component</td></tr>
+        <tr><td>Universal</td><td><code>*</code></td><td>mọi phần tử</td></tr>
+        <tr><td>Descendant</td><td><code>.card p</code></td><td><code>p</code> ở bất kỳ cấp nào bên trong <code>.card</code></td></tr>
+        <tr><td>Child</td><td><code>.list &gt; li</code></td><td><code>li</code> là con trực tiếp</td></tr>
+        <tr><td>Adjacent sibling</td><td><code>h2 + p</code></td><td><code>p</code> đứng ngay sau <code>h2</code></td></tr>
+        <tr><td>General sibling</td><td><code>h2 ~ p</code></td><td>mọi <code>p</code> đứng sau <code>h2</code>, cùng cha</td></tr>
+        <tr><td>Nhóm</td><td><code>h1, h2, h3</code></td><td>áp cho cả ba</td></tr>
+        <tr><td>Ghép</td><td><code>button.primary</code></td><td>là <code>button</code> <b>và</b> có class <code>primary</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Gần nhất là finder trong widget test (<code>find.byType</code>, <code>find.descendant</code>). Trong UI code Flutter/Compose không có chuyện "chọn từ xa": style luôn khai báo tại chỗ.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>.a .b</code> (có dấu cách) và <code>.a.b</code> (không dấu cách) khác hẳn nhau: một là con cháu, một là cùng phần tử có cả hai class.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Pseudo-class: state và vị trí</h3>
+    <p>Chọn phần tử theo trạng thái hoặc vị trí trong cây. Đây là cách CSS biểu diễn state, không cần biến <code>isHovered</code>.</p>
+<pre><code class="language-css">.btn:hover          { background: #0f766e; }        /* chuột đang trỏ */
+.btn:focus-visible  { outline: 2px solid; }         /* focus bằng bàn phím */
+.btn:active         { transform: translateY(1px); } /* đang nhấn */
+.btn:disabled       { opacity: .5; }
+input:checked + label { font-weight: 600; }
+input:user-invalid  { border-color: crimson; }      /* chỉ báo lỗi sau khi người dùng đã nhập */
+
+li:first-child, li:last-child { }
+li:nth-child(odd)   { background: #f6f6f6; }        /* zebra; cũng có 2n, 3n+1, -n+3 */
+li:not(:last-child) { border-bottom: 1px solid #eee; }
+
+:is(h1, h2, h3) a   { color: inherit; }   /* gom selector; specificity = đối số cao nhất */
+:where(ul, ol)      { padding-left: 1.25em; } /* như :is nhưng specificity = 0 */
+.card:has(img)      { padding-top: 0; }   /* "parent selector": card CÓ chứa img */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="fl">Flutter</span>: <code>WidgetStateProperty.resolveWith((states) =&gt; states.contains(WidgetState.hovered) ? … : …)</code>. <span class="cp">Compose</span>: <code>interactionSource.collectIsHoveredAsState()</code>, <code>collectIsPressedAsState()</code>. Trong CSS trình duyệt tự theo dõi state; bạn chỉ khai báo style cho từng state.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Dùng <code>:focus-visible</code> thay cho <code>:focus</code> để vẽ focus ring: người dùng bàn phím vẫn thấy, người click chuột không bị khung thừa. Không bao giờ <code>outline: none</code> mà không có thay thế.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Pseudo-element: <code>::before</code>, <code>::after</code></h3>
+    <p>Tạo "phần tử ảo" để trang trí mà không thêm HTML. Ngoài ra còn <code>::placeholder</code>, <code>::selection</code>, <code>::marker</code>, <code>::backdrop</code>.</p>
+<pre><code class="language-css">/* Dấu * đỏ cho label bắt buộc */
+label.required::after {
+  content: " *";         /* BẮT BUỘC có content, kể cả content: "" */
+  color: crimson;
+}
+
+/* Lớp phủ gradient trên ảnh mà không cần thêm div */
+.hero { position: relative; }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent, rgb(0 0 0 / .6));
+}
+
+input::placeholder { color: #94a3b8; }
+::selection        { background: #99f6e4; }
+li::marker         { color: teal; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống thêm một con trang trí vào <code>Stack</code>/<code>Box</code> (một <code>Container</code> gradient phủ lên) mà không phải sửa cây widget.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>::before</code>/<code>::after</code> không hoạt động trên phần tử "replaced" như <code>img</code>, <code>input</code>, <code>video</code>. Quy ước: hai chấm <code>::</code> cho pseudo-element, một chấm <code>:</code> cho pseudo-class.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Specificity</h3>
+    <p>Khi nhiều rule xung đột, rule có specificity cao hơn thắng. Specificity là bộ ba <b>(ID, Class, Type)</b> so từ trái sang phải: một ID thắng bất kỳ số lượng class nào.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Selector</th><th>ID-Class-Type</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td><code>*</code></td><td>0-0-0</td><td>universal và combinator không tính</td></tr>
+        <tr><td><code>li</code></td><td>0-0-1</td><td></td></tr>
+        <tr><td><code>ul li</code></td><td>0-0-2</td><td></td></tr>
+        <tr><td><code>.nav</code></td><td>0-1-0</td><td>class</td></tr>
+        <tr><td><code>[type="text"]</code></td><td>0-1-0</td><td>attribute tính như class</td></tr>
+        <tr><td><code>a:hover</code></td><td>0-1-1</td><td>pseudo-class tính như class</td></tr>
+        <tr><td><code>p::first-line</code></td><td>0-0-2</td><td>pseudo-element tính như type</td></tr>
+        <tr><td><code>.nav .item.active</code></td><td>0-3-0</td><td></td></tr>
+        <tr><td><code>#header</code></td><td>1-0-0</td><td></td></tr>
+        <tr><td><code>#header .nav a</code></td><td>1-1-1</td><td></td></tr>
+        <tr><td><code>:where(#header .nav a)</code></td><td>0-0-0</td><td><code>:where()</code> luôn bằng 0</td></tr>
+        <tr><td><code>:is(#a, .b) p</code></td><td>1-0-1</td><td><code>:is</code>/<code>:not</code>/<code>:has</code> lấy đối số cao nhất</td></tr>
+        <tr><td><code>style="…"</code></td><td>thắng mọi selector</td><td>chỉ thua <code>!important</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="demo spec-calc">
+      <label class="demo-cap" for="spec-input">Máy tính specificity: gõ selector bất kỳ</label>
+      <input id="spec-input" type="text" value="#nav .item:hover &gt; a" spellcheck="false" autocomplete="off">
+      <div class="spec-out" aria-live="polite">
+        <div class="spec-col"><b id="spec-a">1</b><span>ID</span></div>
+        <div class="spec-col"><b id="spec-b">2</b><span>Class · attr · :pseudo</span></div>
+        <div class="spec-col"><b id="spec-c">1</b><span>Type · ::pseudo</span></div>
+      </div>
+      <div class="chips" id="spec-chips">
+        <button class="chip" type="button">ul li a</button>
+        <button class="chip" type="button">.card:has(&gt; img) h3</button>
+        <button class="chip" type="button">:where(.btn):hover</button>
+        <button class="chip" type="button">:is(#main, .x) p::before</button>
+        <button class="chip" type="button">input[type="email"]:not(:focus)</button>
+      </div>
+    </div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Giữ specificity thấp và phẳng: mỗi rule một class (kiểu BEM hoặc utility). Tránh ID trong CSS; một khi đã dùng, chỉ ID khác hoặc <code>!important</code> mới ghi đè được.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>!important</code> và <code>@layer</code></h3>
+    <p><code>!important</code> đẩy một khai báo lên trên mọi specificity thường. <code>@layer</code> là cách sạch hơn: chia CSS thành các tầng có thứ tự ưu tiên rõ ràng, tầng sau thắng tầng trước bất kể specificity.</p>
+<pre><code class="language-css">/* Khai báo thứ tự một lần: tầng sau ưu tiên cao hơn */
+@layer reset, base, components, utilities;
+
+@layer base {
+  #main a { color: navy; }       /* specificity 1-0-1 ... */
+}
+@layer utilities {
+  .text-muted { color: gray; }   /* ... nhưng vẫn THUA rule này vì layer sau thắng */
+}
+
+/* CSS nằm ngoài mọi layer thắng tất cả layer */
+.special { color: crimson; }
+
+/* Bọc CSS thư viện vào layer thấp để dễ ghi đè */
+@import url("vendor.css") layer(vendor);
+
+/* !important: chỉ cho utility hoặc ghi đè inline style của thư viện */
+.hidden { display: none !important; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Không có tương đương trực tiếp. Gần giống <code>Theme</code> lồng nhau: theme gần widget hơn thắng, bất kể nó định nghĩa "cụ thể" đến đâu.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Với <code>!important</code>, thứ tự layer bị đảo: khai báo important ở layer <em>đầu</em> thắng. CSS không thuộc layer nào (ví dụ CSS thư viện cũ) sẽ đè hết CSS có layer của bạn.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Từ khoá kế thừa: <code>inherit</code>, <code>initial</code>, <code>unset</code>, <code>revert</code></h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Từ khoá</th><th>Ý nghĩa</th><th>Ví dụ</th></tr></thead>
+      <tbody>
+        <tr><td><code>inherit</code></td><td class="wrap">Lấy giá trị đã tính của cha</td><td><code>button { font: inherit; }</code></td></tr>
+        <tr><td><code>initial</code></td><td class="wrap">Giá trị khởi tạo theo spec, <b>không</b> phải theo trình duyệt</td><td class="wrap"><code>display: initial</code> → <code>inline</code>, kể cả với div</td></tr>
+        <tr><td><code>unset</code></td><td class="wrap">Property kế thừa → inherit; không kế thừa → initial</td><td><code>all: unset</code> để xoá trắng một button</td></tr>
+        <tr><td><code>revert</code></td><td class="wrap">Quay về style mặc định của trình duyệt</td><td class="wrap"><code>display: revert</code> → div lại là block</td></tr>
+        <tr><td><code>currentColor</code></td><td class="wrap">Giá trị <code>color</code> hiện tại</td><td><code>border: 1px solid currentColor</code></td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Kế thừa:</b> <code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>letter-spacing</code>, <code>text-align</code>, <code>white-space</code>, <code>visibility</code>, <code>cursor</code>, <code>list-style</code>, custom properties <code>--*</code>. <b>Không kế thừa:</b> gần như mọi thứ còn lại: <code>display</code>, <code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>position</code>, <code>opacity</code>, <code>transform</code>, <code>overflow</code>.</p>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>opacity</code> không kế thừa nhưng vẫn ảnh hưởng cả cây con vì nó làm mờ cả nhóm khi vẽ (giống <code>Opacity</code> widget). Con không thể đặt <code>opacity: 1</code> để rõ hơn cha.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 03 BOX MODEL ============ -->
+<section class="section" id="box">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Box model &amp; đơn vị</h2>
+    <p class="sec-intro">Mọi phần tử là một hộp. Phần lớn lỗi "lệch vài pixel" đến từ box-sizing và đơn vị.</p>
+  </div>
+
+  <article class="entry">
+    <h3>content → padding → border → margin</h3>
+    <p>Bốn lớp từ trong ra ngoài: content, padding (trong viền, có nền), border, margin (ngoài viền, trong suốt). Luôn bật <code>box-sizing: border-box</code> để <code>width</code> đã gồm padding và border.</p>
+    <div class="demo">
+      <span class="demo-cap">Bảng màu giống panel Box Model trong DevTools</span>
+      <div class="bm" aria-hidden="true">
+        <div class="bm-margin"><span>margin</span>
+          <div class="bm-border"><span>border</span>
+            <div class="bm-padding"><span>padding</span>
+              <div class="bm-content">content<br>200 × 120</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<pre><code class="language-css">.box {
+  box-sizing: border-box;   /* width 200 đã gồm padding + border → hộp rộng đúng 200px */
+  width: 200px;
+  padding: 16px 24px;       /* 2 giá trị: dọc | ngang */
+  border: 2px solid #0f766e;
+  margin: 24px auto;        /* auto theo chiều ngang = căn giữa block có width */
+}
+
+/* Shorthand 4 giá trị theo chiều kim đồng hồ: top right bottom left */
+.x { margin: 0 16px 8px 4px; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="fl">Flutter</span>: <code>Container(margin:, padding:, decoration: BoxDecoration(border:))</code> gần như 1:1. <span class="cp">Compose</span> không có margin: <code>Modifier.padding(24.dp).border(…).padding(16.dp)</code>, padding đặt <em>trước</em> border đóng vai margin. Khác biệt: margin CSS có thể âm và có thể là <code>auto</code>; <code>EdgeInsets</code> thì không.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Mặc định là <code>content-box</code>: width 200 + padding 48 + border 4 = hộp rộng 252px. Padding tính theo <code>%</code> luôn dựa trên <em>chiều rộng</em> của cha, kể cả <code>padding-top</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Đơn vị: khi nào dùng loại nào</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Đơn vị</th><th>Tương đối với</th><th>Dùng cho</th><th>Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>px</code></td><td class="wrap">CSS pixel (không phải pixel vật lý)</td><td class="wrap">border, shadow, chi tiết nhỏ cố định</td><td class="wrap">logical pixel / <code>dp</code></td></tr>
+        <tr><td><code>rem</code></td><td class="wrap">font-size của <code>&lt;html&gt;</code> (mặc định 16px)</td><td class="wrap">font-size, spacing, breakpoint</td><td class="wrap">gần <code>sp</code>: theo cỡ chữ người dùng chọn</td></tr>
+        <tr><td><code>em</code></td><td class="wrap">font-size của chính phần tử</td><td class="wrap">padding nút, icon cạnh chữ, letter-spacing</td><td class="wrap">không có</td></tr>
+        <tr><td><code>%</code></td><td class="wrap">kích thước containing block</td><td class="wrap">độ rộng cột, vị trí</td><td class="wrap"><code>FractionallySizedBox</code>, <code>fillMaxWidth(.5f)</code></td></tr>
+        <tr><td><code>vw</code> / <code>vh</code></td><td class="wrap">1% viewport</td><td class="wrap">hero, overlay toàn màn</td><td class="wrap"><code>MediaQuery.sizeOf(context)</code></td></tr>
+        <tr><td><code>dvh</code> / <code>svh</code> / <code>lvh</code></td><td class="wrap">viewport động / nhỏ nhất / lớn nhất (mobile)</td><td class="wrap"><code>min-height: 100dvh</code></td><td class="wrap">màn hình trừ system bar</td></tr>
+        <tr><td><code>fr</code></td><td class="wrap">phần còn lại trong grid</td><td class="wrap">cột Grid</td><td class="wrap"><code>flex</code> của <code>Expanded</code>, <code>weight()</code></td></tr>
+        <tr><td><code>ch</code></td><td class="wrap">độ rộng ký tự "0"</td><td class="wrap"><code>max-width: 65ch</code> cho đoạn văn</td><td class="wrap">không có</td></tr>
+        <tr><td><code>cqi</code></td><td class="wrap">1% chiều ngang container</td><td class="wrap">chữ/khoảng cách theo container</td><td class="wrap"><code>constraints.maxWidth</code> trong LayoutBuilder</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>1 CSS px ≈ 1 dp ≈ 1 logical pixel: trình duyệt tự nhân với <code>devicePixelRatio</code>. <code>rem</code> gần <code>sp</code> nhất vì theo cỡ chữ mặc định người dùng đặt trong trình duyệt.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>100vh</code> trên mobile tính cả vùng bị thanh địa chỉ che nên nội dung bị cắt; dùng <code>100dvh</code>. <code>em</code> lồng nhau nhân dồn (1.2em trong 1.2em = 1.44 lần): dùng <code>rem</code> cho font-size, <code>em</code> cho thứ cần co giãn theo chữ tại chỗ.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 04 DISPLAY ============ -->
+<section class="section" id="display">
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Display &amp; normal flow</h2>
+    <p class="sec-intro"><code>display</code> quyết định phần tử tham gia layout thế nào, và cách các con của nó được xếp.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Các giá trị <code>display</code></h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>display</th><th>Hành vi</th><th>Gần với</th></tr></thead>
+      <tbody>
+        <tr><td><code>block</code></td><td class="wrap">Xuống dòng, rộng full cha, nhận width/height/margin</td><td class="wrap">con của Column với <code>stretch</code></td></tr>
+        <tr><td><code>inline</code></td><td class="wrap">Chảy theo dòng chữ, <b>bỏ qua</b> width/height và margin dọc</td><td class="wrap"><code>TextSpan</code> trong <code>RichText</code></td></tr>
+        <tr><td><code>inline-block</code></td><td class="wrap">Chảy theo dòng nhưng nhận width/height/padding</td><td class="wrap"><code>WidgetSpan</code></td></tr>
+        <tr><td><code>flex</code> / <code>inline-flex</code></td><td class="wrap">Container Flexbox (dạng block / inline)</td><td class="wrap">Row, Column</td></tr>
+        <tr><td><code>grid</code> / <code>inline-grid</code></td><td class="wrap">Container Grid</td><td class="wrap">GridView, Table</td></tr>
+        <tr><td><code>none</code></td><td class="wrap">Gỡ khỏi layout và khỏi accessibility tree</td><td class="wrap">không build widget</td></tr>
+        <tr><td><code>contents</code></td><td class="wrap">Hộp của nó biến mất, các con được "kéo" lên làm con của ông</td><td class="wrap">không có</td></tr>
+        <tr><td><code>flow-root</code></td><td class="wrap">Block tạo BFC mới: chặn margin collapse, bao float</td><td class="wrap">không có</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Mỗi thẻ đã có display mặc định: <code>div</code>, <code>p</code>, <code>section</code>, <code>h1</code> là block; <code>span</code>, <code>a</code>, <code>strong</code>, <code>img</code> là inline. Chọn thẻ theo ý nghĩa, chọn display theo layout. Đừng biến <code>div</code> thành nút bấm chỉ bằng CSS; dùng <code>&lt;button&gt;</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Ẩn phần tử: <code>display: none</code> vs <code>visibility</code> vs <code>opacity</code></h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Cách</th><th>Chiếm chỗ</th><th>Nhận click / Tab</th><th>Screen reader</th><th>Animate</th><th>Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>display: none</code></td><td>Không</td><td>Không</td><td>Ẩn</td><td>Không*</td><td class="wrap"><code>if (show) …</code>, <code>Visibility(visible: false)</code>, <code>Offstage</code></td></tr>
+        <tr><td><code>visibility: hidden</code></td><td>Có</td><td>Không</td><td>Ẩn</td><td>Rời rạc</td><td class="wrap"><code>Visibility(maintainSize: true)</code></td></tr>
+        <tr><td><code>opacity: 0</code></td><td>Có</td><td><b>Có</b></td><td>Vẫn đọc</td><td>Mượt</td><td class="wrap"><code>Opacity(opacity: 0)</code>, <code>Modifier.alpha(0f)</code></td></tr>
+        <tr><td><code>hidden</code> (HTML)</td><td>Không</td><td>Không</td><td>Ẩn</td><td>Không</td><td class="wrap">như <code>display: none</code></td></tr>
+        <tr><td><code>.sr-only</code></td><td>Không</td><td>Không</td><td><b>Đọc</b></td><td>–</td><td class="wrap"><code>Semantics(label: …)</code> không vẽ gì</td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-css">.is-hidden { display: none; }
+.invisible { visibility: hidden; }                 /* giữ chỗ trống */
+.faded     { opacity: 0; pointer-events: none; }   /* ẩn bằng opacity thì nhớ tắt click */
+
+/* Ẩn khỏi mắt nhưng screen reader vẫn đọc (label cho nút chỉ có icon) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Offstage</code> của Flutter (vẫn layout, không vẽ, không chiếm chỗ, giữ state) gần <code>display: none</code> về hiển thị. CSS không có "state của widget": phần tử bị ẩn vẫn nằm trong DOM, giá trị input vẫn còn, nên mọi cách ẩn trong CSS đều "giữ state".</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>opacity: 0</code> vẫn nhận click và vẫn focus được bằng Tab, dễ tạo "nút vô hình". Kết hợp với <code>visibility: hidden</code> (animate được cùng opacity) hoặc thuộc tính <code>inert</code>. *Animate <code>display</code> được với <code>transition-behavior: allow-discrete</code>, xem mục 13.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 05 FLEXBOX ============ -->
+<section class="section" id="flex">
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>Flexbox</h2>
+    <p class="sec-intro">Layout một chiều, một hàng hoặc một cột. Thứ gần Row/Column nhất, nhưng có vài mặc định ngược với Flutter.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Playground</h3>
+    <div class="pg" id="flex-pg">
+      <div class="pg-title">Flexbox playground <span>đổi giá trị · xem kết quả và code tương đương</span></div>
+      <div class="pg-controls">
+        <label class="ctl" for="fx-dir">flex-direction
+          <select id="fx-dir"><option>row</option><option>row-reverse</option><option>column</option><option>column-reverse</option></select></label>
+        <label class="ctl" for="fx-jc">justify-content
+          <select id="fx-jc"><option>flex-start</option><option>center</option><option>flex-end</option><option selected>space-between</option><option>space-around</option><option>space-evenly</option></select></label>
+        <label class="ctl" for="fx-ai">align-items
+          <select id="fx-ai"><option selected>stretch</option><option>flex-start</option><option>center</option><option>flex-end</option><option>baseline</option></select></label>
+        <label class="ctl" for="fx-wrap">flex-wrap
+          <select id="fx-wrap"><option>nowrap</option><option>wrap</option></select></label>
+        <label class="ctl" for="fx-gap">gap
+          <select id="fx-gap"><option>0</option><option selected>8px</option><option>16px</option></select></label>
+        <label class="ctl" for="fx-n">số item
+          <select id="fx-n"><option>3</option><option selected>4</option><option>5</option><option>9</option></select></label>
+        <label class="ctl-check" for="fx-grow"><input type="checkbox" id="fx-grow"> item 2: flex: 1</label>
+      </div>
+      <div class="pg-stage"><div id="flex-demo" class="frame"></div></div>
+      <div class="pg-out">
+<pre><code class="language-css" id="fx-css"></code></pre>
+        <div class="pg-equiv">
+<pre><code class="language-dart" id="fx-dart"></code></pre>
+<pre><code class="language-kotlin" id="fx-kt"></code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Thử <code>align-items: stretch</code> với <code>flex-direction: row</code>: mọi item cao bằng container. Đây là <b>mặc định</b> của CSS, trong khi <code>crossAxisAlignment</code> mặc định là <code>center</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Thuộc tính của container</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Property</th><th>Giá trị hay dùng</th><th>Ý nghĩa</th></tr></thead>
+      <tbody>
+        <tr><td><code>display</code></td><td><code>flex</code>, <code>inline-flex</code></td><td class="wrap">Bật flexbox cho các con trực tiếp</td></tr>
+        <tr><td><code>flex-direction</code></td><td><code>row</code> (mặc định), <code>column</code>, <code>*-reverse</code></td><td class="wrap">Trục chính</td></tr>
+        <tr><td><code>justify-content</code></td><td><code>flex-start</code>, <code>center</code>, <code>space-between</code></td><td class="wrap">Căn theo trục chính</td></tr>
+        <tr><td><code>align-items</code></td><td><code>stretch</code> (mặc định), <code>center</code>, <code>baseline</code></td><td class="wrap">Căn theo trục phụ, trong từng dòng</td></tr>
+        <tr><td><code>align-content</code></td><td><code>flex-start</code>, <code>space-between</code></td><td class="wrap">Căn các dòng với nhau khi có wrap</td></tr>
+        <tr><td><code>flex-wrap</code></td><td><code>nowrap</code> (mặc định), <code>wrap</code></td><td class="wrap">Cho phép xuống dòng</td></tr>
+        <tr><td><code>gap</code></td><td><code>8px</code>, <code>12px 16px</code></td><td class="wrap">Khoảng cách giữa item (row-gap column-gap)</td></tr>
+        <tr><td><code>flex-flow</code></td><td><code>row wrap</code></td><td class="wrap">Shorthand direction + wrap</td></tr>
+      </tbody>
+    </table></div>
+  </article>
+
+  <article class="entry">
+    <h3>Thuộc tính của item: <code>flex</code>, <code>align-self</code>, <code>order</code></h3>
+    <p>Ba số của <code>flex</code> quyết định item co giãn thế nào: <b>grow</b> (chia phần dư), <b>shrink</b> (chịu thiếu khi không đủ chỗ), <b>basis</b> (kích thước khởi điểm trước khi chia).</p>
+<pre><code class="language-css">.item   { flex: 0 1 auto; } /* MẶC ĐỊNH: không giãn, được co, basis theo nội dung */
+.fill   { flex: 1; }        /* = 1 1 0%: chia đều phần còn lại → Expanded */
+.auto   { flex: auto; }     /* = 1 1 auto: giãn, nhưng tính kích thước nội dung trước */
+.fixed  { flex: none; }     /* = 0 0 auto: không co không giãn (icon, avatar) */
+.side   { flex: 0 0 240px; }/* cột cố định 240px */
+.double { flex: 2; }        /* nhận gấp đôi .fill → Expanded(flex: 2) */
+
+.item       { align-self: flex-end; } /* ghi đè align-items cho riêng item này */
+.first      { order: -1; }            /* đổi thứ tự hiển thị (không đổi thứ tự Tab) */
+.push-right { margin-left: auto; }    /* margin auto ăn hết khoảng trống → Spacer() */</code></pre>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Item mặc định có <code>flex-shrink: 1</code>: khi thiếu chỗ, mọi item đều bị bóp, kể cả ảnh và avatar. Dùng <code>flex: none</code> cho phần tử cần giữ kích thước.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Bảng đối chiếu Row/Column ↔ Flexbox</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Flutter</th><th>Compose</th><th>CSS</th></tr></thead>
+      <tbody>
+        <tr><td><code>Row</code></td><td><code>Row</code></td><td><code>display: flex</code></td></tr>
+        <tr><td><code>Column</code></td><td><code>Column</code></td><td><code>display: flex; flex-direction: column</code></td></tr>
+        <tr><td><code>MainAxisAlignment.start/center/end</code></td><td><code>Arrangement.Start/Center/End</code></td><td><code>justify-content: flex-start/center/flex-end</code></td></tr>
+        <tr><td><code>MainAxisAlignment.spaceBetween</code></td><td><code>Arrangement.SpaceBetween</code></td><td><code>justify-content: space-between</code></td></tr>
+        <tr><td><code>spaceAround / spaceEvenly</code></td><td><code>SpaceAround / SpaceEvenly</code></td><td><code>space-around / space-evenly</code></td></tr>
+        <tr><td><code>CrossAxisAlignment.start/center/end</code></td><td><code>Alignment.Top/CenterVertically/Bottom</code></td><td><code>align-items: flex-start/center/flex-end</code></td></tr>
+        <tr><td><code>CrossAxisAlignment.stretch</code></td><td><code>fillMaxHeight()</code> + <code>IntrinsicSize</code></td><td><code>align-items: stretch</code> (mặc định)</td></tr>
+        <tr><td><code>CrossAxisAlignment.baseline</code></td><td><code>Modifier.alignByBaseline()</code></td><td><code>align-items: baseline</code></td></tr>
+        <tr><td><code>Expanded(child: …)</code></td><td><code>Modifier.weight(1f)</code></td><td><code>flex: 1</code></td></tr>
+        <tr><td><code>Expanded(flex: 2)</code></td><td><code>Modifier.weight(2f)</code></td><td><code>flex: 2</code></td></tr>
+        <tr><td><code>Flexible(fit: FlexFit.loose)</code></td><td><code>weight(1f, fill = false)</code></td><td><code>flex: 0 1 auto</code> (mặc định)</td></tr>
+        <tr><td><code>Spacer()</code></td><td><code>Spacer(Modifier.weight(1f))</code></td><td><code>margin-inline-start: auto</code></td></tr>
+        <tr><td><code>spacing: 8</code> / <code>SizedBox</code> xen kẽ</td><td><code>Arrangement.spacedBy(8.dp)</code></td><td><code>gap: 8px</code></td></tr>
+        <tr><td><code>Wrap(spacing:, runSpacing:)</code></td><td><code>FlowRow</code></td><td><code>flex-wrap: wrap; gap: run spacing</code></td></tr>
+        <tr><td><code>MainAxisSize.min</code></td><td><code>wrapContentWidth()</code></td><td><code>display: inline-flex</code> / <code>width: fit-content</code></td></tr>
+        <tr><td><code>Align</code> cho một con</td><td><code>Modifier.align(Alignment.Bottom)</code></td><td><code>align-self: flex-end</code></td></tr>
+        <tr><td><code>textDirection: TextDirection.rtl</code></td><td><code>LayoutDirection.Rtl</code></td><td><code>flex-direction: row-reverse</code> / <code>dir="rtl"</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Phép so sánh lệch ở ba chỗ. (1) <code>align-items</code> mặc định là <code>stretch</code>; Flutter mặc định <code>center</code>, Compose mặc định Top/Start. (2) Flex container là block nên luôn rộng full cha (như <code>MainAxisSize.max</code>) còn cao vừa item cao nhất. (3) Item mặc định được co; Flutter báo overflow sọc vàng-đen, CSS thì im lặng bóp nhỏ hoặc tràn.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Item tràn ra ngoài: <code>min-width: 0</code></h3>
+    <p>Flex item có <code>min-width: auto</code> nên không co nhỏ hơn nội dung dài nhất (chuỗi không ngắt, bảng, code). Kết quả: ellipsis không chạy và layout bị đẩy rộng.</p>
+<pre><code class="language-markup">&lt;div class="row"&gt;
+  &lt;img class="avatar" src="a.jpg" alt=""&gt;
+  &lt;div class="body"&gt;
+    &lt;p class="title"&gt;CT_Knee_Left_Series_0042_Axial_Preop.dcm&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+<pre><code class="language-css">.row    { display: flex; align-items: center; gap: 12px; }
+.avatar { flex: none; width: 40px; }
+.body   { flex: 1; min-width: 0; }  /* ← thiếu dòng này thì ellipsis không hoạt động */
+.title  { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Tương đương <code>Expanded(child: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis))</code>. Flutter tự giới hạn vì Expanded truyền constraint chặt; CSS cần bạn tự hạ <code>min-width</code> (hoặc <code>min-height: 0</code> với column).</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 06 GRID ============ -->
+<section class="section" id="grid">
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>Grid</h2>
+    <p class="sec-intro">Layout hai chiều: khai báo hàng và cột ở container, item tự rơi vào ô. Dùng cho layout trang và lưới thẻ.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Playground</h3>
+    <div class="pg" id="grid-pg">
+      <div class="pg-title">Grid playground <span>kéo góc phải dưới khung để đổi độ rộng</span></div>
+      <div class="pg-controls">
+        <label class="ctl" for="gd-cols">grid-template-columns
+          <select id="gd-cols">
+            <option>repeat(3, 1fr)</option>
+            <option>1fr 2fr 1fr</option>
+            <option>200px 1fr</option>
+            <option selected>repeat(auto-fill, minmax(100px, 1fr))</option>
+            <option>repeat(auto-fit, minmax(100px, 1fr))</option>
+            <option>repeat(auto-fill, 80px)</option>
+          </select></label>
+        <label class="ctl" for="gd-gap">gap
+          <select id="gd-gap"><option>0</option><option selected>8px</option><option>16px</option></select></label>
+        <label class="ctl" for="gd-pi">place-items
+          <select id="gd-pi"><option selected>stretch</option><option>center</option><option>start</option><option>end</option></select></label>
+        <label class="ctl" for="gd-n">số item
+          <select id="gd-n"><option>2</option><option>4</option><option selected>7</option><option>12</option></select></label>
+        <label class="ctl-check" for="gd-span"><input type="checkbox" id="gd-span"> item 1: span 2</label>
+      </div>
+      <div class="pg-stage">
+        <div class="resizable frame" id="grid-resize"><div id="grid-demo"></div></div>
+        <p class="size-read" id="grid-size" style="margin-block-start:8px"></p>
+      </div>
+      <div class="pg-out">
+<pre><code class="language-css" id="gd-css"></code></pre>
+        <div class="pg-equiv">
+<pre><code class="language-dart" id="gd-dart"></code></pre>
+<pre><code class="language-kotlin" id="gd-kt"></code></pre>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <h3>Cú pháp cốt lõi: <code>fr</code>, <code>repeat()</code>, <code>minmax()</code>, span</h3>
+<pre><code class="language-css">.grid {
+  display: grid;
+  grid-template-columns: 240px 1fr 1fr; /* cột cố định + 2 cột chia đều phần còn lại */
+  grid-template-rows: auto 1fr auto;    /* vừa nội dung | phần còn lại | vừa nội dung */
+  gap: 16px 24px;                       /* row-gap column-gap */
+}
+.g4   { grid-template-columns: repeat(4, 1fr); }            /* 4 cột bằng nhau */
+.safe { grid-template-columns: repeat(3, minmax(0, 1fr)); } /* nội dung dài không đẩy rộng cột */
+.side { grid-template-columns: minmax(200px, 300px) 1fr; }  /* cột 1 co giãn 200–300px */
+
+.feature { grid-column: span 2; }       /* chiếm 2 cột */
+.full    { grid-column: 1 / -1; }       /* từ line đầu tới line cuối = full hàng */
+.cell    { grid-column: 2 / 4; grid-row: 1 / 3; } /* đặt theo số thứ tự grid line */</code></pre>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>1fr</code> thực chất là <code>minmax(auto, 1fr)</code>: cột không co nhỏ hơn nội dung dài nhất. Khi một code block hay chuỗi dài làm vỡ layout, dùng <code>minmax(0, 1fr)</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Named template areas</h3>
+    <p>Vẽ "bản đồ" layout bằng chuỗi ký tự, rồi gán từng phần tử vào vùng của nó. Đổi bố cục theo màn hình chỉ cần đổi bản đồ.</p>
+<pre><code class="language-css">.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header"
+    "nav    main"
+    "footer footer";
+  min-height: 100dvh;
+}
+.layout &gt; header { grid-area: header; }
+.layout &gt; nav    { grid-area: nav; }
+.layout &gt; main   { grid-area: main; }
+.layout &gt; footer { grid-area: footer; }
+
+@media (width &lt; 700px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "header" "main" "nav" "footer"; /* chỉ đổi CSS, HTML giữ nguyên */
+  }
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống <code>Scaffold</code> (appBar, drawer, body, bottomNavigationBar) nhưng bạn tự vẽ khung. Đổi bố cục theo kích thước màn hình không cần dựng lại cây widget như khi chuyển Row ↔ Column.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>auto-fill</code> vs <code>auto-fit</code></h3>
+    <p>Cả hai tạo nhiều cột nhất có thể với độ rộng tối thiểu cho trước. Chỉ khác khi item ít hơn số cột: <code>auto-fill</code> giữ các cột trống, <code>auto-fit</code> gộp cột trống để item giãn lấp đầy.</p>
+    <div class="demo">
+      <span class="demo-cap">repeat(auto-fill, minmax(90px, 1fr)) · 2 item</span>
+      <div class="frame" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;padding:8px"><div class="box">1</div><div class="box">2</div></div>
+      <span class="demo-cap">repeat(auto-fit, minmax(90px, 1fr)) · 2 item</span>
+      <div class="frame" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;padding:8px"><div class="box">1</div><div class="box">2</div></div>
+    </div>
+<pre><code class="language-css">/* Lưới card tự co giãn, không cần media query */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: 16px;
+}
+/* min(240px, 100%): tránh tràn ngang khi màn hình hẹp hơn 240px */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="cp">Compose</span>: <code>LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 240.dp))</code> chính là <code>auto-fill</code>. <span class="fl">Flutter</span>: <code>SliverGridDelegateWithMaxCrossAxisExtent</code> dùng giới hạn <em>trên</em> cho ô, còn <code>minmax()</code> của CSS dùng giới hạn <em>dưới</em>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Căn chỉnh trong Grid và pattern "Stack bằng grid"</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Property</th><th>Đặt ở</th><th>Tác dụng</th></tr></thead>
+      <tbody>
+        <tr><td><code>justify-items</code> / <code>align-items</code></td><td>container</td><td class="wrap">Căn nội dung trong từng ô (ngang / dọc)</td></tr>
+        <tr><td><code>place-items: center</code></td><td>container</td><td class="wrap">Shorthand cả hai</td></tr>
+        <tr><td><code>justify-self</code> / <code>align-self</code> / <code>place-self</code></td><td>item</td><td class="wrap">Căn riêng một item trong ô của nó</td></tr>
+        <tr><td><code>justify-content</code> / <code>align-content</code></td><td>container</td><td class="wrap">Căn cả lưới khi lưới nhỏ hơn container</td></tr>
+        <tr><td><code>grid-auto-rows: 120px</code></td><td>container</td><td class="wrap">Chiều cao các hàng tự sinh</td></tr>
+        <tr><td><code>grid-auto-flow: dense</code></td><td>container</td><td class="wrap">Lấp lỗ trống khi có item span</td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-css">/* Chồng mọi con lên cùng một ô: giống Stack, cha tự lấy kích thước con lớn nhất */
+.stack { display: grid; }
+.stack &gt; * { grid-area: 1 / 1; }
+.stack &gt; .badge { place-self: start end; } /* góc trên-phải ≈ Align(alignment: Alignment.topRight) */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Pattern này gần <code>Stack</code>/<code>Box</code> hơn cả <code>position: absolute</code>: các con vẫn ở trong flow, nên cha đo được kích thước của chúng (giống Stack với con không Positioned, hay <code>Box { … Modifier.align() }</code>).</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Khi nào Grid, khi nào Flexbox</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Dùng Flexbox khi</th><th>Dùng Grid khi</th></tr></thead>
+      <tbody>
+        <tr><td class="wrap">Một chiều: toolbar, nav, hàng nút, nội dung trong card</td><td class="wrap">Hai chiều: layout trang, lưới card, form label/input thẳng cột</td></tr>
+        <tr><td class="wrap">Kích thước do nội dung quyết định</td><td class="wrap">Kích thước do lưới quyết định</td></tr>
+        <tr><td class="wrap">Wrap tự nhiên, mỗi dòng độc lập</td><td class="wrap">Các hàng phải thẳng cột với nhau</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>GridView</code> và <code>LazyVerticalGrid</code> là widget cuộn, lazy, ô đều nhau. CSS Grid không tự cuộn và không lazy (mọi phần tử đều render) nhưng mạnh hơn về layout: cột khác độ rộng, span cả hàng lẫn cột, đặt item vào ô bất kỳ. Danh sách hàng nghìn phần tử cần virtualization bằng JS.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>grid-template-rows: subgrid</code> trong card cho phép tiêu đề, mô tả, nút của các card cạnh nhau thẳng hàng dù nội dung dài ngắn khác nhau.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 07 POSITIONING ============ -->
+<section class="section" id="position">
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2>Positioning &amp; lớp hiển thị</h2>
+    <p class="sec-intro">Đưa phần tử ra khỏi flow, chồng lớp và lý do <code>z-index: 9999</code> vẫn bị đè.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Năm giá trị của <code>position</code></h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>position</th><th>Trong flow?</th><th>Mốc của top/left</th><th>Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>static</code></td><td>Có</td><td class="wrap">bỏ qua top/left (mặc định)</td><td class="wrap">con bình thường của Column</td></tr>
+        <tr><td><code>relative</code></td><td class="wrap">Có, chỗ cũ vẫn giữ</td><td class="wrap">vị trí gốc của chính nó</td><td class="wrap"><code>Transform.translate</code>, <code>Modifier.offset</code></td></tr>
+        <tr><td><code>absolute</code></td><td>Không</td><td class="wrap">tổ tiên gần nhất có position khác static</td><td class="wrap"><code>Stack</code> + <code>Positioned</code>, <code>Box</code> + <code>Modifier.align</code></td></tr>
+        <tr><td><code>fixed</code></td><td>Không</td><td class="wrap">viewport</td><td class="wrap"><code>Overlay</code>, FAB của <code>Scaffold</code></td></tr>
+        <tr><td><code>sticky</code></td><td>Có</td><td class="wrap">dính khi cuộn chạm ngưỡng <code>top</code></td><td class="wrap"><code>SliverAppBar(pinned: true)</code>, <code>stickyHeader</code></td></tr>
+      </tbody>
+    </table></div>
+  </article>
+
+  <article class="entry">
+    <h3>Playground</h3>
+    <div class="pg" id="pos-pg">
+      <div class="pg-title">Position playground <span>item B màu cam</span></div>
+      <div class="pg-controls">
+        <label class="ctl" for="ps-pos">B: position
+          <select id="ps-pos"><option>static</option><option>relative</option><option selected>absolute</option></select></label>
+        <label class="ctl" for="ps-top">top
+          <select id="ps-top"><option>auto</option><option selected>0</option><option>16px</option><option>40px</option></select></label>
+        <label class="ctl" for="ps-right">right
+          <select id="ps-right"><option>auto</option><option selected>0</option><option>16px</option><option>40px</option></select></label>
+        <label class="ctl" for="ps-bottom">bottom
+          <select id="ps-bottom"><option selected>auto</option><option>0</option><option>16px</option></select></label>
+        <label class="ctl" for="ps-left">left
+          <select id="ps-left"><option selected>auto</option><option>0</option><option>16px</option><option>40px</option></select></label>
+        <label class="ctl" for="ps-z">B: z-index
+          <select id="ps-z"><option selected>auto</option><option>1</option><option>-1</option></select></label>
+        <label class="ctl-check" for="ps-rel"><input type="checkbox" id="ps-rel" checked> cha: position: relative</label>
+      </div>
+      <div class="pg-stage">
+        <div class="frame pos-stage">
+          <div class="pos-parent" id="pos-parent" data-label="cha">
+            <div class="box">A</div><div class="box" id="pos-b">B</div><div class="box">C</div>
+          </div>
+        </div>
+      </div>
+      <p class="result-line" id="ps-note"></p>
+      <div class="pg-out">
+<pre><code class="language-css" id="ps-css"></code></pre>
+        <div class="pg-equiv">
+<pre><code class="language-dart" id="ps-dart"></code></pre>
+<pre><code class="language-kotlin" id="ps-kt"></code></pre>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="entry">
+    <h3><code>absolute</code> và <code>inset</code></h3>
+<pre><code class="language-css">.avatar { position: relative; }   /* "đánh dấu" làm mốc cho con absolute */
+.avatar .badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;                    /* ≈ Positioned(top: -4, right: -4) */
+}
+.card .overlay {
+  position: absolute;
+  inset: 0;                       /* = top/right/bottom/left: 0 → Positioned.fill */
+}
+.center-abs {
+  position: absolute;
+  inset: 0;
+  margin: auto;                   /* căn giữa khi đã có width/height */
+  width: 120px; height: 40px;
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Khác <code>Stack</code> ở hai điểm. (1) <code>Positioned</code> bám vào Stack cha trực tiếp; absolute bám vào <b>tổ tiên gần nhất</b> có position khác static, quên <code>position: relative</code> ở cha là badge bay lên góc trang. (2) Không cần widget Stack bọc ngoài: phần tử nào cũng thành "stack" chỉ với <code>position: relative</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Phần tử absolute rời khỏi flow: cha không tính nó khi đo kích thước, anh em lấp vào chỗ cũ. Nếu cha chỉ chứa phần tử absolute, cha cao 0.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>fixed</code> và <code>sticky</code></h3>
+<pre><code class="language-css">.fab { position: fixed; right: 24px; bottom: 24px; } /* dính viewport, không cuộn theo */
+
+thead th {
+  position: sticky;
+  top: 0;               /* BẮT BUỘC có ngưỡng: top / bottom / left / right */
+  background: white;    /* cần nền để che nội dung cuộn bên dưới */
+  z-index: 1;
+}</code></pre>
+    <div class="demo">
+      <span class="demo-cap">Cuộn khung dưới: tiêu đề nhóm dính lại (position: sticky; top: 0)</span>
+      <div class="sticky-demo" tabindex="0" aria-label="Demo sticky, cuộn được">
+        <h6>Tiền phẫu · Gối trái</h6><p>Đo trục cơ học</p><p>Chọn kích thước implant</p><p>Ước lượng cắt xương</p>
+        <h6>Tiền phẫu · Háng phải</h6><p>Đánh dấu tâm chỏm</p><p>Offset cổ xương đùi</p><p>Chênh lệch chiều dài chân</p>
+        <h6>Hậu phẫu</h6><p>So sánh với kế hoạch</p><p>Xuất báo cáo</p>
+      </div>
+    </div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>sticky</code> ≈ <code>SliverPersistentHeader(pinned: true)</code> hay <code>LazyColumn { stickyHeader { } }</code>, nhưng không cần CustomScrollView: một dòng CSS trên phần tử nằm trong vùng cuộn.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Sticky không dính khi: thiếu <code>top</code>; một tổ tiên có <code>overflow: hidden/auto</code> (sticky bám vào vùng cuộn gần nhất); cha quá thấp (sticky không ra khỏi được cha). <code>fixed</code> bị "giam" lại nếu tổ tiên có <code>transform</code>, <code>filter</code> hoặc <code>contain</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>z-index</code> và stacking context</h3>
+    <p><code>z-index</code> chỉ so sánh giữa các phần tử trong cùng một <b>stacking context</b>. Khi cha tạo stacking context mới, cả cây con được "đóng gói" thành một lớp; con có <code>z-index: 9999</code> cũng không vượt ra khỏi lớp của cha.</p>
+    <div class="pg">
+      <div class="pg-title">Vì sao z-index "không ăn" <span>đổi thuộc tính của Card A</span></div>
+      <div class="pg-controls">
+        <label class="ctl" for="sc-trap">Card A có thêm
+          <select id="sc-trap">
+            <option value="">(không gì)</option>
+            <option value="t-opacity">opacity: .97</option>
+            <option value="t-transform">transform: translateZ(0)</option>
+            <option value="t-isolate">isolation: isolate</option>
+            <option value="t-zindex">z-index: 0</option>
+          </select></label>
+      </div>
+      <div class="pg-stage">
+        <div class="frame stack-stage">
+          <div class="sc-a" id="sc-a">Card A · position: relative
+            <div class="sc-pop">popup · z-index: 10</div>
+          </div>
+          <div class="sc-b">Card B<br>z-index: 1</div>
+        </div>
+      </div>
+      <p class="result-line" id="sc-note"></p>
+    </div>
+<pre><code class="language-css">/* Những thứ hay gặp nhất tạo stacking context mới */
+.a { position: relative; z-index: 0; } /* position + z-index khác auto */
+.b { opacity: .99; }                   /* opacity &lt; 1 */
+.c { transform: translateZ(0); }       /* transform, filter, backdrop-filter, perspective */
+.d { isolation: isolate; }             /* cách có chủ đích, không tác dụng phụ */
+.e { position: fixed; }                /* fixed, sticky */
+/* + flex/grid item có z-index, will-change: transform, contain: paint, mix-blend-mode */
+
+/* Thang z-index có tên thay cho số ngẫu nhiên */
+:root { --z-dropdown: 10; --z-sticky: 20; --z-modal: 100; --z-toast: 200; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="cp">Compose</span>: <code>Modifier.zIndex()</code> chỉ có tác dụng giữa các con của cùng parent, giống hệt stacking context. <span class="fl">Flutter</span> dùng thứ tự children trong <code>Stack</code>; muốn nổi lên trên mọi thứ phải đưa vào <code>Overlay</code>. Trong CSS, tương đương <code>Overlay</code> là <b>top layer</b>: <code>&lt;dialog&gt;</code> mở bằng <code>showModal()</code> và thuộc tính <code>popover</code>, luôn nằm trên mọi z-index.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>z-index</code> chỉ có tác dụng với phần tử có position khác static hoặc là flex/grid item. Khi z-index "không ăn", tìm tổ tiên tạo stacking context (DevTools → Layers) thay vì tăng số.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 08 SIZING ============ -->
+<section class="section" id="sizing">
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <h2>Sizing &amp; overflow</h2>
+    <p class="sec-intro">Giới hạn kích thước, giữ tỉ lệ và quyết định chuyện gì xảy ra khi nội dung lớn hơn hộp.</p>
+  </div>
+
+  <article class="entry">
+    <h3><code>width</code>, <code>min-*</code>, <code>max-*</code> và intrinsic size</h3>
+<pre><code class="language-css">.panel {
+  width: 100%;
+  max-width: 720px;     /* không rộng quá 720 → ConstrainedBox(maxWidth: 720) */
+  min-height: 200px;
+  margin-inline: auto;  /* căn giữa */
+}
+.tag   { width: fit-content; } /* vừa nội dung, không rộng quá cha */
+.label { width: max-content; } /* vừa nội dung, không ngắt dòng */
+.word  { width: min-content; } /* hẹp nhất có thể (bằng từ dài nhất) */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>ConstrainedBox(constraints: BoxConstraints(maxWidth: 720))</code>, <code>Modifier.widthIn(max = 720.dp)</code>, <code>sizeIn()</code>. <code>max-content</code>/<code>min-content</code> ≈ <code>IntrinsicWidth</code> / <code>Modifier.width(IntrinsicSize.Max/Min)</code>, và không đắt như intrinsic trong Flutter.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>max-width</code> thắng <code>width</code>, <code>min-width</code> thắng cả hai. <code>height</code> cố định cho khối chứa chữ là nguồn tràn chữ phổ biến nhất; dùng <code>min-height</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>clamp()</code>, <code>min()</code>, <code>max()</code></h3>
+<pre><code class="language-css">.container { width: min(100% - 2rem, 1200px); }  /* tối đa 1200, luôn chừa 1rem mỗi bên */
+.section   { padding-block: max(2rem, 5vh); }
+h1         { font-size: clamp(1.75rem, 1rem + 3vw, 3rem); } /* min, giá trị ưu tiên, max */
+.sidebar   { width: clamp(200px, 25%, 320px); }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Như <code>value.clamp(min, max)</code> trong Dart hay <code>coerceIn()</code> trong Kotlin, nhưng được tính lại liên tục theo viewport, không cần LayoutBuilder.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Trong <code>calc()</code>/<code>min()</code>/<code>clamp()</code> phải có dấu cách hai bên <code>+</code> và <code>-</code>: <code>calc(100% -2rem)</code> sai, <code>calc(100% - 2rem)</code> đúng.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>aspect-ratio</code> và <code>object-fit</code></h3>
+<pre><code class="language-css">.thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;  /* chiều cao tự tính từ chiều rộng */
+  object-fit: cover;     /* lấp đầy, cắt phần thừa → BoxFit.cover */
+  object-position: top;  /* giữ phần trên khi cắt → Alignment.topCenter */
+}
+.avatar { width: 48px; aspect-ratio: 1; border-radius: 50%; object-fit: cover; }</code></pre>
+    <div class="table-wrap"><table>
+      <thead><tr><th>CSS <code>object-fit</code></th><th>Flutter <code>BoxFit</code></th><th>Compose <code>ContentScale</code></th></tr></thead>
+      <tbody>
+        <tr><td><code>fill</code> (mặc định)</td><td><code>fill</code></td><td><code>FillBounds</code></td></tr>
+        <tr><td><code>contain</code></td><td><code>contain</code></td><td><code>Fit</code></td></tr>
+        <tr><td><code>cover</code></td><td><code>cover</code></td><td><code>Crop</code></td></tr>
+        <tr><td><code>none</code></td><td><code>none</code></td><td><code>None</code></td></tr>
+        <tr><td><code>scale-down</code></td><td><code>scaleDown</code></td><td><code>Inside</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>aspect-ratio</code> ≈ <code>AspectRatio(aspectRatio: 16 / 9)</code> / <code>Modifier.aspectRatio(16f / 9f)</code>. <code>object-fit</code> chỉ áp cho <code>img</code>/<code>video</code>; với ảnh nền dùng <code>background-size</code> (mục 10).</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Mặc định <code>object-fit: fill</code> làm méo ảnh khi đặt cả width và height. Luôn ghi <code>width</code>/<code>height</code> trong thẻ <code>&lt;img&gt;</code> để trình duyệt dành sẵn chỗ, tránh layout nhảy khi ảnh tải xong.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>overflow</code> và vùng cuộn</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>overflow</th><th>Hành vi</th><th>Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>visible</code> (mặc định)</td><td class="wrap">Tràn ra ngoài, không cắt, không cuộn</td><td class="wrap"><code>Clip.none</code>; Compose mặc định không clip</td></tr>
+        <tr><td><code>hidden</code></td><td class="wrap">Cắt; vẫn cuộn được bằng JS</td><td class="wrap"><code>ClipRect</code>, <code>Modifier.clipToBounds()</code></td></tr>
+        <tr><td><code>clip</code></td><td class="wrap">Cắt cứng, không tạo vùng cuộn</td><td class="wrap"><code>ClipRect</code></td></tr>
+        <tr><td><code>auto</code></td><td class="wrap">Hiện thanh cuộn khi cần</td><td class="wrap"><code>SingleChildScrollView</code>, <code>Modifier.verticalScroll()</code></td></tr>
+        <tr><td><code>scroll</code></td><td class="wrap">Luôn hiện thanh cuộn</td><td class="wrap"><code>Scrollbar(thumbVisibility: true)</code></td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-css">.list {
+  max-height: 320px;
+  overflow-y: auto;               /* chỉ cuộn dọc */
+  overscroll-behavior: contain;   /* cuộn hết không kéo trang phía sau theo */
+  scrollbar-gutter: stable;       /* chừa sẵn chỗ thanh cuộn, layout không nhảy */
+}
+.rounded { border-radius: 12px; overflow: clip; } /* cắt con theo góc bo → ClipRRect */</code></pre>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Vùng cuộn chỉ cuộn khi có kích thước giới hạn (<code>height</code>/<code>max-height</code>, hoặc flex item có <code>min-height: 0</code>). Giống lỗi "unbounded height" của ListView trong Column, nhưng CSS không báo lỗi mà chỉ không cuộn. Khi chỉ muốn cắt, dùng <code>overflow: clip</code> vì <code>hidden</code> làm hỏng <code>position: sticky</code> của con.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 09 TYPOGRAPHY ============ -->
+<section class="section" id="typo">
+  <div class="sec-head">
+    <span class="sec-num">09</span>
+    <h2>Typography</h2>
+    <p class="sec-intro">Toàn bộ <code>TextStyle</code> nằm ở đây, nhưng chia thành nhiều property và phần lớn được kế thừa.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Font cơ bản</h3>
+<pre><code class="language-css">body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* luôn có fallback */
+  font-size: 1rem;         /* 16px, theo cài đặt cỡ chữ của người dùng */
+  line-height: 1.5;        /* KHÔNG đơn vị: nhân với font-size của từng phần tử */
+  font-weight: 400;
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 700;        /* 100–900: 400 = normal, 700 = bold */
+  line-height: 1.15;
+  letter-spacing: -0.02em; /* em: tỉ lệ theo cỡ chữ */
+}
+.caps   { text-transform: uppercase; letter-spacing: .06em; }
+.center { text-align: center; }               /* căn CHỮ trong hộp, không căn hộp */
+.num    { font-variant-numeric: tabular-nums; } /* chữ số cùng độ rộng, thẳng cột */
+
+/* Shorthand: style weight size/line-height family */
+p { font: italic 500 1rem/1.6 system-ui, sans-serif; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>TextStyle(fontFamily:, fontSize:, fontWeight: FontWeight.w700, height: 1.15, letterSpacing:)</code>. <code>height</code> của Flutter ≈ <code>line-height</code> không đơn vị. <code>letterSpacing</code> của Flutter tính bằng logical px, CSS nên dùng <code>em</code>. <code>FontFeature.tabularFigures()</code> ↔ <code>tabular-nums</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Viết <code>line-height</code> không đơn vị (<code>1.5</code>), không dùng <code>24px</code> hay <code>1.5em</code>: giá trị có đơn vị được tính một lần ở cha rồi con kế thừa nguyên con số, heading cỡ lớn bên trong sẽ bị dính dòng.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Cắt chữ: ellipsis một dòng và <code>line-clamp</code></h3>
+    <div class="demo clamp-demo">
+      <span class="demo-cap">.truncate · 1 dòng</span>
+      <p class="ellipsis">CT_Knee_Left_Series_0042_Axial_Preop_Reconstruction_Final.dcm</p>
+      <span class="demo-cap">.clamp-2 · 2 dòng</span>
+      <p class="line-clamp-2">Bệnh nhân nam, 64 tuổi, thoái hoá khớp gối trái. Kế hoạch thay khớp toàn phần, chỉnh trục cơ học về 0°, dự kiến implant cỡ 5 cho xương đùi và cỡ 4 cho mâm chày.</p>
+    </div>
+<pre><code class="language-css">/* Một dòng: cần đủ cả 3 dòng + hộp có độ rộng giới hạn */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Nhiều dòng */
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;           /* cú pháp chuẩn, khai báo kèm */
+  overflow: hidden;
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Text(maxLines: 1, overflow: TextOverflow.ellipsis)</code>, Compose <code>maxLines = 2, overflow = TextOverflow.Ellipsis</code>. Một tham số bên kia bằng ba dòng CSS bên này, và trong flex item cần thêm <code>min-width: 0</code> (xem mục 05).</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>white-space</code> và ngắt dòng</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>white-space</th><th>Gộp khoảng trắng</th><th>Tự xuống dòng</th><th>Giữ <code>\n</code></th><th>Dùng khi</th></tr></thead>
+      <tbody>
+        <tr><td><code>normal</code></td><td>Có</td><td>Có</td><td>Không</td><td class="wrap">mặc định</td></tr>
+        <tr><td><code>nowrap</code></td><td>Có</td><td>Không</td><td>Không</td><td class="wrap">nhãn, nút, tab</td></tr>
+        <tr><td><code>pre</code></td><td>Không</td><td>Không</td><td>Có</td><td class="wrap">code</td></tr>
+        <tr><td><code>pre-wrap</code></td><td>Không</td><td>Có</td><td>Có</td><td class="wrap">text người dùng gõ (ghi chú, bình luận)</td></tr>
+        <tr><td><code>pre-line</code></td><td>Có</td><td>Có</td><td>Có</td><td class="wrap">text từ API có <code>\n</code></td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-css">.url   { overflow-wrap: anywhere; } /* ngắt cả chuỗi dài không dấu cách (URL, mã, tên file) */
+.para  { hyphens: auto; }           /* cần lang="…" trên thẻ html */
+h1, h2 { text-wrap: balance; }      /* các dòng tiêu đề dài gần bằng nhau */
+p      { text-wrap: pretty; }       /* tránh một từ mồ côi ở dòng cuối */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>softWrap: false</code> ↔ <code>white-space: nowrap</code>. <code>Text</code> trong Flutter/Compose giữ <code>\n</code> sẵn; HTML gộp mọi khoảng trắng và xuống dòng thành một dấu cách, nên text từ API cần <code>pre-line</code> hoặc <code>pre-wrap</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>text-wrap: pretty</code> là cải tiến tuỳ chọn: trình duyệt chưa hỗ trợ đơn giản bỏ qua, không hỏng gì.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Web fonts</h3>
+<pre><code class="language-markup">&lt;!-- Google Fonts: preconnect + display=swap --&gt;
+&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap"&gt;</code></pre>
+<pre><code class="language-css">/* Tự host */
+@font-face {
+  font-family: "Brand Sans";
+  src: url("/fonts/brand-sans.woff2") format("woff2");
+  font-weight: 100 900;   /* variable font: một file cho mọi weight */
+  font-style: normal;
+  font-display: swap;     /* hiện font fallback trước, đổi khi tải xong */
+}
+body { font-family: "Brand Sans", system-ui, sans-serif; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống khai báo <code>fonts:</code> trong <code>pubspec.yaml</code> hay <code>FontFamily(Font(R.font.brand))</code>, khác ở chỗ font tải qua mạng: luôn có fallback và chấp nhận chữ đổi font sau khi tải xong.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Chọn font có subset <code>vietnamese</code>; nếu không, các ký tự có dấu sẽ lấy từ font fallback và trông lệch nét.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 10 COLOR ============ -->
+<section class="section" id="color">
+  <div class="sec-head">
+    <span class="sec-num">10</span>
+    <h2>Màu sắc, nền, viền, bóng</h2>
+    <p class="sec-intro">Những gì <code>BoxDecoration</code> làm được, cộng thêm vài thứ nó không làm được.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Định dạng màu</h3>
+<pre><code class="language-css">.a { color: #0f766e; }               /* hex #RRGGBB */
+.b { color: #0f766e80; }             /* #RRGGBBAA: alpha ở CUỐI */
+.c { color: rgb(15 118 110 / 50%); } /* cú pháp hiện đại: cách bằng dấu cách, alpha sau / */
+.d { color: hsl(174 77% 26%); }      /* hue saturation lightness: dễ chỉnh tay */
+.e { color: oklch(52% 0.1 180); }    /* độ sáng đều theo cảm nhận: hợp làm palette, dark mode */
+.f { background: color-mix(in oklch, var(--brand) 20%, white); } /* pha màu: tint, shade */
+.g { border-color: currentColor; }   /* lấy theo color của chính phần tử */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Color(0xFF0F766E)</code> ở cả Flutter và Compose là <b>ARGB</b>: alpha đứng <em>đầu</em>. Hex CSS là <b>RGBA</b>: alpha đứng <em>cuối</em>. <code>0x800F766E</code> chuyển sang CSS là <code>#0f766e80</code>. <code>color-mix()</code> ≈ <code>Color.lerp()</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Dùng <code>oklch()</code> khi tạo thang màu: cùng L thì độ sáng nhìn thấy như nhau. Với <code>hsl()</code>, vàng và xanh dương cùng 50% lightness nhưng sáng tối rất khác.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Background: màu, gradient, ảnh, nhiều lớp</h3>
+<pre><code class="language-css">.hero {
+  background-color: #0f172a;           /* dự phòng nếu ảnh lỗi */
+  background-image:
+    linear-gradient(to bottom, transparent, rgb(0 0 0 / .7)), /* lớp trên */
+    url("knee-xray.jpg");              /* lớp dưới */
+  background-size: cover;              /* → BoxFit.cover */
+  background-position: center;         /* → Alignment.center */
+  background-repeat: no-repeat;
+}
+.g1 { background: linear-gradient(135deg, #0f766e, #2563eb); }
+.g2 { background: radial-gradient(circle at top left, #99f6e4, transparent 60%); }
+.g3 { background: conic-gradient(from 90deg, #0f766e, #2563eb, #0f766e); }
+.stripes { background: repeating-linear-gradient(45deg, #eee 0 10px, #fff 10px 20px); }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>BoxDecoration(color:, gradient: LinearGradient(…), image: DecorationImage(fit: BoxFit.cover))</code>; Compose <code>Modifier.background(Brush.linearGradient(…))</code>. CSS chồng nhiều lớp nền trong một khai báo; lớp viết trước nằm trên.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Hướng gradient khác cách viết: CSS dùng góc (<code>0deg</code> = từ dưới lên, <code>90deg</code> = từ trái sang phải) hoặc từ khoá <code>to right</code>; Flutter dùng <code>begin</code>/<code>end</code> kiểu <code>Alignment</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>border</code> và <code>border-radius</code></h3>
+<pre><code class="language-css">.card     { border: 1px solid #e2e8f0; border-radius: 12px; } /* width style color */
+.top-only { border-top: 3px solid teal; }
+.pill     { border-radius: 999px; }          /* bo tròn hai đầu → StadiumBorder */
+.circle   { border-radius: 50%; aspect-ratio: 1; }
+.tab      { border-radius: 8px 8px 0 0; }    /* trên-trái, trên-phải, dưới-phải, dưới-trái */
+.media    { border-radius: 12px; overflow: clip; } /* cắt ảnh con theo góc bo */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(12))</code>; Compose <code>Modifier.border(1.dp, color, RoundedCornerShape(12.dp))</code>. Khác: <code>border-radius</code> chỉ bo nền và viền của chính nó, ảnh con vẫn vuông góc cho tới khi có <code>overflow: clip</code>, như phải bọc thêm <code>ClipRRect</code> / <code>Modifier.clip(shape)</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Border chiếm chỗ trong box model: thêm border 2px khi hover làm layout nhảy. Dùng <code>outline</code>, <code>box-shadow: 0 0 0 2px</code>, hoặc đặt sẵn border trong suốt.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>box-shadow</code></h3>
+<pre><code class="language-css">.card {
+  /* offset-x offset-y blur spread color; nhiều lớp cho bóng tự nhiên hơn */
+  box-shadow: 0 1px 2px rgb(0 0 0 / .06),
+              0 8px 24px -4px rgb(0 0 0 / .12);
+}
+.ring  { box-shadow: 0 0 0 3px rgb(20 184 166 / .4); } /* viền giả, không chiếm chỗ */
+.inset { box-shadow: inset 0 2px 4px rgb(0 0 0 / .1); }
+.icon  { filter: drop-shadow(0 2px 4px rgb(0 0 0 / .3)); } /* bóng theo hình dạng PNG/SVG */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>BoxShadow(offset: Offset(0, 8), blurRadius: 24, spreadRadius: -4, color:)</code> gần 1:1, và <code>boxShadow:</code> cũng nhận một list. Compose <code>Modifier.shadow(elevation, shape)</code> theo mô hình elevation của Material, không chỉnh offset/blur trực tiếp như CSS.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Thông số blur không khớp 1:1 giữa các nền tảng. Khi port từ Figma, CSS là nơi khớp nhất vì Figma xuất thẳng ra <code>box-shadow</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>outline</code></h3>
+<pre><code class="language-css">.btn:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;  /* cách viền một khoảng */
+}
+/* outline không chiếm chỗ, không làm layout nhảy: hợp cho focus ring và debug */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Gần với focus highlight mà Material tự vẽ (<code>focusColor</code>, <code>Modifier.focusable()</code> + indication). Trên web bạn tự vẽ bằng outline.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Không xoá outline mặc định (<code>outline: none</code>) nếu không có focus style thay thế: người dùng bàn phím sẽ không biết mình đang ở đâu.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>filter</code> và <code>backdrop-filter</code></h3>
+<pre><code class="language-css">.disabled-img { filter: grayscale(1) opacity(.6); }
+.dim          { filter: brightness(.7) contrast(1.1); }
+.soft         { filter: blur(8px); }               /* làm mờ chính phần tử */
+
+.glass {
+  background: rgb(255 255 255 / .6);               /* cần nền bán trong suốt mới thấy hiệu ứng */
+  backdrop-filter: blur(12px) saturate(1.4);       /* làm mờ thứ NẰM SAU phần tử */
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>filter</code> ≈ <code>ImageFiltered</code> / <code>ColorFiltered</code>, Compose <code>Modifier.blur()</code>. <code>backdrop-filter</code> ≈ <code>BackdropFilter(filter: ImageFilter.blur(…))</code> bọc trong <code>ClipRect</code>; trong Compose thường dùng thư viện ngoài (ví dụ Haze).</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>filter</code> và <code>backdrop-filter</code> tạo stacking context và containing block mới: con <code>position: fixed</code> bên trong sẽ bám vào phần tử này thay vì viewport.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 11 THEMING ============ -->
+<section class="section" id="theme">
+  <div class="sec-head">
+    <span class="sec-num">11</span>
+    <h2>Custom properties &amp; theming</h2>
+    <p class="sec-intro">Biến CSS là hệ thống theme của web: khai báo ở gốc, ghi đè cho từng nhánh cây, đổi lúc runtime.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Khai báo và dùng biến: <code>--x</code>, <code>var()</code></h3>
+<pre><code class="language-css">:root {                          /* :root = &lt;html&gt;: biến toàn cục */
+  --color-primary: #0f766e;
+  --color-surface: #ffffff;
+  --radius: 12px;
+  --space-3: 12px;
+}
+.btn {
+  background: var(--color-primary);
+  border-radius: var(--radius);
+  padding: var(--space-3) calc(var(--space-3) * 2);
+  color: var(--btn-ink, white);  /* fallback nếu --btn-ink chưa khai báo */
+}
+/* Ghi đè cho một nhánh cây: mọi .btn bên trong .danger-zone đổi màu */
+.danger-zone { --color-primary: #dc2626; }</code></pre>
+<pre><code class="language-javascript">// Đọc / ghi từ JS
+document.documentElement.style.setProperty('--color-primary', '#7c3aed');
+getComputedStyle(el).getPropertyValue('--radius'); // "12px"</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>:root</code> ≈ <code>ThemeData</code>/<code>MaterialTheme</code> ở gốc app; <code>var(--x)</code> ≈ <code>Theme.of(context).x</code> / <code>MaterialTheme.colorScheme.x</code>. Ghi đè biến trên một phần tử ≈ bọc nhánh cây trong <code>Theme(data: …)</code> hoặc <code>CompositionLocalProvider</code>: custom property kế thừa xuống con cháu y hệt.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Không có kiểm tra kiểu. Gõ sai tên biến thì property đó âm thầm rơi về giá trị kế thừa hoặc mặc định, không báo lỗi. Dùng fallback <code>var(--x, …)</code> cho biến tuỳ chọn và xem Computed panel khi màu "biến mất".</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Dark mode: hệ thống + nút chọn thủ công</h3>
+    <p>Ba trạng thái: theo hệ điều hành (mặc định), luôn sáng, luôn tối. Component chỉ dùng biến, chỉ có bảng biến thay đổi. Trang này dùng đúng pattern dưới đây.</p>
+<pre><code class="language-css">/* 1. Màu sáng là mặc định */
+:root {
+  --bg: #ffffff; --text: #0f172a; --primary: #0f766e;
+  color-scheme: light;          /* form control, thanh cuộn theo theme */
+}
+/* 2. Theo hệ điều hành, trừ khi người dùng đã chọn light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1215; --text: #e2e8f0; --primary: #2dd4bf;
+    color-scheme: dark;
+  }
+}
+/* 3. Người dùng chọn dark thủ công */
+:root[data-theme="dark"] {
+  --bg: #0b1215; --text: #e2e8f0; --primary: #2dd4bf;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--text); }
+
+/* Ngắn gọn cho màu lẻ: light-dark() theo color-scheme hiện tại */
+:root { color-scheme: light dark; }
+.card { background: light-dark(#ffffff, #1e293b); }</code></pre>
+<pre><code class="language-javascript">function setTheme(mode) {            // 'light' | 'dark' | 'system'
+  const root = document.documentElement;
+  if (mode === 'system') root.removeAttribute('data-theme');
+  else root.dataset.theme = mode;
+  localStorage.setItem('theme', mode);
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)</code>; Compose <code>if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Mọi màu phải đi qua biến. Một <code>color: #333</code> viết cứng trong component sẽ thành chữ tối trên nền tối ở dark mode.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>@property</code>: biến có kiểu, animate được</h3>
+<pre><code class="language-css">@property --angle {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+.spin-border {
+  background: conic-gradient(from var(--angle), #0f766e, #2563eb, #0f766e);
+  transition: --angle .6s;
+}
+.spin-border:hover { --angle: 180deg; } /* nội suy được vì trình duyệt biết kiểu */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Gần với <code>ThemeExtension</code> có <code>lerp()</code>: khi biết kiểu, framework nội suy được giữa hai giá trị.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 12 RESPONSIVE ============ -->
+<section class="section" id="responsive">
+  <div class="sec-head">
+    <span class="sec-num">12</span>
+    <h2>Responsive</h2>
+    <p class="sec-intro">Media query theo màn hình, container query theo chỗ được cấp, và <code>clamp()</code> để không cần breakpoint.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Mobile-first với media query</h3>
+<pre><code class="language-css">/* Style mặc định cho màn hẹp; mở rộng dần bằng điều kiện width &gt;= */
+.layout { display: grid; gap: 16px; }
+
+@media (width &gt;= 600px) {   /* Medium */
+  .layout { grid-template-columns: 1fr 1fr; }
+}
+@media (width &gt;= 840px) {   /* Expanded */
+  .layout { grid-template-columns: 240px 1fr 1fr; }
+}
+
+/* Theo khả năng thiết bị, không chỉ kích thước */
+@media (hover: hover) and (pointer: fine) { .row:hover { background: #f1f5f9; } }
+@media (pointer: coarse) { .btn { min-height: 44px; } } /* vùng chạm lớn hơn */
+@media (orientation: landscape) { }
+@media (prefers-contrast: more) { }</code></pre>
+<pre><code class="language-markup">&lt;!-- Bắt buộc trong &lt;head&gt;, nếu không mobile sẽ render như desktop 980px rồi thu nhỏ --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>MediaQuery.sizeOf(context).width &gt;= 600</code>. Breakpoint 600/840 lấy theo <code>WindowSizeClass</code> của Material 3 (Compact &lt; 600 ≤ Medium &lt; 840 ≤ Expanded) để thống nhất với app mobile.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Cú pháp range <code>(width &gt;= 600px)</code> dễ đọc hơn <code>(min-width: 600px)</code> và đã chạy trên mọi trình duyệt chính. Mobile-first nghĩa là CSS không có media query là bản mobile.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Container queries</h3>
+    <p>Component đổi layout theo bề rộng của container chứa nó, không theo màn hình.</p>
+    <div class="demo">
+      <span class="demo-cap">Kéo góc phải dưới khung: card đổi layout khi container rộng hơn 420px · <span id="cq-size"></span></span>
+      <div class="resizable frame cq-wrap" id="cq-resize" style="inline-size: 64%">
+        <div class="cq-card">
+          <div class="thumb"></div>
+          <div><h5>Kế hoạch tiền phẫu #0042</h5><p>Khớp gối trái · implant cỡ 5 · đã duyệt</p></div>
+        </div>
+      </div>
+    </div>
+<pre><code class="language-css">.card-wrap { container-type: inline-size; container-name: card; } /* đánh dấu container */
+
+.card { display: grid; gap: 12px; }
+@container card (width &gt; 420px) {     /* bề rộng CONTAINER, không phải màn hình */
+  .card { grid-template-columns: 160px 1fr; }
+}
+.card h3 { font-size: clamp(1rem, 4cqi, 1.5rem); } /* cqi = 1% bề rộng container */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Đây là <code>LayoutBuilder</code> / <code>BoxWithConstraints</code> của CSS: component tự quyết định layout theo chỗ được cấp, đặt ở sidebar hay ở main đều đúng. Media query thì giống <code>MediaQuery</code>: chỉ biết kích thước màn hình.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Phần tử có <code>container-type</code> không query được chính nó, chỉ con cháu mới dùng <code>@container</code>. <code>inline-size</code> cũng khiến chiều ngang của nó không còn co theo nội dung, nên nó cần bề rộng đến từ cha (block, flex: 1, cột grid).</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Fluid typography với <code>clamp()</code></h3>
+<pre><code class="language-css">:root {
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.4vw, 2.25rem);
+}
+body { font-size: var(--step-0); }
+h1   { font-size: var(--step-2); }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Thay cho việc đổi <code>TextTheme</code> theo từng breakpoint: cỡ chữ trượt liên tục giữa min và max.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Luôn kết hợp <code>rem</code> với <code>vw</code> (<code>1rem + 2vw</code>), không dùng <code>vw</code> thuần, để chữ vẫn phóng to khi người dùng zoom.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Responsive images</h3>
+<pre><code class="language-markup">&lt;!-- Theo mật độ điểm ảnh --&gt;
+&lt;img src="logo.png" srcset="logo.png 1x, logo@2x.png 2x" width="120" height="40" alt="Logo"&gt;
+
+&lt;!-- Theo bề rộng hiển thị: trình duyệt tự chọn file vừa đủ --&gt;
+&lt;img
+  src="scan-800.jpg"
+  srcset="scan-400.jpg 400w, scan-800.jpg 800w, scan-1600.jpg 1600w"
+  sizes="(width &gt;= 840px) 50vw, 100vw"
+  width="1600" height="900"
+  loading="lazy" decoding="async"
+  alt="Ảnh X-quang khớp gối trái, tư thế thẳng"&gt;
+
+&lt;!-- Đổi định dạng / ảnh theo điều kiện --&gt;
+&lt;picture&gt;
+  &lt;source srcset="hero.avif" type="image/avif"&gt;
+  &lt;source media="(width &lt; 600px)" srcset="hero-portrait.webp"&gt;
+  &lt;img src="hero.jpg" alt="…"&gt;
+&lt;/picture&gt;</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>srcset</code> 1x/2x giống thư mục <code>2.0x/</code>, <code>3.0x/</code> của asset Flutter hay <code>drawable-xxhdpi</code> của Android. <code>loading="lazy"</code> ≈ chỉ build khi vào viewport như <code>ListView.builder</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Không đặt <code>loading="lazy"</code> cho ảnh lớn ở màn hình đầu tiên (hero), vì nó làm chậm lần hiển thị chính.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 13 MOTION ============ -->
+<section class="section" id="motion">
+  <div class="sec-head">
+    <span class="sec-num">13</span>
+    <h2>Transform, transition, animation</h2>
+    <p class="sec-intro">Implicit animation (<code>transition</code>) cho thay đổi state, explicit animation (<code>@keyframes</code>) cho chuyển động lặp hoặc có kịch bản.</p>
+  </div>
+
+  <article class="entry">
+    <h3><code>transform</code></h3>
+<pre><code class="language-css">.card:hover { transform: translateY(-4px) scale(1.02); } /* thứ tự có ý nghĩa */
+.icon       { transform: rotate(45deg); }  /* dương = theo chiều kim đồng hồ */
+.badge      { transform-origin: top right; transform: scale(.8); }
+
+/* Thuộc tính riêng lẻ: ghi đè và animate từng cái độc lập */
+.thumb       { translate: 0 0; scale: 1; rotate: 0deg; }
+.thumb:hover { scale: 1.05; }   /* không làm mất translate/rotate đang có */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Transform.translate/scale/rotate</code> và <code>Modifier.graphicsLayer { translationY; scaleX; rotationZ }</code>. Giống ở chỗ không ảnh hưởng layout của anh em. Khác: CSS dùng độ (<code>deg</code>, <code>turn</code>), Flutter dùng radian.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>transform</code> tạo stacking context mới và biến phần tử thành containing block cho con <code>position: fixed</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>transition</code></h3>
+    <div class="demo trans-demo" tabindex="0" aria-label="Rê chuột hoặc focus để chạy transition">
+      <span class="demo-cap">Rê chuột vào (hoặc Tab tới) khung này</span>
+      <div class="trans-box"></div>
+    </div>
+<pre><code class="language-css">.btn {
+  background: var(--primary);
+  /* property  duration  easing  [delay] */
+  transition: background-color .2s ease, transform .2s cubic-bezier(.2, .8, .2, 1);
+}
+.btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+/* Mở/đóng chiều cao "auto": animate grid-template-rows 0fr → 1fr */
+.accordion       { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s; }
+.accordion.open  { grid-template-rows: 1fr; }
+.accordion &gt; div { overflow: hidden; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>transition</code> gần như là <code>AnimatedContainer(duration:, curve:)</code> hay <code>animateColorAsState()</code>: giá trị đổi (đổi class, <code>:hover</code>…) thì trình duyệt tự nội suy. <code>ease-in-out</code> ≈ <code>Curves.easeInOut</code>, <code>cubic-bezier()</code> ≈ <code>Cubic(…)</code> / <code>CubicBezierEasing</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Không transition thẳng tới <code>height: auto</code> hay từ <code>display: none</code>; dùng mẹo grid ở trên hoặc <code>@starting-style</code> (bên dưới). Tránh <code>transition: all</code>, dễ animate nhầm thứ không muốn.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>@keyframes</code> và <code>animation</code></h3>
+    <div class="demo"><span class="demo-cap">spinner (linear, infinite) · pulse (ease-in-out, infinite)</span><div class="row-demo" style="align-items:center"><div class="spinner" role="img" aria-label="Spinner"></div><div class="pulse" role="img" aria-label="Pulse"></div></div></div>
+<pre><code class="language-css">@keyframes spin { to { rotate: 1turn; } }
+@keyframes pulse {
+  0%, 100% { opacity: .5; scale: .9; }
+  50%      { opacity: 1;  scale: 1; }
+}
+.spinner { animation: spin .8s linear infinite; }
+
+/* name  duration  easing  delay  iteration  direction  fill-mode */
+.toast { animation: slide-in .3s ease-out 0s 1 normal both; }
+@keyframes slide-in { from { translate: 0 100%; opacity: 0; } }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>@keyframes</code> + <code>animation</code> ≈ <code>AnimationController</code> + <code>TweenSequence</code>; <code>infinite</code> ≈ <code>controller.repeat()</code> / <code>rememberInfiniteTransition()</code>. Cần điều khiển bằng code thì dùng Web Animations API: <code>el.animate(keyframes, options)</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>animation-fill-mode: both</code> (hoặc <code>forwards</code>) để giữ trạng thái cuối; thiếu nó phần tử nhảy về style ban đầu khi animation kết thúc.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Thuộc tính nào animate mượt, và vì sao</h3>
+    <p>Chỉ <code>transform</code> và <code>opacity</code> (cùng <code>filter</code>) chạy được trên compositor mà không phải tính lại layout. Animate <code>width</code>, <code>top</code>, <code>margin</code> buộc trình duyệt layout lại mỗi frame và dễ giật.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Animate</th><th>Chi phí mỗi frame</th><th>Nên thay bằng</th></tr></thead>
+      <tbody>
+        <tr><td><code>transform</code>, <code>opacity</code></td><td>Chỉ composite</td><td>–</td></tr>
+        <tr><td><code>color</code>, <code>background-color</code>, <code>box-shadow</code></td><td>Paint</td><td class="wrap">ổn cho hover ngắn</td></tr>
+        <tr><td><code>width</code>, <code>height</code>, <code>top</code>, <code>left</code>, <code>margin</code></td><td>Layout + paint</td><td class="wrap"><code>transform: translate()</code> / <code>scale()</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống <code>Transform</code>/<code>Opacity</code> (chỉ repaint) so với đổi kích thước làm relayout trong Flutter. Trong Compose, đọc state bên trong lambda <code>graphicsLayer { }</code> bỏ qua được composition và layout.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>will-change: transform</code> chỉ thêm khi đo thấy giật, và gỡ sau khi animate xong; lạm dụng tốn bộ nhớ GPU.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Hiện/ẩn có animation và <code>prefers-reduced-motion</code></h3>
+<pre><code class="language-css">/* Animate cả khi chuyển từ/tới display: none (≈ AnimatedVisibility) */
+.panel {
+  display: none;
+  opacity: 0;
+  translate: 0 8px;
+  transition: opacity .25s, translate .25s, display .25s allow-discrete;
+}
+.panel.is-open {
+  display: block;
+  opacity: 1;
+  translate: 0 0;
+  @starting-style {           /* giá trị khởi đầu ngay khi vừa hiện ra */
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* Tôn trọng người dùng tắt chuyển động trong hệ điều hành */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>AnimatedVisibility(enter = fadeIn() + slideInVertically())</code>. <code>prefers-reduced-motion</code> ≈ <code>MediaQuery.disableAnimationsOf(context)</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Trên trình duyệt chưa hỗ trợ <code>@starting-style</code>, phần tử vẫn hiện/ẩn đúng, chỉ thiếu animation. An toàn để dùng ngay.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 14 MODERN ============ -->
+<section class="section" id="modern">
+  <div class="sec-head">
+    <span class="sec-num">14</span>
+    <h2>CSS hiện đại nên biết</h2>
+    <p class="sec-intro">Những tính năng đã chạy ổn định trên mọi trình duyệt chính và thay được cả preprocessor lẫn nhiều dòng JS.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Nesting</h3>
+<pre><code class="language-css">.card {
+  padding: 16px;
+  &amp; h3 { margin: 0; }                    /* = .card h3 */
+  &amp;:hover { box-shadow: 0 4px 12px rgb(0 0 0 / .1); } /* = .card:hover */
+  &amp;.is-active { outline: 2px solid teal; } /* = .card.is-active */
+  .sidebar &amp; { padding: 8px; }           /* = .sidebar .card */
+  @media (width &gt;= 600px) { padding: 24px; } /* media query lồng bên trong */
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Cảm giác gần với khai báo style ngay trong cây component, không cần Sass. Toàn bộ CSS của trang này viết bằng nesting.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Đừng lồng quá 2–3 cấp: mỗi cấp tăng specificity và làm selector dài, khó ghi đè.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>:has()</code>: cha phản ứng theo con</h3>
+<pre><code class="language-css">/* Card có ảnh ở đầu thì bỏ padding trên */
+.card:has(&gt; img:first-child) { padding-top: 0; }
+
+/* Field chứa input không hợp lệ thì tô đỏ cả label */
+.field:has(input:user-invalid) label { color: crimson; }
+
+/* Khoá cuộn trang khi có dialog mở */
+body:has(dialog[open]) { overflow: hidden; }
+
+/* Đổi layout theo số lượng con: 3 cột khi có từ 3 item trở lên */
+.list:has(&gt; :nth-child(3)) { grid-template-columns: repeat(3, 1fr); }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Không có tương đương: muốn cha phản ứng theo state của con, Flutter/Compose phải state hoisting. <code>:has()</code> làm được chuyện đó chỉ bằng CSS. Trang này dùng <code>.search:has(input:focus)</code> để ẩn gợi ý phím tắt.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Giới hạn <code>:has()</code> trong một component; tránh dạng rất rộng như <code>*:has(…)</code> để trình duyệt không phải kiểm tra lại cả trang.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>:is()</code> và <code>:where()</code></h3>
+<pre><code class="language-css">/* Gom selector dài */
+:is(article, section, aside) :is(h1, h2, h3) { line-height: 1.2; }
+
+/* Style mặc định cho design system: specificity 0, ai cũng ghi đè được */
+:where(.btn) { padding: 8px 16px; border-radius: 8px; }
+.my-btn      { padding: 4px; }  /* thắng dù chỉ một class, vì :where = 0 */</code></pre>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>:is()</code>/<code>:where()</code> "dễ tính": một selector không hợp lệ trong danh sách không làm hỏng cả rule, khác với danh sách phân cách bằng dấu phẩy thông thường.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Logical properties</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Physical</th><th>Logical</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td><code>margin-left</code> / <code>-right</code></td><td><code>margin-inline-start</code> / <code>-end</code></td><td class="wrap">trục chữ chạy (ngang với tiếng Việt)</td></tr>
+        <tr><td><code>margin-top</code> / <code>-bottom</code></td><td><code>margin-block-start</code> / <code>-end</code></td><td class="wrap">trục các dòng xếp chồng</td></tr>
+        <tr><td><code>padding-left</code> + <code>-right</code></td><td><code>padding-inline</code></td><td class="wrap">shorthand cả hai đầu</td></tr>
+        <tr><td><code>width</code> / <code>height</code></td><td><code>inline-size</code> / <code>block-size</code></td><td></td></tr>
+        <tr><td><code>top</code> / <code>left</code></td><td><code>inset-block-start</code> / <code>inset-inline-start</code></td><td></td></tr>
+        <tr><td><code>border-left</code></td><td><code>border-inline-start</code></td><td></td></tr>
+        <tr><td><code>text-align: left</code></td><td><code>text-align: start</code></td><td></td></tr>
+      </tbody>
+    </table></div>
+<pre><code class="language-css">.card  { padding-block: 16px; padding-inline: 24px; } /* dọc 16, ngang 24 */
+.icon  { margin-inline-end: 8px; }   /* tự lật sang trái khi dir="rtl" */
+.quote { border-inline-start: 3px solid teal; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Chính là <code>EdgeInsetsDirectional.only(start: 8)</code> và <code>AlignmentDirectional</code> của Flutter. Compose <code>padding(start = 8.dp)</code> vốn đã là logical.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>accent-color</code></h3>
+    <div class="demo">
+      <div class="accent-demo" id="accent-demo">
+        <label for="acc-cb"><input type="checkbox" id="acc-cb" checked> Checkbox</label>
+        <label for="acc-r1"><input type="radio" name="acc-r" id="acc-r1" checked> Radio</label>
+        <input type="range" id="acc-range" value="60" aria-label="Range">
+        <progress id="acc-prog" value="0.6" aria-label="Progress"></progress>
+        <label for="accent-pick">accent-color <input type="color" id="accent-pick" value="#2f69d6"></label>
+      </div>
+    </div>
+<pre><code class="language-css">:root { accent-color: #0f766e; } /* checkbox, radio, range, progress theo màu thương hiệu */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Như <code>colorScheme.primary</code> tự áp lên <code>Checkbox</code>, <code>Radio</code>, <code>Slider</code>. Muốn đổi cả hình dạng thì <code>appearance: none</code> rồi tự vẽ.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>scroll-snap</code></h3>
+    <div class="demo"><span class="demo-cap">Cuộn ngang: luôn dừng đúng mép slide</span>
+      <div class="snap-demo" tabindex="0" aria-label="Carousel demo"><div>AP</div><div>Lateral</div><div>Axial</div><div>3D</div></div>
+    </div>
+<pre><code class="language-css">.carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 80%;          /* mỗi slide 80% để lộ một phần slide kế */
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;   /* bắt buộc dừng ở điểm snap */
+  overscroll-behavior-x: contain;
+}
+.carousel &gt; * { scroll-snap-align: start; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>PageView(controller: PageController(viewportFraction: .8))</code> / <code>HorizontalPager</code>, hoặc <code>LazyRow</code> + <code>rememberSnapFlingBehavior()</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3><code>scroll-behavior</code> và <code>scroll-margin</code></h3>
+<pre><code class="language-css">html { scroll-behavior: smooth; }        /* link #anchor cuộn mượt */
+h2, :target { scroll-margin-top: 80px; } /* chừa chỗ cho sticky header khi nhảy tới */
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</code></pre>
+<pre><code class="language-javascript">el.scrollIntoView({ behavior: 'smooth', block: 'start' });</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>ScrollController.animateTo()</code> / <code>Scrollable.ensureVisible()</code>; Compose <code>listState.animateScrollToItem()</code>.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 15 A11Y ============ -->
+<section class="section" id="a11y">
+  <div class="sec-head">
+    <span class="sec-num">15 · Bổ sung</span>
+    <h2>Tương tác &amp; accessibility</h2>
+    <p class="sec-intro">Những property quyết định phần tử nhận chạm, nhận focus thế nào. Material lo phần này giúp bạn trên mobile; trên web thì không.</p>
+  </div>
+
+  <article class="entry">
+    <h3><code>cursor</code>, <code>pointer-events</code>, <code>user-select</code>, <code>touch-action</code></h3>
+<pre><code class="language-css">.clickable { cursor: pointer; }
+.disabled  { cursor: not-allowed; }
+.overlay   { pointer-events: none; }  /* click xuyên qua tới phần tử bên dưới */
+.overlay a { pointer-events: auto; }  /* nhưng con này vẫn nhận click */
+.handle    { user-select: none; touch-action: none; } /* kéo thả: không bôi đen, không cuộn trang */
+.viewer    { touch-action: pan-y; }   /* chỉ cho cuộn dọc, cử chỉ ngang để JS xử lý */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>pointer-events: none</code> ≈ <code>IgnorePointer</code>. <code>AbsorbPointer</code> (chặn, không cho xuyên) ≈ thuộc tính HTML <code>inert</code>. <code>user-select: none</code> ≈ không bọc trong <code>SelectionArea</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>pointer-events: none</code> không chặn bàn phím, phần tử vẫn Tab tới được. Dùng <code>inert</code> để vô hiệu hoá cả một vùng (chuột, bàn phím, screen reader).</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Focus: <code>:focus-visible</code>, <code>:focus-within</code>, skip link</h3>
+<pre><code class="language-css">:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.card:focus-within { box-shadow: 0 0 0 3px var(--focus-ring); } /* có con đang focus */
+
+/* Link "Bỏ qua tới nội dung" cho người dùng bàn phím */
+.skip-link { position: absolute; left: 8px; top: -100px; }
+.skip-link:focus { top: 8px; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>:focus-within</code> ≈ <code>Focus(onFocusChange:)</code> bọc cả một nhóm, hay <code>FocusNode.hasFocus</code> của cha khi con đang focus.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Hover trên màn cảm ứng và vùng chạm</h3>
+<pre><code class="language-css">/* Hover chỉ áp cho thiết bị có chuột: tránh "kẹt hover" sau khi chạm trên mobile */
+@media (hover: hover) {
+  .row:hover { background: var(--hover); }
+}
+/* Vùng chạm tối thiểu 44×44 */
+.icon-btn { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Material tự đảm bảo vùng chạm 48dp (<code>MaterialTapTargetSize.padded</code>, <code>minimumInteractiveComponentSize()</code>); trên web bạn tự đặt.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 16 PATTERNS ============ -->
+<section class="section" id="patterns">
+  <div class="sec-head">
+    <span class="sec-num">16</span>
+    <h2>Pattern hay dùng</h2>
+    <p class="sec-intro">Snippet copy-paste cho những layout gặp hằng ngày.</p>
+  </div>
+
+  <article class="entry">
+    <h3>Căn giữa theo mọi cách</h3>
+    <div class="demo"><div class="center-grid">
+      <div class="mini"><div class="frame c1"><div class="dot"></div></div><span class="demo-cap">1 · grid</span></div>
+      <div class="mini"><div class="frame c2"><div class="dot"></div></div><span class="demo-cap">2 · flex</span></div>
+      <div class="mini"><div class="frame c3"><div class="dot"></div></div><span class="demo-cap">3 · inset + margin auto</span></div>
+      <div class="mini"><div class="frame c4"><div class="dot"></div></div><span class="demo-cap">4 · 50% + translate</span></div>
+    </div></div>
+<pre><code class="language-css">/* 1. Grid: ngắn nhất */
+.center-1 { display: grid; place-items: center; }
+
+/* 2. Flex */
+.center-2 { display: flex; justify-content: center; align-items: center; }
+
+/* 3. Absolute + inset + margin auto (con đã có kích thước) */
+.parent   { position: relative; }
+.center-3 { position: absolute; inset: 0; margin: auto; width: 120px; height: 40px; }
+
+/* 4. Absolute + translate (không cần biết kích thước con) */
+.center-4 { position: absolute; top: 50%; left: 50%; translate: -50% -50%; }
+
+/* 5. Chỉ căn ngang một block có giới hạn bề rộng */
+.center-5 { max-width: 720px; margin-inline: auto; }
+
+/* 6. Căn chữ */
+.center-6 { text-align: center; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Center()</code> / <code>Box(contentAlignment = Alignment.Center)</code> tương ứng cách 1 hoặc 2.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>App shell: sticky header, footer luôn ở đáy</h3>
+<pre><code class="language-markup">&lt;body&gt;
+  &lt;header class="site-header"&gt;…&lt;/header&gt;
+  &lt;main&gt;…&lt;/main&gt;
+  &lt;footer&gt;…&lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+<pre><code class="language-css">body {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;  /* footer ở đáy kể cả khi nội dung ngắn */
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgb(255 255 255 / .85);
+  backdrop-filter: blur(8px);
+}</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>Scaffold(appBar:, body:, bottomNavigationBar:)</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Lưới card tự co giãn</h3>
+<pre><code class="language-css">.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 16px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: clip;
+}
+.card img      { aspect-ratio: 16 / 9; width: 100%; object-fit: cover; }
+.card .body    { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 16px; }
+.card .actions { margin-top: auto; } /* nút luôn dính đáy card dù nội dung dài ngắn */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>LazyVerticalGrid(GridCells.Adaptive(260.dp))</code>; <code>margin-top: auto</code> trong column ≈ <code>Spacer(Modifier.weight(1f))</code> đặt trước hàng nút.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Sidebar + content</h3>
+<pre><code class="language-css">/* Có media query */
+.with-sidebar { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (width &gt;= 840px) {
+  .with-sidebar { grid-template-columns: 260px minmax(0, 1fr); }
+  .with-sidebar &gt; aside { position: sticky; top: 16px; align-self: start; }
+}
+
+/* Không media query: sidebar tự xuống dòng khi main hẹp hơn 60% */
+.with-sidebar-flex { display: flex; flex-wrap: wrap; gap: 24px; }
+.with-sidebar-flex &gt; aside { flex: 1 1 240px; }
+.with-sidebar-flex &gt; main  { flex: 999 1 0; min-width: 60%; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>NavigationRail</code> + body ở size class Expanded, chuyển thành drawer hoặc bottom bar ở Compact.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>align-self: start</code> là bắt buộc để sidebar sticky trong grid: không có nó, sidebar bị stretch cao bằng hàng và không còn khoảng để "dính".</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Utility: truncate, line-clamp, ảnh giữ tỉ lệ</h3>
+<pre><code class="language-css">.truncate   { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--lines, 2);
+  line-clamp: var(--lines, 2);
+  overflow: hidden;
+}
+.media-16x9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.avatar     { width: var(--size, 40px); aspect-ratio: 1; border-radius: 50%; object-fit: cover; }</code></pre>
+<pre><code class="language-markup">&lt;p class="line-clamp" style="--lines: 3"&gt;…&lt;/p&gt;
+&lt;img class="avatar" style="--size: 56px" src="u.jpg" alt=""&gt;</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Truyền biến qua <code>style="--lines: 3"</code> giống truyền tham số vào widget dùng chung: một class, nhiều cấu hình.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Modal với <code>&lt;dialog&gt;</code></h3>
+<pre><code class="language-markup">&lt;button type="button" id="open-dlg"&gt;Xoá kế hoạch&lt;/button&gt;
+
+&lt;dialog id="dlg" class="modal"&gt;
+  &lt;form method="dialog"&gt;
+    &lt;h2&gt;Xoá kế hoạch này?&lt;/h2&gt;
+    &lt;p&gt;Thao tác không hoàn tác được.&lt;/p&gt;
+    &lt;div class="actions"&gt;
+      &lt;button value="cancel"&gt;Huỷ&lt;/button&gt;
+      &lt;button value="ok" class="danger"&gt;Xoá&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  document.getElementById('open-dlg').onclick = () =&gt; document.getElementById('dlg').showModal();
+&lt;/script&gt;</code></pre>
+<pre><code class="language-css">.modal {
+  border: 0;
+  border-radius: 16px;
+  padding: 24px;
+  width: min(100% - 32px, 420px);
+  box-shadow: 0 20px 60px rgb(0 0 0 / .3);
+}
+.modal::backdrop { background: rgb(15 23 42 / .5); backdrop-filter: blur(2px); }
+.modal .actions  { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>showDialog()</code> / Compose <code>Dialog { }</code>. <code>showModal()</code> đưa dialog lên top layer (không cần z-index), giữ focus bên trong, Esc để đóng. <code>::backdrop</code> ≈ <code>barrierColor</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>method="dialog"</code> làm nút submit đóng dialog và gán <code>dialog.returnValue</code> (ví dụ <code>"ok"</code>), không gửi request nào.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Nút có đủ trạng thái hover / focus / active / disabled</h3>
+    <div class="demo"><div class="row-demo" style="align-items:center">
+      <button class="btn-demo" type="button">Lưu kế hoạch</button>
+      <button class="btn-demo" type="button" style="--btn-bg: var(--d4)">Biến thể (đổi biến)</button>
+      <button class="btn-demo" type="button" disabled>Disabled</button>
+    </div></div>
+<pre><code class="language-css">.btn {
+  --btn-bg: #0f766e;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .15s, transform .1s;
+
+  &amp;:hover         { background: color-mix(in oklch, var(--btn-bg) 85%, black); }
+  &amp;:active        { transform: translateY(1px); }
+  &amp;:focus-visible { outline: 2px solid var(--btn-bg); outline-offset: 3px; }
+  &amp;:disabled      { opacity: .45; cursor: not-allowed; }
+}
+.btn.secondary { --btn-bg: #475569; } /* biến thể chỉ đổi biến */</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>ButtonStyle</code> với <code>WidgetStateProperty</code> theo hovered/focused/pressed/disabled. Biến thể bằng biến CSS giống <code>FilledButton.styleFrom(backgroundColor:)</code>.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Khoảng cách và đường kẻ giữa các phần tử</h3>
+<pre><code class="language-css">/* Khoảng cách đều giữa các con trong luồng văn bản ("lobotomized owl") */
+.flow &gt; * + * { margin-block-start: var(--flow-space, 1em); }
+
+/* Đường kẻ giữa các item, không có ở item đầu */
+.list &gt; * + * { border-top: 1px solid #e2e8f0; }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>ListView.separated(separatorBuilder:)</code> / <code>HorizontalDivider()</code> chèn giữa các item.</p></div></div>
+  </article>
+</section>
+
+<!-- ============ 17 DEBUG ============ -->
+<section class="section" id="debug">
+  <div class="sec-head">
+    <span class="sec-num">17</span>
+    <h2>Debug</h2>
+    <p class="sec-intro">DevTools của trình duyệt là Flutter Inspector của web. Phần lớn lỗi CSS lộ ra sau 30 giây ở tab Computed.</p>
+  </div>
+
+  <article class="entry">
+    <h3>DevTools: xem ở đâu</h3>
+    <ul>
+      <li><b>Elements → Styles</b>: rule bị gạch ngang là đã bị ghi đè; tick để bật/tắt từng property, sửa trực tiếp để thử.</li>
+      <li><b>Computed</b>: giá trị cuối cùng của mọi property, bấm mũi tên để thấy nó đến từ rule nào. Nơi đầu tiên cần xem khi "CSS không ăn". Cuối tab có sơ đồ box model.</li>
+      <li><b>Badge <code>flex</code> / <code>grid</code></b> cạnh phần tử trong cây Elements: bật overlay vẽ trục, gap, số thứ tự grid line. Tab <b>Layout</b> liệt kê mọi grid/flex container.</li>
+      <li><b><code>:hov</code></b> trong Styles: ép trạng thái <code>:hover</code>, <code>:focus-visible</code>, <code>:active</code> để soi style.</li>
+      <li><b>Rendering</b> (menu ⋮ → More tools): Paint flashing, Layout shift regions, giả lập <code>prefers-color-scheme</code> và <code>prefers-reduced-motion</code>.</li>
+      <li><b>Device toolbar</b> (<kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>M</kbd>): thử viewport mobile, DPR, chạm.</li>
+    </ul>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Overlay flex/grid ≈ <code>debugPaintSizeEnabled</code>; Computed ≈ xem thuộc tính thật của widget trong Flutter Inspector / Layout Inspector; giả lập color scheme ≈ đổi <code>ThemeMode</code> khi debug.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Kỹ thuật <code>outline: 1px solid red</code></h3>
+<pre><code class="language-css">/* Dán tạm vào DevTools để thấy mọi hộp.
+   outline không chiếm chỗ nên không làm lệch layout (border thì có) */
+* { outline: 1px solid rgb(255 0 0 / .5); }</code></pre>
+<pre><code class="language-javascript">// Dán vào Console: tìm phần tử gây thanh cuộn ngang
+[...document.querySelectorAll('*')].filter(el =&gt; el.getBoundingClientRect().right &gt; innerWidth);</code></pre>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Dùng <code>outline</code>, không dùng <code>border</code> để debug: border chiếm chỗ và chính nó làm layout thay đổi.</p></div></div>
+  </article>
+
+  <article class="entry">
+    <h3>Lỗi phổ biến: triệu chứng → nguyên nhân → cách sửa</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Triệu chứng</th><th>Nguyên nhân</th><th>Cách sửa</th></tr></thead>
+      <tbody>
+        <tr><td class="wrap">Khoảng cách giữa hai khối nhỏ hơn tổng margin; margin của con "lọt" ra ngoài cha</td><td class="wrap">Margin collapse</td><td class="wrap">Dùng <code>gap</code> trong flex/grid, padding cho cha, hoặc <code>display: flow-root</code></td></tr>
+        <tr><td class="wrap"><code>z-index: 9999</code> vẫn bị đè</td><td class="wrap">Khác stacking context, hoặc phần tử không positioned</td><td class="wrap">Tìm tổ tiên có <code>opacity</code>/<code>transform</code>/<code>z-index</code>; dùng <code>isolation</code> hoặc <code>&lt;dialog&gt;</code>/<code>popover</code></td></tr>
+        <tr><td class="wrap"><code>height: 100%</code> không có tác dụng</td><td class="wrap">Cha không có chiều cao xác định</td><td class="wrap">Cha <code>display: flex/grid</code> để con stretch, dùng <code>flex: 1</code>, hoặc <code>min-height: 100dvh</code> ở gốc</td></tr>
+        <tr><td class="wrap">Flex item tràn ra ngoài, ellipsis không chạy</td><td class="wrap"><code>min-width: auto</code> của flex item</td><td class="wrap"><code>min-width: 0</code> (hoặc <code>min-height: 0</code> với column)</td></tr>
+        <tr><td class="wrap">Cột grid bị đẩy rộng bởi code block / chuỗi dài</td><td class="wrap"><code>1fr</code> = <code>minmax(auto, 1fr)</code></td><td class="wrap"><code>minmax(0, 1fr)</code></td></tr>
+        <tr><td class="wrap">Khe hở vài px dưới ảnh</td><td class="wrap"><code>img</code> là inline, căn theo baseline chữ</td><td class="wrap"><code>img { display: block; }</code></td></tr>
+        <tr><td class="wrap">Cả trang cuộn ngang trên mobile</td><td class="wrap">Phần tử rộng hơn viewport; <code>100vw</code> tính cả thanh cuộn</td><td class="wrap">Dùng <code>width: 100%</code>, tìm thủ phạm bằng outline / script ở trên</td></tr>
+        <tr><td class="wrap"><code>position: sticky</code> không dính</td><td class="wrap">Thiếu <code>top</code>; tổ tiên có <code>overflow</code>; cha quá thấp</td><td class="wrap">Thêm <code>top</code>, đổi <code>overflow: hidden</code> → <code>clip</code>, <code>align-self: start</code></td></tr>
+        <tr><td class="wrap">Vùng <code>overflow: auto</code> không cuộn</td><td class="wrap">Không có chiều cao giới hạn</td><td class="wrap"><code>max-height</code>, hoặc <code>flex: 1; min-height: 0</code></td></tr>
+        <tr><td class="wrap">Style không áp dụng</td><td class="wrap">Thua specificity, sai selector, CSS ngoài layer đè</td><td class="wrap">Xem Computed panel; giảm specificity thay vì thêm <code>!important</code></td></tr>
+        <tr><td class="wrap">Input / button có font khác trang</td><td class="wrap">Form control không kế thừa font</td><td class="wrap"><code>font: inherit</code></td></tr>
+        <tr><td class="wrap">Transition không chạy</td><td class="wrap">Animate <code>height: auto</code> hoặc <code>display</code></td><td class="wrap">Mẹo grid <code>0fr → 1fr</code>; <code>@starting-style</code> + <code>allow-discrete</code></td></tr>
+        <tr><td class="wrap">Nội dung bị cắt dưới đáy trên mobile</td><td class="wrap"><code>100vh</code> tính cả vùng thanh địa chỉ</td><td class="wrap"><code>100dvh</code></td></tr>
+      </tbody>
+    </table></div>
+  </article>
+</section>
+
+<div class="empty-state" id="empty" hidden><b>Không tìm thấy "<span id="empty-q"></span>"</b><br>Thử từ khoá tiếng Anh như <code>flex</code>, <code>sticky</code>, <code>Expanded</code>, hoặc bỏ bớt từ.</div>
+
+</div>
+</main>
+</div>
+
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="../assets/vendor/prism/prism.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-markup.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-css.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-clike.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-javascript.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-dart.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-kotlin.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } }
+  };
+  const hl = el => { if (window.Prism && typeof Prism.highlightElement === 'function') { try { Prism.highlightElement(el); } catch (e) { /* plain text fallback */ } } };
+  const setCode = (el, text) => { if (!el) return; el.textContent = text; hl(el); };
+
+  /* ---------- Theme ---------- */
+  const root = document.documentElement;
+  const themeBtn = $('#theme-btn');
+  const themeLabel = $('.theme-label', themeBtn);
+  const modes = ['system', 'light', 'dark'];
+  const modeNames = { system: 'Hệ thống', light: 'Sáng', dark: 'Tối' };
+  function showMode(m) {
+    themeLabel.textContent = modeNames[m];
+    themeBtn.setAttribute('aria-label', 'Giao diện: ' + modeNames[m] + '. Bấm để đổi');
+    themeBtn.title = 'Giao diện: ' + modeNames[m];
+  }
+  function applyTheme(m) {
+    if (m === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', m);
+    showMode(m);
+  }
+  let mode = store.get('cheatsheet-theme');
+  if (modes.includes(mode)) applyTheme(mode);
+  else { mode = root.getAttribute('data-theme'); if (!modes.includes(mode)) mode = 'system'; showMode(mode); }
+  themeBtn.addEventListener('click', () => {
+    mode = modes[(modes.indexOf(mode) + 1) % modes.length];
+    applyTheme(mode);
+    store.set('cheatsheet-theme', mode);
+  });
+
+  /* ---------- Code blocks: header + copy ---------- */
+  const langName = { css: 'CSS', markup: 'HTML', dart: 'Flutter · Dart', kotlin: 'Compose · Kotlin', javascript: 'JavaScript' };
+  $$('pre > code').forEach(code => {
+    const pre = code.parentElement;
+    const m = code.className.match(/language-(\w+)/);
+    const lang = m ? m[1] : 'text';
+    const wrap = document.createElement('div');
+    wrap.className = 'code';
+    const head = document.createElement('div');
+    head.className = 'code-head';
+    const label = document.createElement('span');
+    label.textContent = langName[lang] || lang;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.setAttribute('aria-label', 'Copy ' + label.textContent);
+    head.append(label, btn);
+    pre.before(wrap);
+    wrap.append(head, pre);
+  });
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.copy-btn');
+    if (!btn) return;
+    const code = btn.closest('.code').querySelector('code');
+    const text = code.textContent;
+    const done = (msg, ok) => {
+      btn.textContent = msg;
+      btn.classList.toggle('ok', ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1800);
+    };
+    const fallback = () => {
+      const r = document.createRange();
+      r.selectNodeContents(code);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      done(ok ? 'Đã copy' : 'Đã chọn · Ctrl+C', ok);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => done('Đã copy', true), fallback);
+    } else fallback();
+  });
+  if (window.Prism && typeof Prism.highlightAll === 'function') { try { Prism.highlightAll(); } catch (e) { /* ignore */ } }
+
+  /* ---------- Mobile menu ---------- */
+  const sidebar = $('#sidebar');
+  const menuBtn = $('#menu-btn');
+  const toc = $('#toc');
+  const closeMenu = () => { sidebar.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => {
+    const open = sidebar.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  toc.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+
+  /* ---------- Scrollspy ---------- */
+  const sections = $$('.section');
+  const tocLinks = new Map($$('.toc a').map(a => [a.getAttribute('href').slice(1), a]));
+  function setCurrent(id) {
+    tocLinks.forEach((a, k) => a.setAttribute('aria-current', k === id ? 'true' : 'false'));
+    const a = tocLinks.get(id);
+    if (a && toc.scrollHeight > toc.clientHeight && getComputedStyle(toc).display !== 'none') {
+      const tr = toc.getBoundingClientRect(), ar = a.getBoundingClientRect();
+      if (ar.top < tr.top + 8 || ar.bottom > tr.bottom - 8) toc.scrollTop += ar.top - tr.top - tr.height / 2;
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) setCurrent(en.target.id); });
+    }, { rootMargin: '-25% 0px -65% 0px' });
+    sections.forEach(s => io.observe(s));
+  }
+
+  /* ---------- Search ---------- */
+  const input = $('#search');
+  const statusEl = $('#search-status');
+  const emptyEl = $('#empty');
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
+  sections.forEach(sec => {
+    sec._head = norm($('.sec-head', sec).textContent);
+    sec._entries = $$('.entry', sec).map(el => ({ el, t: norm(el.textContent) }));
+  });
+  const canHL = typeof CSS !== 'undefined' && CSS.highlights && typeof Highlight === 'function';
+  function paintHighlights(raw) {
+    if (!canHL) return;
+    CSS.highlights.delete('search');
+    const terms = raw.toLowerCase().split(/\s+/).filter(t => t.length > 1);
+    if (!terms.length) return;
+    const ranges = [];
+    const MAX = 600;
+    outer: for (const sec of sections) {
+      if (sec.hidden) continue;
+      for (const o of sec._entries) {
+        if (o.el.hidden) continue;
+        const walker = document.createTreeWalker(o.el, NodeFilter.SHOW_TEXT, {
+          acceptNode: n => (n.parentElement && n.parentElement.closest('select, option, script, style')) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+        });
+        let node;
+        while ((node = walker.nextNode())) {
+          const text = node.data.toLowerCase();
+          for (const t of terms) {
+            let i = text.indexOf(t);
+            while (i !== -1) {
+              const r = new Range();
+              r.setStart(node, i);
+              r.setEnd(node, i + t.length);
+              ranges.push(r);
+              if (ranges.length >= MAX) break outer;
+              i = text.indexOf(t, i + t.length);
+            }
+          }
+        }
+      }
+    }
+    CSS.highlights.set('search', new Highlight(...ranges));
+  }
+  let lastFirst = null;
+  function runSearch() {
+    const raw = input.value.trim();
+    const terms = norm(raw).split(/\s+/).filter(Boolean);
+    let total = 0, secCount = 0;
+    sections.forEach(sec => {
+      const headHit = terms.length > 0 && terms.every(t => sec._head.includes(t));
+      let n = 0;
+      sec._entries.forEach(o => {
+        const hit = !terms.length || headHit || terms.every(t => o.t.includes(t));
+        o.el.hidden = !hit;
+        if (hit) n++;
+      });
+      const show = !terms.length || n > 0;
+      sec.hidden = !show;
+      const link = tocLinks.get(sec.id);
+      if (link) {
+        link.classList.toggle('dim', !show);
+        $('.c', link).textContent = terms.length && n ? String(n) : '';
+      }
+      if (terms.length && n) { total += n; secCount++; }
+    });
+    statusEl.textContent = terms.length ? (total ? total + ' mục trong ' + secCount + ' phần' : 'Không có kết quả') : '';
+    emptyEl.hidden = !(terms.length && !total);
+    $('#empty-q').textContent = raw;
+    paintHighlights(raw);
+    const first = terms.length ? sections.find(s => !s.hidden) : null;
+    if (first && first !== lastFirst) first.scrollIntoView({ block: 'start' });
+    lastFirst = first;
+  }
+  let searchTimer;
+  input.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(runSearch, 140); });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { input.value = ''; runSearch(); input.blur(); }
+    if (e.key === 'Enter') { e.preventDefault(); closeMenu(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t.closest('input, textarea, select, [contenteditable="true"]')) return;
+    e.preventDefault();
+    input.focus();
+    input.select();
+  });
+
+  /* ---------- Flex playground ---------- */
+  (function flexPlayground() {
+    const demo = $('#flex-demo');
+    if (!demo) return;
+    const ids = ['fx-dir', 'fx-jc', 'fx-ai', 'fx-wrap', 'fx-gap', 'fx-n', 'fx-grow'];
+    const v = id => $('#' + id).value;
+    const growEl = $('#fx-grow');
+    const defaults = { 'flex-direction': 'row', 'justify-content': 'flex-start', 'align-items': 'stretch', 'flex-wrap': 'nowrap', 'gap': '0' };
+    function render() {
+      const dir = v('fx-dir'), jc = v('fx-jc'), ai = v('fx-ai'), wrap = v('fx-wrap'), gap = v('fx-gap'), n = +v('fx-n'), grow = growEl.checked;
+      const isCol = dir.startsWith('column'), rev = dir.endsWith('reverse');
+      const g = parseInt(gap, 10) || 0;
+      demo.style.flexDirection = dir;
+      demo.style.justifyContent = jc;
+      demo.style.alignItems = ai;
+      demo.style.flexWrap = wrap;
+      demo.style.gap = gap;
+      demo.style.alignContent = wrap === 'wrap' ? 'flex-start' : '';
+      demo.textContent = '';
+      for (let i = 1; i <= n; i++) {
+        const b = document.createElement('div');
+        b.className = 'box';
+        b.textContent = String(i);
+        if (i === 2 && grow) { b.style.flex = '1'; b.classList.add('grow'); }
+        demo.append(b);
+      }
+      const props = { 'flex-direction': dir, 'justify-content': jc, 'align-items': ai, 'flex-wrap': wrap, 'gap': gap };
+      let css = '.container {\n  display: flex;\n';
+      for (const k in props) css += '  ' + k + ': ' + props[k] + ';' + (props[k] === defaults[k] ? ' /* mặc định */' : '') + '\n';
+      if (wrap === 'wrap') css += '  align-content: flex-start; /* căn các dòng */\n';
+      css += '}';
+      if (grow) css += '\n.item:nth-child(2) { flex: 1; } /* ăn hết phần còn lại */';
+      setCode($('#fx-css'), css);
+
+      /* Flutter */
+      const mainF = { 'flex-start': 'start', 'center': 'center', 'flex-end': 'end', 'space-between': 'spaceBetween', 'space-around': 'spaceAround', 'space-evenly': 'spaceEvenly' }[jc];
+      const kidsArr = [];
+      for (let i = 1; i <= Math.min(n, 3); i++) kidsArr.push(i === 2 && grow && wrap !== 'wrap' ? 'Expanded(child: Item(2))' : 'Item(' + i + ')');
+      const kids = kidsArr.join(', ') + (n > 3 ? ', …' : '');
+      let dart;
+      if (wrap === 'wrap') {
+        const wc = { 'flex-start': 'start', 'center': 'center', 'flex-end': 'end' }[ai];
+        dart = 'Wrap(\n  direction: Axis.' + (isCol ? 'vertical' : 'horizontal') + ',\n'
+          + '  alignment: WrapAlignment.' + mainF + ',\n'
+          + '  crossAxisAlignment: WrapCrossAlignment.' + (wc || 'start') + ',' + (wc ? '' : ' // Wrap không có ' + ai) + '\n'
+          + '  spacing: ' + g + ',\n  runSpacing: ' + g + ',\n'
+          + (rev ? (isCol ? '  verticalDirection: VerticalDirection.up,\n' : '  textDirection: TextDirection.rtl,\n') : '')
+          + '  children: [' + kids + '],\n)'
+          + (grow ? '\n// Expanded không dùng được trong Wrap' : '');
+      } else {
+        const crossF = { 'stretch': 'stretch', 'flex-start': 'start', 'center': 'center', 'flex-end': 'end', 'baseline': 'baseline' }[ai];
+        dart = (isCol ? 'Column' : 'Row') + '(\n'
+          + '  mainAxisAlignment: MainAxisAlignment.' + mainF + ',\n'
+          + '  crossAxisAlignment: CrossAxisAlignment.' + crossF + ','
+          + (ai === 'stretch' ? ' // cần ' + (isCol ? 'chiều ngang' : 'chiều cao') + ' bị giới hạn' : '') + '\n'
+          + (ai === 'baseline' ? '  textBaseline: TextBaseline.alphabetic,\n' : '')
+          + (g ? '  spacing: ' + g + ', // Flutter ≥ 3.27\n' : '')
+          + (rev ? (isCol ? '  verticalDirection: VerticalDirection.up,\n' : '  textDirection: TextDirection.rtl,\n') : '')
+          + '  children: [' + kids + '],\n)';
+      }
+      setCode($('#fx-dart'), dart);
+
+      /* Compose */
+      const spaceK = { 'space-between': 'SpaceBetween', 'space-around': 'SpaceAround', 'space-evenly': 'SpaceEvenly' };
+      const mainK = isCol ? { 'flex-start': 'Top', 'center': 'Center', 'flex-end': 'Bottom' } : { 'flex-start': 'Start', 'center': 'Center', 'flex-end': 'End' };
+      const alK = isCol ? { 'flex-start': 'Top', 'center': 'CenterVertically', 'flex-end': 'Bottom' } : { 'flex-start': 'Start', 'center': 'CenterHorizontally', 'flex-end': 'End' };
+      let arr, arrNote = '';
+      if (spaceK[jc]) { arr = 'Arrangement.' + spaceK[jc]; if (g) arrNote = ' // + gap: không gộp được, chèn Spacer'; }
+      else if (g) arr = jc === 'flex-start' ? 'Arrangement.spacedBy(' + g + '.dp)' : 'Arrangement.spacedBy(' + g + '.dp, Alignment.' + alK[jc] + ')';
+      else arr = 'Arrangement.' + mainK[jc];
+      const itemsK = [];
+      for (let i = 1; i <= Math.min(n, 3); i++) itemsK.push('  ' + (i === 2 && grow && wrap !== 'wrap' ? 'Item(2, Modifier.weight(1f))' : 'Item(' + i + ')'));
+      if (n > 3) itemsK.push('  // …');
+      const revNote = rev ? '// ' + dir + ': đảo thứ tự children\n' : '';
+      let kt;
+      if (wrap === 'wrap') {
+        kt = revNote + (isCol ? 'FlowColumn' : 'FlowRow') + '(\n'
+          + '  ' + (isCol ? 'verticalArrangement' : 'horizontalArrangement') + ' = ' + arr + ',' + arrNote + '\n'
+          + '  ' + (isCol ? 'horizontalArrangement' : 'verticalArrangement') + ' = Arrangement.spacedBy(' + g + '.dp),\n'
+          + ') {\n' + itemsK.join('\n') + '\n}';
+      } else {
+        let cross, crossNote = '';
+        if (isCol) {
+          cross = { 'stretch': 'Start', 'flex-start': 'Start', 'center': 'CenterHorizontally', 'flex-end': 'End', 'baseline': 'Start' }[ai];
+          if (ai === 'stretch') crossNote = ' // stretch: con dùng Modifier.fillMaxWidth()';
+          if (ai === 'baseline') crossNote = ' // baseline không áp dụng cho Column';
+        } else {
+          cross = { 'stretch': 'Top', 'flex-start': 'Top', 'center': 'CenterVertically', 'flex-end': 'Bottom', 'baseline': 'Top' }[ai];
+          if (ai === 'stretch') crossNote = ' // stretch: Modifier.height(IntrinsicSize.Min) + con fillMaxHeight()';
+          if (ai === 'baseline') crossNote = ' // baseline: con dùng Modifier.alignByBaseline()';
+        }
+        kt = revNote + (isCol ? 'Column' : 'Row') + '(\n'
+          + '  ' + (isCol ? 'verticalArrangement' : 'horizontalArrangement') + ' = ' + arr + ',' + arrNote + '\n'
+          + '  ' + (isCol ? 'horizontalAlignment' : 'verticalAlignment') + ' = Alignment.' + cross + ',' + crossNote + '\n'
+          + ') {\n' + itemsK.join('\n') + '\n}';
+      }
+      setCode($('#fx-kt'), kt);
+    }
+    ids.forEach(id => $('#' + id).addEventListener('change', render));
+    render();
+  })();
+
+  /* ---------- Grid playground ---------- */
+  (function gridPlayground() {
+    const demo = $('#grid-demo');
+    if (!demo) return;
+    const ids = ['gd-cols', 'gd-gap', 'gd-pi', 'gd-n', 'gd-span'];
+    const v = id => $('#' + id).value;
+    const spanEl = $('#gd-span');
+    const sizeEl = $('#grid-size');
+    function spacingD(g) { return g ? '  mainAxisSpacing: ' + g + ', crossAxisSpacing: ' + g + ',\n' : ''; }
+    function spacingK(g) { return g ? '  horizontalArrangement = Arrangement.spacedBy(' + g + '.dp),\n  verticalArrangement = Arrangement.spacedBy(' + g + '.dp),\n' : ''; }
+    function render() {
+      const cols = v('gd-cols'), gap = v('gd-gap'), pi = v('gd-pi'), n = +v('gd-n'), span = spanEl.checked;
+      const g = parseInt(gap, 10) || 0;
+      demo.style.gridTemplateColumns = cols;
+      demo.style.gap = gap;
+      demo.style.placeItems = pi;
+      demo.textContent = '';
+      for (let i = 1; i <= n; i++) {
+        const b = document.createElement('div');
+        b.className = 'box';
+        b.textContent = i === 1 && span ? '1 · span 2' : String(i);
+        if (i === 1 && span) b.style.gridColumn = 'span 2';
+        demo.append(b);
+      }
+      let css = '.grid {\n  display: grid;\n  grid-template-columns: ' + cols + ';\n  gap: ' + gap + ';\n  place-items: ' + pi + ';' + (pi === 'stretch' ? ' /* mặc định */' : '') + '\n}';
+      if (span) css += '\n.item:first-child { grid-column: span 2; }';
+      setCode($('#gd-css'), css);
+
+      let d, k;
+      const lazyK = c => 'LazyVerticalGrid(\n  columns = ' + c + ',\n' + spacingK(g) + ') {\n  items(list) { Item(it) }\n}';
+      switch (cols) {
+        case 'repeat(3, 1fr)':
+          d = 'GridView.count(\n  crossAxisCount: 3,\n' + spacingD(g) + '  children: items,\n)';
+          k = lazyK('GridCells.Fixed(3)');
+          break;
+        case '1fr 2fr 1fr':
+          d = '// GridView không có cột khác độ rộng\nRow(children: [\n  Expanded(flex: 1, child: a),\n  Expanded(flex: 2, child: b),\n  Expanded(flex: 1, child: c),\n])';
+          k = '// Hoặc GridCells tuỳ biến (calculateCrossAxisCellSizes)\nRow {\n  A(Modifier.weight(1f))\n  B(Modifier.weight(2f))\n  C(Modifier.weight(1f))\n}';
+          break;
+        case '200px 1fr':
+          d = 'Row(children: [\n  SizedBox(width: 200, child: sidebar),\n  Expanded(child: content),\n])';
+          k = 'Row {\n  Sidebar(Modifier.width(200.dp))\n  Content(Modifier.weight(1f))\n}';
+          break;
+        case 'repeat(auto-fill, minmax(100px, 1fr))':
+          d = '// Gần nhất; Flutter dùng giới hạn TRÊN, CSS dùng giới hạn DƯỚI\nGridView(\n  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(\n    maxCrossAxisExtent: 150,\n' + (g ? '    mainAxisSpacing: ' + g + ', crossAxisSpacing: ' + g + ',\n' : '') + '  ),\n  children: items,\n)';
+          k = lazyK('GridCells.Adaptive(minSize = 100.dp)');
+          break;
+        case 'repeat(auto-fit, minmax(100px, 1fr))':
+          d = '// Không có auto-fit: ô trống luôn được giữ\nGridView(\n  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(\n    maxCrossAxisExtent: 150,\n  ),\n  children: items,\n)';
+          k = '// Không có auto-fit: Adaptive luôn giữ cột trống\n' + lazyK('GridCells.Adaptive(minSize = 100.dp)');
+          break;
+        default:
+          d = '// Không có sẵn: tự tính số cột\nLayoutBuilder(builder: (context, c) => GridView.count(\n  crossAxisCount: (c.maxWidth / 80).floor(),\n' + spacingD(g) + '  children: items,\n))';
+          k = lazyK('GridCells.FixedSize(80.dp)');
+      }
+      if (span) {
+        d += '\n// span 2: GridView không hỗ trợ, cần package flutter_staggered_grid_view';
+        k += '\n// span: item(span = { GridItemSpan(2) }) { Item(1) }';
+      }
+      if (pi !== 'stretch') {
+        d += '\n// place-items: ' + pi + ' → bọc từng ô trong Align';
+        k += '\n// place-items: ' + pi + ' → Modifier.wrapContentSize() cho từng ô';
+      }
+      setCode($('#gd-dart'), d);
+      setCode($('#gd-kt'), k);
+      updateSize();
+    }
+    function updateSize() {
+      const w = demo.getBoundingClientRect().width;
+      const tracks = getComputedStyle(demo).gridTemplateColumns.split(' ').filter(Boolean).length;
+      sizeEl.textContent = 'container rộng ' + Math.round(w) + 'px · ' + tracks + ' cột';
+    }
+    ids.forEach(id => $('#' + id).addEventListener('change', render));
+    if ('ResizeObserver' in window) new ResizeObserver(updateSize).observe(demo);
+    render();
+  })();
+
+  /* ---------- Position playground ---------- */
+  (function positionPlayground() {
+    const parent = $('#pos-parent');
+    const b = $('#pos-b');
+    if (!parent || !b) return;
+    const ids = ['ps-pos', 'ps-top', 'ps-right', 'ps-bottom', 'ps-left', 'ps-z', 'ps-rel'];
+    const v = id => $('#' + id).value;
+    const relEl = $('#ps-rel');
+    const px = s => s === 'auto' ? null : (parseInt(s, 10) || 0);
+    function render() {
+      const pos = v('ps-pos'), top = v('ps-top'), right = v('ps-right'), bottom = v('ps-bottom'), left = v('ps-left'), z = v('ps-z'), rel = relEl.checked;
+      parent.style.position = rel ? 'relative' : 'static';
+      parent.dataset.label = rel ? 'cha · position: relative' : 'cha · position: static';
+      Object.assign(b.style, { position: pos, top, right, bottom, left, zIndex: z });
+      const offs = { top, right, bottom, left };
+      const anyOff = Object.values(offs).some(x => x !== 'auto');
+
+      let note;
+      if (pos === 'static') note = 'static bỏ qua top/right/bottom/left: B nằm trong flow như A và C.';
+      else if (pos === 'relative') note = anyOff ? 'B dịch đi so với chỗ gốc của nó, nhưng chỗ cũ vẫn được giữ nên C không dịch theo.' : 'Chưa có offset nên B đứng yên. relative thường được dùng để làm mốc cho con absolute.';
+      else if (!anyOff) note = 'B rời khỏi flow (C trượt vào chỗ của B) nhưng chưa có offset, nên đứng ở vị trí tĩnh của nó và đè lên C.';
+      else note = rel ? 'B rời khỏi flow (C lấp vào chỗ của B) và bám vào khung xanh của cha.' : 'Cha là static nên B bỏ qua cha, bám vào tổ tiên positioned gần nhất: khung chấm bên ngoài.';
+      if (z === '-1') note += pos === 'static'
+        ? ' B là flex item nên z-index vẫn có tác dụng dù static: z-index: -1 đẩy B xuống dưới nền của cha.'
+        : ' z-index: -1 vẽ B dưới nền của cha, vì cha không tạo stacking context.';
+      if (z === '1' && pos === 'static') note += ' B là flex item nên z-index: 1 vẫn có tác dụng dù static.';
+      $('#ps-note').textContent = note;
+
+      let css = '.parent { position: ' + (rel ? 'relative' : 'static') + '; }\n.b {\n  position: ' + pos + ';\n';
+      for (const k in offs) if (offs[k] !== 'auto') css += '  ' + k + ': ' + offs[k] + ';' + (pos === 'static' ? ' /* bị bỏ qua */' : '') + '\n';
+      if (z !== 'auto') css += '  z-index: ' + z + ';\n';
+      css += '}';
+      setCode($('#ps-css'), css);
+
+      const T = px(top), R = px(right), Bo = px(bottom), L = px(left);
+      let d, k;
+      if (pos === 'static') {
+        d = 'Row(children: [A, B, C]) // B là con bình thường';
+        k = 'Row {\n  A()\n  B()\n  C()\n}';
+      } else if (pos === 'relative') {
+        const dx = L !== null ? L : (R !== null ? -R : 0);
+        const dy = T !== null ? T : (Bo !== null ? -Bo : 0);
+        d = 'Row(children: [\n  A,\n  Transform.translate(\n    offset: Offset(' + dx + ', ' + dy + '), // chỉ dịch khi vẽ, không đẩy A/C\n    child: B,\n  ),\n  C,\n])';
+        k = 'Row {\n  A()\n  B(Modifier.offset(x = ' + dx + '.dp, y = ' + dy + '.dp))\n  C()\n}';
+      } else {
+        const args = [];
+        if (T !== null) args.push('top: ' + T);
+        if (R !== null) args.push('right: ' + R);
+        if (Bo !== null) args.push('bottom: ' + Bo);
+        if (L !== null) args.push('left: ' + L);
+        const allZero = T === 0 && R === 0 && Bo === 0 && L === 0;
+        const posW = allZero ? 'Positioned.fill(child: B)' : 'Positioned(' + (args.length ? args.join(', ') + ', ' : '') + 'child: B)';
+        d = (rel ? '' : '// cha static → Stack phải là khung ngoài, không phải cha\n')
+          + 'Stack(children: [\n  Row(children: [A, C]),\n  ' + posW + ',' + (z !== 'auto' ? ' // z-index: đổi thứ tự trong Stack' : '') + '\n])';
+        const hEnd = R !== null && L === null, vEnd = Bo !== null && T === null;
+        const align = (vEnd ? 'Bottom' : 'Top') + (hEnd ? 'End' : 'Start');
+        const ox = hEnd ? -R : (L || 0), oy = vEnd ? -Bo : (T || 0);
+        const mods = ['.align(Alignment.' + align + ')'];
+        if (ox || oy) mods.push('.offset(x = ' + ox + '.dp, y = ' + oy + '.dp)');
+        if (z !== 'auto') mods.push('.zIndex(' + z + 'f)');
+        const stretch = (L !== null && R !== null) || (T !== null && Bo !== null);
+        k = 'Box {\n  Row { A(); C() }\n  B(\n    Modifier' + mods.map(m => '\n      ' + m).join('') + '\n  )' + (stretch ? '\n  // đặt cả 2 cạnh đối diện = kéo giãn: matchParentSize() / fillMaxWidth()' : '') + '\n}';
+      }
+      setCode($('#ps-dart'), d);
+      setCode($('#ps-kt'), k);
+    }
+    ids.forEach(id => $('#' + id).addEventListener('change', render));
+    render();
+  })();
+
+  /* ---------- Stacking context demo ---------- */
+  (function stackingDemo() {
+    const a = $('#sc-a'), sel = $('#sc-trap'), note = $('#sc-note');
+    if (!a) return;
+    function render() {
+      a.className = 'sc-a' + (sel.value ? ' ' + sel.value : '');
+      note.textContent = sel.value
+        ? 'Card A giờ là một stacking context ở mức z-index 0. Popup (z-index: 10) chỉ còn so được với các phần tử bên trong Card A, nên cả khối nằm dưới Card B (z-index: 1).'
+        : 'Card A không tạo stacking context, nên popup (z-index: 10) được so trực tiếp với Card B (z-index: 1) và nằm trên.';
+    }
+    sel.addEventListener('change', render);
+    render();
+  })();
+
+  /* ---------- Container query readout ---------- */
+  (function cqReadout() {
+    const box = $('#cq-resize'), out = $('#cq-size');
+    if (!box || !out || !('ResizeObserver' in window)) return;
+    new ResizeObserver(() => {
+      const cs = getComputedStyle(box);
+      const w = box.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
+      out.textContent = 'container: ' + Math.round(w) + 'px' + (w > 420 ? ' → layout ngang' : ' → layout dọc');
+    }).observe(box);
+  })();
+
+  /* ---------- accent-color ---------- */
+  (function accentDemo() {
+    const pick = $('#accent-pick'), box = $('#accent-demo');
+    if (!pick || !box) return;
+    const apply = () => { box.style.accentColor = pick.value; };
+    pick.addEventListener('input', apply);
+    apply();
+  })();
+
+  /* ---------- Specificity calculator ---------- */
+  (function specificityCalc() {
+    const inp = $('#spec-input');
+    if (!inp) return;
+    const add = (x, y) => [x[0] + y[0], x[1] + y[1], x[2] + y[2]];
+    const cmp = (x, y) => (x[0] - y[0]) || (x[1] - y[1]) || (x[2] - y[2]);
+    function splitTop(list) {
+      const out = []; let depth = 0, cur = '', q = null;
+      for (const ch of list) {
+        if (q) { cur += ch; if (ch === q) q = null; continue; }
+        if (ch === '"' || ch === "'") { q = ch; cur += ch; continue; }
+        if (ch === '(' || ch === '[') depth++;
+        if (ch === ')' || ch === ']') depth--;
+        if (ch === ',' && depth === 0) { out.push(cur); cur = ''; continue; }
+        cur += ch;
+      }
+      out.push(cur);
+      return out.map(s => s.trim()).filter(Boolean);
+    }
+    const maxOf = list => splitTop(list).map(spec).reduce((m, s) => cmp(s, m) > 0 ? s : m, [0, 0, 0]);
+    const isIdent = ch => /[\w -￿-]/.test(ch);
+    function readParen(s, i) {
+      let depth = 1, j = i + 1, q = null;
+      while (j < s.length && depth > 0) {
+        const ch = s[j];
+        if (q) { if (ch === q) q = null; }
+        else if (ch === '"' || ch === "'") q = ch;
+        else if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+        j++;
+      }
+      return [s.slice(i + 1, j - 1), j];
+    }
+    function spec(sel) {
+      let r = [0, 0, 0], i = 0;
+      const s = sel.trim();
+      while (i < s.length) {
+        const ch = s[i];
+        if (ch === '\\') { i += 2; continue; }
+        if (ch === '#') { r[0]++; i++; while (i < s.length && isIdent(s[i])) i++; }
+        else if (ch === '.') { r[1]++; i++; while (i < s.length && isIdent(s[i])) i++; }
+        else if (ch === '[') {
+          r[1]++;
+          let q = null; i++;
+          while (i < s.length) { const c = s[i]; if (q) { if (c === q) q = null; } else if (c === '"' || c === "'") q = c; else if (c === ']') break; i++; }
+          i++;
+        }
+        else if (ch === ':') {
+          if (s[i + 1] === ':') {
+            r[2]++; i += 2;
+            while (i < s.length && isIdent(s[i])) i++;
+            if (s[i] === '(') i = readParen(s, i)[1];
+          } else {
+            i++;
+            let name = '';
+            while (i < s.length && isIdent(s[i])) name += s[i++];
+            name = name.toLowerCase();
+            if (s[i] === '(') {
+              const [inner, next] = readParen(s, i);
+              i = next;
+              if (name === 'where') { /* 0 */ }
+              else if (name === 'is' || name === 'not' || name === 'has' || name === 'matches') r = add(r, maxOf(inner.replace(/^\s*[>~+]/, '')));
+              else if (name === 'nth-child' || name === 'nth-last-child') {
+                r[1]++;
+                const m = inner.match(/\sof\s(.+)$/i);
+                if (m) r = add(r, maxOf(m[1]));
+              } else r[1]++;
+            } else if (['before', 'after', 'first-line', 'first-letter'].includes(name)) r[2]++;
+            else r[1]++;
+          }
+        }
+        else if (ch === '*') i++;
+        else if (/[a-zA-Z]/.test(ch)) { r[2]++; while (i < s.length && isIdent(s[i])) i++; }
+        else i++;
+      }
+      return r;
+    }
+    function render() {
+      const r = maxOf(inp.value);
+      $('#spec-a').textContent = r[0];
+      $('#spec-b').textContent = r[1];
+      $('#spec-c').textContent = r[2];
+    }
+    inp.addEventListener('input', render);
+    $('#spec-chips').addEventListener('click', e => {
+      const c = e.target.closest('.chip');
+      if (!c) return;
+      inp.value = c.textContent;
+      render();
+    });
+    render();
+  })();
+})();
+</script>
+</body>
+</html>

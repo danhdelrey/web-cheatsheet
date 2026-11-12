@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Web Cheatsheets</title>
+<meta name="description" content="Bốn cheatsheet HTML, CSS, JavaScript/TypeScript và Angular cho dev đã quen Flutter, Jetpack Compose, Dart và Kotlin.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script src="assets/site.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: top bar mảnh · hero có ô tìm xuyên trang · lưới 2×2 card (1 cột trên mobile).
+   Khi gõ tìm kiếm, lưới card được thay bằng danh sách kết quả nhóm theo cheatsheet. */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceef3; --fg:#171a22; --muted:#596173; --line:#dce0e8;
+  --hit:#fff1a8; --focus:#4f6ff0;
+  --c-html:#c23c12; --c-html-soft:#fbe8df;
+  --c-css:#0a776d;  --c-css-soft:#d8efeb;
+  --c-js:#2a64aa;   --c-js-soft:#e1ebf8;
+  --c-ng:#b81d55;   --c-ng-soft:#fbe7ee;
+  --shadow:0 1px 2px rgba(23,26,34,.05),0 4px 14px rgba(23,26,34,.05);
+  --font-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1117; --surface:#161922; --surface-2:#1f232d; --fg:#e6e8ee; --muted:#9ba1b2; --line:#2a2f3b;
+    --hit:#5b4a12; --focus:#8aa2ff;
+    --c-html:#ff8a5c; --c-html-soft:#3a2219;
+    --c-css:#3fc4b4;  --c-css-soft:#123430;
+    --c-js:#6ea8ee;   --c-js-soft:#172a42;
+    --c-ng:#ff6c9c;   --c-ng-soft:#3a1726;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1117; --surface:#161922; --surface-2:#1f232d; --fg:#e6e8ee; --muted:#9ba1b2; --line:#2a2f3b;
+  --hit:#5b4a12; --focus:#8aa2ff;
+  --c-html:#ff8a5c; --c-html-soft:#3a2219;
+  --c-css:#3fc4b4;  --c-css-soft:#123430;
+  --c-js:#6ea8ee;   --c-js-soft:#172a42;
+  --c-ng:#ff6c9c;   --c-ng-soft:#3a1726;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.6 var(--font-body);-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+@media (min-width:720px){.wrap{padding:0 28px}}
+
+/* Top bar */
+.top{display:flex;align-items:center;gap:12px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:650;letter-spacing:-.01em}
+.logo-mark{display:grid;grid-template-columns:repeat(2,9px);gap:3px}
+.logo-mark i{width:9px;height:9px;border-radius:2.5px}
+.logo-mark i:nth-child(1){background:var(--c-html)} .logo-mark i:nth-child(2){background:var(--c-css)}
+.logo-mark i:nth-child(3){background:var(--c-js)}   .logo-mark i:nth-child(4){background:var(--c-ng)}
+.spacer{flex:1}
+.theme-btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--surface);color:var(--fg);font:500 13px var(--font-body);cursor:pointer}
+.theme-btn:hover{background:var(--surface-2)}
+.theme-btn svg{width:15px;height:15px}
+
+/* Hero */
+.hero{padding:36px 0 28px}
+@media (min-width:720px){.hero{padding:64px 0 36px}}
+.eyebrow{margin:0 0 10px;font:500 12.5px var(--font-mono);color:var(--muted);letter-spacing:.02em}
+h1{margin:0;font-size:clamp(28px,5vw,44px);line-height:1.12;letter-spacing:-.025em;font-weight:700;max-width:18ch;text-wrap:balance}
+.lede{margin:14px 0 0;max-width:60ch;color:var(--muted);font-size:16px;text-wrap:pretty}
+
+.search{position:relative;margin-top:28px;max-width:640px}
+.search svg{position:absolute;left:16px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search input{width:100%;height:52px;padding:0 54px 0 46px;border-radius:14px;border:1px solid var(--line);background:var(--surface);
+  color:var(--fg);font:16px var(--font-body);box-shadow:var(--shadow);-webkit-appearance:none;appearance:none}
+.search input::placeholder{color:var(--muted)}
+.search input:focus{outline:2px solid var(--focus);outline-offset:1px}
+.search input::-webkit-search-cancel-button{display:none}
+.search kbd{position:absolute;right:14px;top:50%;transform:translateY(-50%);min-width:24px;padding:2px 7px;border:1px solid var(--line);
+  border-bottom-width:2px;border-radius:6px;background:var(--surface-2);color:var(--muted);font:500 12px var(--font-mono);text-align:center}
+.status{margin:10px 2px 0;min-height:1.4em;color:var(--muted);font-size:13.5px}
+
+/* Cards */
+.grid{display:grid;gap:16px;grid-template-columns:minmax(0,1fr);padding-bottom:56px}
+@media (min-width:860px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+.card,.group{--c:var(--c-html);--cs:var(--c-html-soft)}
+[data-k="css"]{--c:var(--c-css);--cs:var(--c-css-soft)}
+[data-k="js-ts"]{--c:var(--c-js);--cs:var(--c-js-soft)}
+[data-k="angular"]{--c:var(--c-ng);--cs:var(--c-ng-soft)}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.card-head{display:flex;gap:14px;align-items:flex-start;padding:20px 20px 0;text-decoration:none}
+.mark{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:12px;background:var(--cs);color:var(--c);
+  font:600 15px/1 var(--font-mono);letter-spacing:-.03em}
+.card-title{min-width:0}
+.step{display:block;font:500 12px var(--font-mono);color:var(--muted)}
+.card h2{margin:2px 0 0;font-size:20px;line-height:1.25;letter-spacing:-.015em}
+.card-head:hover h2{color:var(--c)}
+.card-intro{margin:12px 20px 0;color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.toc{list-style:none;margin:16px 0 0;padding:12px 12px 4px;border-top:1px solid var(--line);columns:2 200px;column-gap:8px}
+.toc li{break-inside:avoid}
+.toc a{display:flex;gap:9px;padding:5px 8px;border-radius:8px;text-decoration:none;font-size:13.5px;line-height:1.4}
+.toc a:hover{background:var(--cs);color:var(--c)}
+.toc .n{flex:none;width:18px;font:500 11.5px/1.6 var(--font-mono);color:var(--muted)}
+.card-foot{display:flex;align-items:center;gap:12px;margin-top:auto;padding:12px 20px 18px;font-size:13px;color:var(--muted)}
+.open{margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:999px;background:var(--c);
+  color:var(--surface);font-weight:600;text-decoration:none;font-size:13.5px}
+.open:hover{filter:brightness(1.08)}
+
+/* Results */
+.results{padding-bottom:56px}
+.group{margin-bottom:28px}
+.group-head{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.group-head .mark{width:30px;height:30px;border-radius:8px;font-size:11.5px}
+.group-head h2{margin:0;font-size:16px}
+.group-head a{margin-left:auto;font-size:13px;color:var(--muted)}
+.hits{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.hit + .hit{border-top:1px solid var(--line)}
+.hit-sec{display:flex;gap:10px;align-items:baseline;padding:12px 16px;text-decoration:none;font-weight:600}
+.hit-sec:hover{background:var(--surface-2)}
+.hit-sec .n{font:500 12px var(--font-mono);color:var(--muted);flex:none}
+.hit-sec small{font-weight:400;color:var(--muted);margin-left:auto;font-size:12.5px;white-space:nowrap}
+.hit-entries{list-style:none;margin:-4px 0 0;padding:0 16px 10px 42px}
+.hit-entries a{display:block;padding:4px 8px;margin:0 -8px;border-radius:7px;text-decoration:none;font-size:14px;color:var(--muted)}
+.hit-entries a:hover{background:var(--surface-2);color:var(--fg)}
+mark{background:var(--hit);color:inherit;border-radius:3px;padding:0 1px}
+.in-body{display:inline-block;margin-left:6px;padding:0 6px;border-radius:5px;background:var(--surface-2);font-size:11.5px;color:var(--muted);vertical-align:1px}
+.first .hit-sec{box-shadow:inset 3px 0 0 var(--focus)}
+.empty{padding:28px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px}
+
+footer{border-top:1px solid var(--line);padding:20px 0 32px;color:var(--muted);font-size:13px}
+footer p{margin:0}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:color-mix(in srgb,var(--c) 45%,var(--line))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="./" aria-label="Web Cheatsheets, trang chủ"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Web Cheatsheets</a>
+    <span class="spacer"></span>
+    <button class="theme-btn" id="themeBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+      <span><span class="vh">Giao diện: </span><span id="themeLabel">Hệ thống</span></span>
+    </button>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">HTML → CSS → JS/TS → Angular</p>
+    <h1>Cheatsheet web cho dev Flutter &amp; Compose</h1>
+    <p class="lede">Bốn bảng tra dùng hằng ngày. Mỗi mục đặt cạnh widget, composable, Dart hoặc Kotlin bạn đã quen, kèm snippet copy được và những chỗ dễ mang thói quen sai sang.</p>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label for="q" class="vh">Tìm trong cả bốn cheatsheet</label>
+      <input id="q" type="search" placeholder="Tìm xuyên trang: flex, dialog, promise, signal…" autocomplete="off" spellcheck="false" enterkeyhint="go">
+      <kbd aria-hidden="true">/</kbd>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </section>
+
+  <main id="main">
+    <div class="grid" id="grid"></div>
+    <div class="results" id="results" hidden></div>
+  </main>
+
+  <footer>
+    <p>Site tĩnh, không cần build. Nhấn <b>/</b> để tìm, <b>Enter</b> mở kết quả đầu tiên, <b>Esc</b> xóa từ khóa.</p>
+  </footer>
+</div>
+
+<script src="assets/index-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var SHEETS = [
+    { k: 'html', step: '01', name: 'HTML', full: 'HTML cho dev Flutter & Compose', mark: '</>',
+      intro: 'Thẻ, thuộc tính và pattern dùng hằng ngày: semantic layout, forms, dialog, accessibility, SEO, Web Components. Từng thẻ đối chiếu với widget và composable.' },
+    { k: 'css', step: '02', name: 'CSS', full: 'CSS cho dev Flutter & Compose', mark: '{ }',
+      intro: 'Tra CSS qua thứ bạn đã quen: Row/Column, Stack, Modifier, ThemeData. Box model, Flexbox, Grid, theming, responsive, animation và debug.' },
+    { k: 'js-ts', step: '03', name: 'JavaScript & TypeScript', full: 'JS & TS cho dev Dart & Kotlin', mark: 'JS',
+      intro: 'JavaScript ES2023+ và TypeScript strict. Mỗi mục chỉ ra chỗ JS/TS khác Dart, Kotlin hoặc dễ gây bug hơn; snippet có nút Run chạy ngay trên trang.' },
+    { k: 'angular', step: '04', name: 'Angular', full: 'Angular v17+ → v22', mark: 'A',
+      intro: 'Standalone component, signals, built-in control flow, DI, RxJS, forms, routing, @defer, testing và bảng chuyển cú pháp cũ sang mới.' }
+  ];
+  var INDEX = window.CHEATSHEET_INDEX || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var grid = $('grid'), results = $('results'), input = $('q'), status = $('status');
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+  function pad(i) { return (i < 9 ? '0' : '') + (i + 1); }
+
+  /* ---------- Theme (3 trạng thái, dùng chung khoá với các trang con) ---------- */
+  var KEY = 'cheatsheet-theme', root = document.documentElement;
+  var ORDER = ['system', 'light', 'dark'], NAMES = { system: 'Hệ thống', light: 'Sáng', dark: 'Tối' };
+  var theme = 'system';
+  try { theme = localStorage.getItem(KEY) || 'system'; } catch (e) {}
+  if (ORDER.indexOf(theme) < 0) theme = 'system';
+  function applyTheme() {
+    if (theme === 'system') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', theme);
+    $('themeLabel').textContent = NAMES[theme];
+  }
+  applyTheme();
+  $('themeBtn').addEventListener('click', function () {
+    theme = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length];
+    try { localStorage.setItem(KEY, theme); } catch (e) {}
+    applyTheme();
+  });
+
+  /* ---------- Card grid ---------- */
+  var totalSec = 0, totalEntry = 0;
+  grid.innerHTML = SHEETS.map(function (s) {
+    var secs = INDEX[s.k] || [];
+    var entries = secs.reduce(function (n, x) { return n + x.e.length; }, 0);
+    totalSec += secs.length; totalEntry += entries;
+    return '<article class="card" data-k="' + s.k + '">' +
+      '<a class="card-head" href="' + s.k + '/">' +
+        '<span class="mark" aria-hidden="true">' + esc(s.mark) + '</span>' +
+        '<span class="card-title"><span class="step">' + s.step + ' · ' + esc(s.full) + '</span><h2>' + esc(s.name) + '</h2></span>' +
+      '</a>' +
+      '<p class="card-intro">' + esc(s.intro) + '</p>' +
+      '<ol class="toc" aria-label="Mục lục ' + esc(s.name) + '">' + secs.map(function (x, i) {
+        return '<li><a href="' + s.k + '/#' + encodeURIComponent(x.id) + '"><span class="n">' + pad(i) + '</span><span>' + esc(x.t) + '</span></a></li>';
+      }).join('') + '</ol>' +
+      '<div class="card-foot"><span>' + secs.length + ' mục · ' + entries + ' mục con</span>' +
+        '<a class="open" href="' + s.k + '/">Mở<span class="vh"> ' + esc(s.name) + '</span> <span aria-hidden="true">→</span></a></div>' +
+    '</article>';
+  }).join('');
+  var idleStatus = totalSec + ' mục, ' + totalEntry + ' mục con trong 4 cheatsheet.';
+  status.textContent = idleStatus;
+
+  /* ---------- Search ---------- */
+  // Bỏ dấu từng ký tự để vị trí khớp trên chuỗi đã chuẩn hoá trùng với chuỗi gốc (dùng cho highlight)
+  function fold(s) {
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i].normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      if (c === 'đ') c = 'd';
+      out += c.length === 1 ? c : s[i].toLowerCase().charAt(0);
+    }
+    return out;
+  }
+  function highlight(text, terms) {
+    var f = fold(text), marks = [];
+    terms.forEach(function (t) {
+      var at = 0, i;
+      while ((i = f.indexOf(t, at)) > -1) { marks.push([i, i + t.length]); at = i + t.length; }
+    });
+    if (!marks.length) return esc(text);
+    marks.sort(function (a, b) { return a[0] - b[0]; });
+    var html = '', pos = 0;
+    marks.forEach(function (m) {
+      if (m[0] < pos) return;
+      html += esc(text.slice(pos, m[0])) + '<mark>' + esc(text.slice(m[0], m[1])) + '</mark>';
+      pos = m[1];
+    });
+    return html + esc(text.slice(pos));
+  }
+  function matchesAll(text, terms) {
+    var f = fold(text);
+    return terms.every(function (t) { return f.indexOf(t) > -1; });
+  }
+
+  var firstHref = null;
+  function search(raw) {
+    var q = raw.trim();
+    if (!q) {
+      results.hidden = true; grid.hidden = false; firstHref = null;
+      status.textContent = idleStatus;
+      return;
+    }
+    var terms = fold(q).split(/\s+/).filter(Boolean);
+    var html = '', count = 0;
+    firstHref = null;
+    SHEETS.forEach(function (s) {
+      var rows = '';
+      (INDEX[s.k] || []).forEach(function (x, i) {
+        var secHit = matchesAll(x.t + ' ' + x.h, terms);
+        var hitEntries = [];
+        x.e.forEach(function (e) {
+          if (matchesAll(e[0], terms)) hitEntries.push({ t: e[0], inBody: false });
+          else if (matchesAll(e[0] + ' ' + e[1], terms)) hitEntries.push({ t: e[0], inBody: true });
+        });
+        if (!secHit && !hitEntries.length) return;
+        var secHref = s.k + '/#' + encodeURIComponent(x.id);
+        var qHref = s.k + '/?q=' + encodeURIComponent(q);
+        if (!firstHref) firstHref = hitEntries.length ? qHref : secHref;
+        count += hitEntries.length || 1;
+        rows += '<li class="hit' + (rows || html ? '' : ' first') + '">' +
+          '<a class="hit-sec" href="' + secHref + '"><span class="n">' + pad(i) + '</span><span>' + highlight(x.t, terms) + '</span>' +
+          (hitEntries.length ? '<small>' + hitEntries.length + ' mục con</small>' : '') + '</a>' +
+          (hitEntries.length ? '<ul class="hit-entries">' + hitEntries.map(function (e) {
+            return '<li><a href="' + qHref + '">' + highlight(e.t, terms) +
+              (e.inBody ? ' <span class="in-body">khớp trong nội dung</span>' : '') + '</a></li>';
+          }).join('') + '</ul>' : '') +
+        '</li>';
+      });
+      if (rows) {
+        html += '<section class="group" data-k="' + s.k + '">' +
+          '<div class="group-head"><span class="mark" aria-hidden="true">' + esc(s.mark) + '</span><h2>' + esc(s.name) + '</h2>' +
+          '<a href="' + s.k + '/?q=' + encodeURIComponent(q) + '">Mở với bộ lọc này →</a></div>' +
+          '<ul class="hits">' + rows + '</ul></section>';
+      }
+    });
+    grid.hidden = true; results.hidden = false;
+    results.innerHTML = html || '<div class="empty">Không có mục nào khớp “' + esc(q) + '”. Thử từ khóa ngắn hơn, ví dụ <b>grid</b>, <b>null</b>, <b>form</b>.</div>';
+    status.textContent = html ? count + ' kết quả cho “' + q + '”. Enter để mở kết quả đầu tiên.' : 'Không có kết quả.';
+  }
+
+  input.addEventListener('input', function () { search(input.value); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && firstHref) { e.preventDefault(); location.href = firstHref; }
+    if (e.key === 'Escape') { input.value = ''; search(''); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); input.focus(); input.select(); }
+  });
+  if (input.value) search(input.value); // khôi phục khi bấm Back
+})();
+</script>
+</body>
+</html>

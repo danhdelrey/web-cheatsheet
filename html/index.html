@@ -1,0 +1,2730 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HTML cho dev Flutter &amp; Compose</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script src="../assets/site.js" data-page="html"></script>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<meta name="description" content="Cheatsheet HTML tra cứu hằng ngày, đối chiếu từng thẻ với Flutter và Jetpack Compose.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky top bar · TOC rail 272px bên trái · cột đọc ≤ 880px; bảng và code tự cuộn ngang trong khung riêng */
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --surface-2:#eceef3; --fg:#1a1d24; --muted:#566073; --line:#d8dce4;
+  --accent:#c23c12; --accent-ink:#ffffff; --accent-soft:#fbe8df;
+  --flutter:#0a5cbc; --flutter-soft:#e5eefa;
+  --a11y:#6638b8; --a11y-soft:#eee8f9;
+  --warn:#8a5000; --warn-soft:#fbf0d6;
+  --good:#167a42; --bad:#bf2a2f; --bad-soft:#fdeceb;
+  --hit:#ffe08a;
+  --code-bg:#f8f9fb;
+  --tk-tag:#b4321a; --tk-attr:#8a4b00; --tk-val:#13753a; --tk-com:#687083; --tk-kw:#7136c8; --tk-fn:#1659b0; --tk-punc:#5b6372; --tk-num:#a94700;
+  --font-body:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --topbar-h:58px; --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c22; --surface-2:#222731; --fg:#e6e9ef; --muted:#9ca5b5; --line:#2d333e;
+    --accent:#ff8a5c; --accent-ink:#1a0f0a; --accent-soft:#3a2219;
+    --flutter:#79b4ff; --flutter-soft:#15253a;
+    --a11y:#bba0ff; --a11y-soft:#241b3a;
+    --warn:#f3b94f; --warn-soft:#30250f;
+    --good:#5fd08f; --bad:#ff7b7b; --bad-soft:#3a1a1c;
+    --hit:#6a4c00;
+    --code-bg:#0e1115;
+    --tk-tag:#ff8f73; --tk-attr:#f2c27a; --tk-val:#8fd694; --tk-com:#7d8697; --tk-kw:#c6a8ff; --tk-fn:#80b9ff; --tk-punc:#9aa3b2; --tk-num:#f2c27a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c22; --surface-2:#222731; --fg:#e6e9ef; --muted:#9ca5b5; --line:#2d333e;
+  --accent:#ff8a5c; --accent-ink:#1a0f0a; --accent-soft:#3a2219;
+  --flutter:#79b4ff; --flutter-soft:#15253a;
+  --a11y:#bba0ff; --a11y-soft:#241b3a;
+  --warn:#f3b94f; --warn-soft:#30250f;
+  --good:#5fd08f; --bad:#ff7b7b; --bad-soft:#3a1a1c;
+  --hit:#6a4c00;
+  --code-bg:#0e1115;
+  --tk-tag:#ff8f73; --tk-attr:#f2c27a; --tk-val:#8fd694; --tk-com:#7d8697; --tk-kw:#c6a8ff; --tk-fn:#80b9ff; --tk-punc:#9aa3b2; --tk-num:#f2c27a;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--topbar-h) + 20px + env(safe-area-inset-top,0px));-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15.5px;line-height:1.65;font-feature-settings:"ss01"}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+a{color:var(--accent);text-underline-offset:.18em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+::selection{background:var(--accent-soft)}
+::highlight(hit){background-color:var(--hit);color:inherit}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* Skip link */
+.skip{position:fixed;z-index:100;left:max(12px,env(safe-area-inset-left,0px));top:-200px;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none}
+.skip:focus{top:calc(10px + env(safe-area-inset-top,0px))}
+
+/* Top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;height:var(--topbar-h);display:flex;align-items:center;gap:12px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--fg);text-decoration:none;white-space:nowrap;letter-spacing:-.01em;font-size:15px;flex:none}
+.brand-mark{font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--accent-ink);background:var(--accent);border-radius:6px;padding:3px 7px;line-height:1.4}
+.brand-sub{font-weight:500;color:var(--muted)}
+.search{flex:1;display:flex;justify-content:flex-end;min-width:0}
+.search-box{position:relative;width:min(440px,100%);margin:0}
+.search-box input{width:100%;height:38px;padding:0 40px 0 36px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--fg);font:inherit;font-size:14.5px}
+.search-box input::placeholder{color:var(--muted)}
+.search-box input:focus{background:var(--surface)}
+.search-box > svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search-box kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-box input:not(:placeholder-shown) ~ kbd{display:none}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;min-width:38px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:inherit;font-size:14px;cursor:pointer;white-space:nowrap;flex:none}
+.icon-btn:hover{background:var(--surface-2)}
+.menu-btn{display:none;padding:0}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:272px minmax(0,1fr);max-width:1360px;margin-inline:auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.toc{position:sticky;top:calc(var(--topbar-h) + env(safe-area-inset-top,0px));align-self:start;
+  max-height:calc(100dvh - var(--topbar-h) - env(safe-area-inset-top,0px));overflow-y:auto;overscroll-behavior:contain;
+  padding:26px 14px 32px 0;border-right:1px solid var(--line)}
+.toc-title{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px 10px}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.toc a{display:grid;grid-template-columns:2.1em minmax(0,1fr);gap:4px;padding:6px 10px;border-radius:7px;color:var(--fg);text-decoration:none;font-size:14px;line-height:1.35}
+.toc a .n{font-family:var(--font-mono);font-size:12px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.toc a:hover{background:var(--surface-2)}
+.toc a[aria-current]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.toc a[aria-current] .n{color:var(--accent)}
+.scrim{position:fixed;inset:0;z-index:44;background:rgb(8 10 14 / .45)}
+main{min-width:0;padding-block:36px 96px;padding-left:clamp(20px,4vw,56px)}
+main:focus{outline:none}
+.content{max-width:880px;min-width:0}
+
+/* Hero */
+.hero{display:grid;gap:14px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--font-mono);font-size:12.5px;color:var(--accent);letter-spacing:.03em;margin:0}
+h1{font-size:clamp(1.9rem,1.2rem + 2.4vw,2.75rem);line-height:1.12;letter-spacing:-.03em;margin:0;text-wrap:balance;font-weight:700}
+.lede{font-size:1.07rem;color:var(--muted);max-width:62ch;margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:4px 0 0;padding:0}
+.chip{font-size:13px;font-weight:500;padding:4px 10px;border-radius:999px;line-height:1.5}
+.chip.fl{background:var(--flutter-soft);color:var(--flutter)}
+.chip.ax{background:var(--a11y-soft);color:var(--a11y)}
+.chip.wa{background:var(--warn-soft);color:var(--warn)}
+.chip.dm{border:1.5px dashed var(--accent);color:var(--accent)}
+.search-status{margin:14px 0 0;font-size:14px;color:var(--muted);min-height:0}
+.search-status:empty{display:none}
+.empty{margin:24px 0 0;padding:18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+
+/* Sections & entries */
+.sec{padding-top:48px}
+.sec > h2{display:flex;align-items:baseline;gap:14px;font-size:clamp(1.45rem,1.1rem + 1.2vw,1.9rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.sec > h2 .n{font-family:var(--font-mono);font-size:.56em;font-weight:500;color:var(--accent);flex:none;font-variant-numeric:tabular-nums}
+.sec-lead{color:var(--muted);margin:0;max-width:68ch}
+.entry{padding-top:24px;margin-top:24px;border-top:1px solid var(--line);display:grid;gap:14px;min-width:0}
+.entry > h3{font-size:1.15rem;line-height:1.3;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.entry > h3:focus{outline:none}
+.entry p{margin:0}
+.entry > p,.entry > ul,.entry > ol{max-width:72ch}
+.points{margin:0;padding-left:1.25em;display:grid;gap:6px}
+.points li::marker{color:var(--accent)}
+:not(pre) > code{font-family:var(--font-mono);font-size:.85em;background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:.06em .34em;overflow-wrap:anywhere}
+kbd{font-family:var(--font-mono);font-size:.8em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:.04em .42em;background:var(--surface);color:var(--fg)}
+
+/* Callouts */
+.note{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:baseline;padding:10px 14px;border-radius:9px;margin:0;font-size:14.5px;line-height:1.6}
+.note .tag{font-size:12.5px;font-weight:700;white-space:nowrap}
+.note.fl{background:var(--flutter-soft)} .note.fl .tag{color:var(--flutter)}
+.note.ax{background:var(--a11y-soft)} .note.ax .tag{color:var(--a11y)}
+.note.wa{background:var(--warn-soft)} .note.wa .tag{color:var(--warn)}
+@media (max-width:600px){.note{grid-template-columns:minmax(0,1fr)}}
+
+/* Code blocks */
+.code{border:1px solid var(--line);border-radius:var(--radius);background:var(--code-bg);overflow:hidden;min-width:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:4px 6px 4px 14px;border-bottom:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.copy{font:inherit;font-size:12px;color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
+.copy:hover{background:var(--surface)}
+.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:13px;line-height:1.62;tab-size:2;color:var(--fg)}
+.code pre code{font:inherit;background:none;border:0;padding:0}
+.token.comment,.token.prolog,.token.doctype,.token.cdata{color:var(--tk-com);font-style:italic}
+.token.punctuation,.token.operator{color:var(--tk-punc)}
+.token.tag,.token.selector{color:var(--tk-tag)}
+.token.attr-name,.token.property{color:var(--tk-attr)}
+.token.attr-value,.token.string,.token.char,.token.template-string,.token.url{color:var(--tk-val)}
+.token.attr-value .token.punctuation{color:var(--tk-val)}
+.token.attr-value .token.attr-equals{color:var(--tk-punc)}
+.token.keyword,.token.atrule,.token.important,.token.rule{color:var(--tk-kw)}
+.token.function,.token.class-name{color:var(--tk-fn)}
+.token.number,.token.boolean,.token.constant,.token.entity,.token.unit{color:var(--tk-num)}
+.token.tag .token.punctuation{color:var(--tk-punc)}
+.token.doctype .token.doctype-tag{color:var(--tk-tag);font-style:normal}
+
+/* Tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);min-width:0}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.5}
+caption{caption-side:top;text-align:left;padding:10px 14px;font-weight:600;font-size:13.5px;color:var(--muted);border-bottom:1px solid var(--line)}
+th,td{text-align:left;vertical-align:top;padding:9px 14px;border-bottom:1px solid var(--line)}
+thead th{background:var(--surface-2);font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--muted);white-space:nowrap}
+tbody tr:last-child > *{border-bottom:0}
+tbody th{font-weight:600}
+.tw td:first-child code,.tw th[scope=row] code{white-space:nowrap}
+.tw .wide{min-width:640px}
+.tw .xwide{min-width:780px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.yes{color:var(--good);font-weight:600}
+.no{color:var(--bad);font-weight:600}
+
+/* Demos */
+.demo{border:1.5px dashed var(--accent);border-radius:var(--radius);padding:16px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0}
+.demo-label{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin:0}
+:is(.demo,.demo-table) :where(input:not([type=checkbox],[type=radio],[type=range],[type=color],[type=file]),select,textarea){font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 10px;min-height:38px;width:100%;max-width:100%}
+:is(.demo,.demo-table) :where(input,select,textarea):user-invalid{border-color:var(--bad);background:var(--bad-soft)}
+:is(.demo,.demo-table) :where(input,select,textarea):focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+:is(.demo,.demo-table) :is(input[type=checkbox],input[type=radio],input[type=range],progress,meter){accent-color:var(--accent)}
+:is(.demo,.demo-table) :is(input[type=checkbox],input[type=radio]){width:18px;height:18px;margin:0;vertical-align:-3px}
+:is(.demo,.demo-table) input[type=color]{width:52px;height:34px;padding:2px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+:is(.demo,.demo-table) input[type=file]{font-size:13.5px;max-width:100%}
+:is(.demo,.demo-table) input[type=range]{width:min(240px,100%)}
+.demo fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 14px 14px;margin:0;display:grid;gap:8px;min-width:0}
+.demo legend{font-weight:600;font-size:14px;padding:0 4px}
+.field{display:grid;gap:6px;min-width:0}
+.field > label,.lbl{font-weight:600;font-size:14px}
+.check{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:14px}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.err{font-size:13px;color:var(--bad);margin:0;font-weight:500}
+.err:empty{display:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-size:14.5px;font-weight:600;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer;line-height:1.3}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+:root[data-theme="dark"] .btn.danger{color:#1a0b0b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.danger{color:#1a0b0b}}
+.log{font-family:var(--font-mono);font-size:13px;background:var(--code-bg);border:1px solid var(--line);border-radius:7px;padding:8px 12px;min-height:2.4em;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:var(--fg)}
+.fake-btn{display:inline-block;padding:8px 16px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line);font-weight:600;font-size:14.5px;cursor:pointer;user-select:none}
+.demo [inert]{opacity:.45}
+input[role=switch]{appearance:none;-webkit-appearance:none;width:40px!important;height:22px!important;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none}
+input[role=switch]::before{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:transform .15s;box-shadow:0 1px 2px rgb(0 0 0 / .3)}
+input[role=switch]:checked{background:var(--accent)}
+input[role=switch]:checked::before{transform:translateX(18px)}
+
+/* details */
+.demo details{border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.demo summary{padding:10px 14px;cursor:pointer;font-weight:600}
+.demo details[open] summary{border-bottom:1px solid var(--line)}
+.demo details > div{padding:10px 14px}
+
+/* dialog & popover */
+dialog{border:1px solid var(--line);border-radius:14px;padding:0;background:var(--surface);color:var(--fg);width:min(440px,calc(100vw - 32px));box-shadow:0 24px 60px rgb(0 0 0 / .28)}
+dialog::backdrop{background:rgb(8 10 14 / .55)}
+.dlg-body{padding:20px 22px;display:grid;gap:12px}
+.dlg-body h2{font-size:1.2rem;margin:0}
+.menu[popover]{inset:auto;margin:0;border:1px solid var(--line);border-radius:10px;padding:6px;background:var(--surface);color:var(--fg);box-shadow:0 14px 34px rgb(0 0 0 / .2);min-width:200px}
+.menu[popover] button{display:block;width:100%;text-align:left;font:inherit;font-size:14.5px;padding:8px 12px;border:0;border-radius:6px;background:none;color:var(--fg);cursor:pointer}
+.menu[popover] button:hover,.menu[popover] button:focus-visible{background:var(--surface-2)}
+.toast[popover]{inset:auto max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) auto;margin:0;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--fg);color:var(--bg);display:none;align-items:center;gap:12px;max-width:calc(100vw - 32px)}
+.toast[popover]:popover-open{display:flex}
+.toast[popover] button{font:inherit;font-size:13.5px;font-weight:600;background:none;border:1px solid currentColor;color:inherit;border-radius:6px;padding:3px 10px;cursor:pointer}
+
+/* Pattern demos */
+.card-demo{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{position:relative;display:grid;gap:8px;border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg)}
+.card .thumb{aspect-ratio:4/3;max-width:100%;border-radius:8px;background:linear-gradient(135deg,var(--accent-soft),var(--flutter-soft))}
+.card h4{margin:0;font-size:15.5px}
+.card h4 a{color:var(--fg);text-decoration:none}
+.card h4 a::after{content:"";position:absolute;inset:0;border-radius:12px}
+.card h4 a:focus-visible{outline:none}
+.card:has(h4 a:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.card:hover{border-color:var(--muted)}
+.card p{font-size:14px;color:var(--muted)}
+.card .price{color:var(--fg);font-weight:700;font-variant-numeric:tabular-nums}
+.card .btn{position:relative;z-index:1;justify-self:start}
+.icon-demo{display:flex;flex-wrap:wrap;gap:10px}
+.sort-btn{font:inherit;font-size:12.5px;font-weight:600;color:inherit;background:none;border:0;padding:0;cursor:pointer;display:inline-flex;gap:6px;align-items:center;letter-spacing:.02em}
+.sort-btn .arrow{font-family:var(--font-mono)}
+
+.site-footer{border-top:1px solid var(--line);padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));color:var(--muted);font-size:14px;background:var(--surface)}
+.site-footer p{max-width:1360px;margin:0 auto}
+
+/* Mobile */
+@media (max-width:920px){
+  .menu-btn{display:inline-flex}
+  .layout{grid-template-columns:minmax(0,1fr)}
+  main{padding-left:0;padding-top:24px}
+  .toc{position:fixed;z-index:45;top:calc(var(--topbar-h) + env(safe-area-inset-top,0px));left:0;bottom:0;width:min(330px,88vw);max-height:none;
+    background:var(--surface);border-right:1px solid var(--line);
+    padding:20px 14px calc(24px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));
+    transform:translateX(-102%);visibility:hidden;transition:transform .22s ease,visibility 0s linear .22s}
+  .toc.open{transform:none;visibility:visible;transition:transform .22s ease}
+  .brand-sub{display:none}
+}
+@media (max-width:560px){
+  .theme-text{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  #theme-btn{padding:0}
+  .search-box kbd{display:none}
+  .search-box input{padding-right:12px}
+  .brand-name{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<a class="skip" href="#main">Bỏ qua tới nội dung chính</a>
+
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="toc">
+    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    <span class="vh">Mục lục</span>
+  </button>
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><span class="brand-name">HTML <span class="brand-sub">cho dev Flutter &amp; Compose</span></span></a>
+  <search class="search">
+    <form class="search-box" id="search-form">
+      <label for="q" class="vh">Tìm trong cheatsheet</label>
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" name="q" type="search" placeholder="Tìm: dialog, aria, inputmode…" autocomplete="off" enterkeyhint="search" spellcheck="false">
+      <kbd aria-hidden="true">/</kbd>
+    </form>
+  </search>
+  <button type="button" class="icon-btn" id="theme-btn">
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>
+    <span class="theme-text"><span class="vh">Giao diện: </span><span id="theme-label">Theo hệ thống</span></span>
+  </button>
+</header>
+
+<div class="layout">
+  <nav class="toc" id="toc" aria-labelledby="toc-title">
+    <p class="toc-title" id="toc-title">Mục lục</p>
+    <ol>
+      <li><a href="#mental-model"><span class="n" aria-hidden="true">01</span>Mental model</a></li>
+      <li><a href="#document"><span class="n" aria-hidden="true">02</span>Cấu trúc tài liệu</a></li>
+      <li><a href="#semantic-layout"><span class="n" aria-hidden="true">03</span>Semantic layout</a></li>
+      <li><a href="#text"><span class="n" aria-hidden="true">04</span>Nội dung văn bản</a></li>
+      <li><a href="#links"><span class="n" aria-hidden="true">05</span>Links</a></li>
+      <li><a href="#media"><span class="n" aria-hidden="true">06</span>Hình ảnh &amp; media</a></li>
+      <li><a href="#lists-tables"><span class="n" aria-hidden="true">07</span>Lists &amp; tables</a></li>
+      <li><a href="#forms"><span class="n" aria-hidden="true">08</span>Forms</a></li>
+      <li><a href="#interactive"><span class="n" aria-hidden="true">09</span>Thành phần tương tác</a></li>
+      <li><a href="#a11y"><span class="n" aria-hidden="true">10</span>Accessibility</a></li>
+      <li><a href="#global-attrs"><span class="n" aria-hidden="true">11</span>Global attributes</a></li>
+      <li><a href="#scripts"><span class="n" aria-hidden="true">12</span>Script &amp; tài nguyên</a></li>
+      <li><a href="#seo"><span class="n" aria-hidden="true">13</span>SEO &amp; chia sẻ</a></li>
+      <li><a href="#web-components"><span class="n" aria-hidden="true">14</span>Template &amp; Web Components</a></li>
+      <li><a href="#patterns"><span class="n" aria-hidden="true">15</span>Pattern hay dùng</a></li>
+      <li><a href="#pitfalls"><span class="n" aria-hidden="true">16</span>Lỗi hay gặp &amp; debug</a></li>
+    </ol>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main id="main" tabindex="-1">
+    <div class="content" id="content">
+      <header class="hero" id="top">
+        <p class="eyebrow">HTML Living Standard · cập nhật 11/2026</p>
+        <h1>HTML cho dev Flutter &amp; Compose</h1>
+        <p class="lede">Bảng tra nhanh thẻ, thuộc tính và pattern dùng hằng ngày, đặt cạnh widget và composable bạn đã quen. Nhấn <kbd>/</kbd> để tìm, <kbd>Esc</kbd> để xóa từ khóa, <kbd>Enter</kbd> để nhảy tới kết quả đầu tiên.</p>
+        <ul class="legend" aria-label="Ký hiệu trong trang">
+          <li class="chip fl"><span aria-hidden="true">📱</span> Flutter / Compose tương đương</li>
+          <li class="chip ax"><span aria-hidden="true">♿</span> Ảnh hưởng accessibility</li>
+          <li class="chip wa"><span aria-hidden="true">⚠️</span> Lỗi hay gặp, best practice</li>
+          <li class="chip dm">Khung nét đứt: thử trực tiếp</li>
+        </ul>
+      </header>
+      <p id="search-status" class="search-status" role="status"></p>
+      <div id="no-results" class="empty" hidden>
+        <p>Không có mục nào khớp “<span id="no-results-q"></span>”. Thử tên thẻ hoặc thuộc tính bằng tiếng Anh như <code>dialog</code>, <code>label</code>, <code>srcset</code>, hoặc tên widget như <code>TextField</code>.</p>
+      </div>
+
+<!-- ============ 01 MENTAL MODEL ============ -->
+<section class="sec" id="mental-model">
+  <h2><span class="n" aria-hidden="true">01</span>Mental model: HTML khác Flutter/Compose thế nào</h2>
+  <p class="sec-lead">Đọc phần này trước. Phần lớn lỗi HTML của dev mobile đến từ việc coi thẻ HTML như widget: chọn thẻ theo hình dạng thay vì theo ý nghĩa.</p>
+
+  <div class="entry">
+    <h3>Ba lớp: HTML lo ý nghĩa, CSS lo giao diện, JS lo hành vi</h3>
+    <p>Trong Flutter, một widget gộp cả cấu trúc, style và callback. Trên web, HTML chỉ nói <em>đây là cái gì</em> (một nút, một tiêu đề, một danh sách), CSS nói <em>trông thế nào</em>, JS nói <em>làm gì khi tương tác</em>.</p>
+<div class="code"><div class="code-head"><span>Flutter: một widget làm cả ba việc</span></div><pre><code class="language-dart">ElevatedButton(
+  style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange), // style
+  onPressed: save,                                                     // hành vi
+  child: const Text('Lưu'),                                            // cấu trúc
+)</code></pre></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- HTML: chỉ nói "đây là một nút" --&gt;
+&lt;button type="button" class="btn-primary" id="save"&gt;Lưu&lt;/button&gt;
+
+&lt;style&gt;
+  /* CSS: giao diện, tách riêng, đổi được mà không đụng HTML */
+  .btn-primary { background: orangered; color: white; }
+&lt;/style&gt;
+
+&lt;script&gt;
+  // JS: hành vi
+  document.getElementById('save').addEventListener('click', save);
+&lt;/script&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Đừng chọn thẻ theo giao diện mặc định. <code>&lt;h3&gt;</code> không có nghĩa là "chữ cỡ vừa", <code>&lt;blockquote&gt;</code> không có nghĩa là "khối thụt lề". Chọn thẻ theo ý nghĩa, rồi chỉnh giao diện bằng CSS.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>DOM tree so với widget tree</h3>
+    <p>Trình duyệt parse HTML thành DOM: một cây node tồn tại lâu dài và tự giữ state (giá trị input, focus, vị trí cuộn). Widget thì bất biến và được build lại liên tục.</p>
+    <div class="tw"><table class="wide">
+      <caption>Widget tree và DOM tree</caption>
+      <thead><tr><th scope="col">Khía cạnh</th><th scope="col">Flutter / Compose</th><th scope="col">HTML / DOM</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Đơn vị</th><td>Widget / <code>@Composable</code></td><td>Element (thẻ) + text node</td></tr>
+        <tr><th scope="row">Cập nhật UI</th><td>Rebuild / recomposition từ state</td><td>Sửa trực tiếp node (<code>el.textContent = …</code>), hoặc để framework như React diff giúp</td></tr>
+        <tr><th scope="row">State của control</th><td><code>TextEditingController</code>, <code>remember { mutableStateOf() }</code></td><td>Nằm sẵn trong node: <code>input.value</code>, <code>checkbox.checked</code></td></tr>
+        <tr><th scope="row">Viết sai cú pháp</th><td>Compiler báo lỗi, không build được</td><td>Trình duyệt tự sửa lặng lẽ, vẫn render "gần đúng"</td></tr>
+        <tr><th scope="row">Layout</th><td>Constraints đi xuống, size đi lên</td><td>Normal flow (block/inline) + CSS flex/grid</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>Trình duyệt &quot;tha lỗi&quot;</span></div><pre><code class="language-markup">&lt;!-- Bạn viết: --&gt;
+&lt;p&gt;Đoạn văn &lt;div&gt;khối&lt;/div&gt;&lt;/p&gt;
+
+&lt;!-- Trình duyệt hiểu thành (p không được chứa div, nên p bị đóng sớm): --&gt;
+&lt;p&gt;Đoạn văn &lt;/p&gt;&lt;div&gt;khối&lt;/div&gt;&lt;p&gt;&lt;/p&gt;</code></pre></div>
+    <div class="demo" id="demo-parser">
+      <p class="demo-label">Thử trực tiếp: trình duyệt sửa HTML của bạn thế nào</p>
+      <div class="field">
+        <label for="d-parse-in">HTML bạn viết (sửa thoải mái)</label>
+        <textarea id="d-parse-in" rows="5" spellcheck="false"><p>Đoạn văn <div>khối</div></p>
+<b><i>lồng sai thứ tự</b></i>
+<table><tr><td>ô</td></tr></table>
+<a href="#">link <a href="#">trong link</a></a></textarea>
+      </div>
+      <div class="field">
+        <span class="lbl" id="d-parse-out-label">DOM mà trình duyệt thực sự tạo ra</span>
+        <pre class="log" id="d-parse-out" aria-labelledby="d-parse-out-label"></pre>
+      </div>
+    </div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Không có compiler bảo vệ bạn. Dùng W3C Validator và DevTools để bắt lỗi lồng thẻ (xem mục 16).</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Block và inline</h3>
+    <p>Mỗi thẻ có kiểu hiển thị mặc định. Block (<code>div</code>, <code>p</code>, <code>h1</code>–<code>h6</code>, <code>ul</code>, <code>section</code>…) chiếm hết chiều ngang và tự xuống dòng. Inline (<code>span</code>, <code>a</code>, <code>strong</code>, <code>code</code>, <code>img</code>…) chảy theo dòng chữ.</p>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;p&gt;Inline nằm &lt;strong&gt;trong dòng&lt;/strong&gt; và &lt;a href="#"&gt;không xuống hàng&lt;/a&gt;.&lt;/p&gt;
+&lt;div&gt;Block 1: chiếm cả hàng&lt;/div&gt;
+&lt;div&gt;Block 2: tự xuống dòng&lt;/div&gt;
+
+&lt;style&gt;
+  /* Muốn Row / Column / Grid thật sự: dùng CSS */
+  .toolbar { display: flex; gap: 8px; align-items: center; }  /* ≈ Row */
+  .stack   { display: flex; flex-direction: column; gap: 8px; } /* ≈ Column */
+  .cards   { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+&lt;/style&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Block giống con của <code>Column</code> với <code>crossAxisAlignment: stretch</code> (full width, không co theo nội dung). Inline giống <code>TextSpan</code> trong <code>RichText</code> / <code>AnnotatedString</code>. <code>Row</code>/<code>Column</code> ↔ <code>display: flex</code>, <code>GridView</code> / <code>LazyVerticalGrid</code> ↔ <code>display: grid</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>width</code>, <code>height</code> và margin dọc không có tác dụng với phần tử inline thuần. Đổi sang <code>display: inline-block</code> hoặc <code>block</code> nếu cần.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Mỗi thẻ có hành vi mặc định, miễn phí</h3>
+    <p>Chọn đúng thẻ là nhận về hành vi trình duyệt đã cài sẵn: bàn phím, screen reader, autofill, SEO. Đây là lý do quan trọng nhất để không dùng <code>div</code> cho mọi thứ.</p>
+    <div class="tw"><table class="wide">
+      <caption>Thứ bạn được tặng khi dùng đúng thẻ</caption>
+      <thead><tr><th scope="col">Thẻ</th><th scope="col">Hành vi có sẵn</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;button&gt;</code></td><td>Focus bằng Tab, kích hoạt bằng Enter và Space, trạng thái <code>disabled</code>, screen reader đọc "nút", submit form</td></tr>
+        <tr><td><code>&lt;a href&gt;</code></td><td>Điều hướng, mở tab mới (Ctrl/Cmd + click), copy link, nút Back, crawler đi theo được</td></tr>
+        <tr><td><code>&lt;form&gt;</code></td><td>Enter trong ô nhập để submit, validation, gom dữ liệu, autofill</td></tr>
+        <tr><td><code>&lt;label&gt;</code></td><td>Click vào nhãn là focus/toggle input, đặt tên cho input khi screen reader đọc</td></tr>
+        <tr><td><code>&lt;input type="email"&gt;</code></td><td>Bàn phím có <code>@</code> trên mobile, kiểm tra định dạng, gợi ý email đã lưu</td></tr>
+        <tr><td><code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code></td><td>Dàn ý trang: screen reader nhảy theo heading, Google hiểu cấu trúc</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- ❌ Thói quen "GestureDetector bọc mọi thứ" --&gt;
+&lt;div class="btn" onclick="save()"&gt;Lưu&lt;/div&gt;
+
+&lt;!-- ✅ Có focus, Enter/Space, disabled, semantics --&gt;
+&lt;button type="button" class="btn" onclick="save()"&gt;Lưu&lt;/button&gt;</code></pre></div>
+    <div class="demo" id="demo-tap">
+      <p class="demo-label">Thử trực tiếp: dùng Tab rồi Enter hoặc Space</p>
+      <div class="row">
+        <div class="fake-btn" id="d-fake">div onclick</div>
+        <button type="button" class="btn primary" id="d-real">button</button>
+      </div>
+      <p class="log" id="d-tap-log" role="status">Chưa bấm gì. Thử nhấn Tab: focus bỏ qua cái div.</p>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>&lt;div onclick&gt;</code> giống bọc <code>GestureDetector</code> quanh <code>Container</code>: chạm được nhưng không có focus, không có semantics. Trong Flutter bạn sẽ dùng <code>ElevatedButton</code> hoặc <code>InkWell</code> (có sẵn <code>Semantics(button: true)</code>); trên web, tương đương là <code>&lt;button&gt;</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Screen reader đọc <code>div</code> như đoạn văn bản thường, người chỉ dùng bàn phím không với tới được. Không gì thay được thẻ native.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Vì sao chọn đúng thẻ quan trọng</h3>
+    <ul class="points">
+      <li><strong>Accessibility</strong>: trình duyệt dựng cây accessibility từ thẻ HTML, giống Semantics tree trong Flutter. Thẻ đúng thì cây đúng mà không cần code thêm.</li>
+      <li><strong>Hành vi bàn phím</strong>: focus, Enter, Space, Esc, phím mũi tên trong <code>select</code>, radio đều có sẵn.</li>
+      <li><strong>SEO</strong>: crawler đọc <code>title</code>, heading, link, <code>main</code> để hiểu trang nói gì.</li>
+      <li><strong>Công cụ của người dùng</strong>: reader mode, dịch trang, password manager, extension đều dựa vào thẻ semantic.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <h3>Bảng đối chiếu nhanh: widget ↔ thẻ HTML</h3>
+    <p>Điểm khởi đầu khi bạn nghĩ "trong Flutter mình sẽ dùng X". Chi tiết từng dòng nằm ở các mục sau.</p>
+    <div class="tw"><table class="xwide">
+      <caption>Flutter / Compose ↔ HTML</caption>
+      <thead><tr><th scope="col">Flutter</th><th scope="col">Compose</th><th scope="col">HTML</th><th scope="col">Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td><code>Scaffold</code></td><td><code>Scaffold</code></td><td><code>header</code> + <code>main</code> + <code>footer</code></td><td>Chia theo vai trò, vị trí do CSS</td></tr>
+        <tr><td><code>AppBar</code></td><td><code>TopAppBar</code></td><td><code>&lt;header&gt;</code></td><td>Mục 3</td></tr>
+        <tr><td><code>Drawer</code>, <code>NavigationBar</code></td><td><code>ModalNavigationDrawer</code>, <code>NavigationBar</code></td><td><code>&lt;nav&gt;</code></td><td>Link điều hướng bên trong</td></tr>
+        <tr><td><code>Text</code></td><td><code>Text</code></td><td><code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code>, <code>&lt;span&gt;</code></td><td>Chọn theo ý nghĩa</td></tr>
+        <tr><td><code>RichText</code> / <code>TextSpan</code></td><td><code>AnnotatedString</code></td><td><code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;code&gt;</code>…</td><td>Mục 4</td></tr>
+        <tr><td><code>Image.network</code> / <code>Image.asset</code></td><td><code>AsyncImage</code> / <code>Image(painterResource)</code></td><td><code>&lt;img&gt;</code>, <code>&lt;picture&gt;</code></td><td>Mục 6</td></tr>
+        <tr><td><code>ListView</code></td><td><code>LazyColumn</code></td><td><code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code> + CSS</td><td>List là nội dung, cuộn là CSS</td></tr>
+        <tr><td><code>ElevatedButton</code></td><td><code>Button</code></td><td><code>&lt;button type="button"&gt;</code></td><td>Hành động</td></tr>
+        <tr><td><code>Navigator.push</code> / <code>context.go</code></td><td><code>navController.navigate</code></td><td><code>&lt;a href&gt;</code></td><td>Điều hướng</td></tr>
+        <tr><td><code>TextFormField</code></td><td><code>OutlinedTextField</code></td><td><code>&lt;label&gt;</code> + <code>&lt;input&gt;</code></td><td>Mục 8</td></tr>
+        <tr><td><code>Form</code> + <code>validator</code></td><td>tự quản state</td><td><code>&lt;form&gt;</code> + <code>required</code>, <code>pattern</code></td><td>Mục 8</td></tr>
+        <tr><td><code>DropdownButton</code></td><td><code>ExposedDropdownMenuBox</code></td><td><code>&lt;select&gt;</code></td><td>Native, khó style</td></tr>
+        <tr><td><code>showDialog</code></td><td><code>AlertDialog</code></td><td><code>&lt;dialog&gt;</code> + <code>showModal()</code></td><td>Mục 9</td></tr>
+        <tr><td><code>ExpansionTile</code></td><td><code>AnimatedVisibility</code> tự làm</td><td><code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code></td><td>Không cần JS</td></tr>
+        <tr><td><code>PopupMenuButton</code>, <code>MenuAnchor</code></td><td><code>DropdownMenu</code></td><td><code>popover</code></td><td>Mục 9</td></tr>
+        <tr><td><code>LinearProgressIndicator</code></td><td><code>LinearProgressIndicator</code></td><td><code>&lt;progress&gt;</code></td><td></td></tr>
+        <tr><td><code>Semantics</code></td><td><code>Modifier.semantics</code></td><td>Thẻ semantic, sau đó mới ARIA</td><td>Mục 10</td></tr>
+        <tr><td><code>Visibility</code> / <code>Offstage</code></td><td><code>if (visible) { … }</code></td><td>thuộc tính <code>hidden</code></td><td>Mục 11</td></tr>
+        <tr><td><code>WebView</code></td><td><code>AndroidView { WebView }</code></td><td><code>&lt;iframe&gt;</code></td><td>Mục 6</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ 02 DOCUMENT ============ -->
+<section class="sec" id="document">
+  <h2><span class="n" aria-hidden="true">02</span>Cấu trúc tài liệu</h2>
+  <p class="sec-lead">Khung bắt buộc của mọi trang. <code>&lt;head&gt;</code> chứa metadata không hiển thị, <code>&lt;body&gt;</code> chứa nội dung.</p>
+
+  <div class="entry">
+    <h3>Khung tối thiểu</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!DOCTYPE html&gt;                &lt;!-- bật standards mode, luôn là dòng đầu --&gt;
+&lt;html lang="vi"&gt;               &lt;!-- ngôn ngữ trang: screen reader phát âm, Google dịch --&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;       &lt;!-- đặt sớm nhất, trong 1024 byte đầu --&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Cài đặt tài khoản · MyApp&lt;/title&gt;
+  &lt;meta name="description" content="Quản lý email, mật khẩu và thông báo của tài khoản MyApp."&gt;
+  &lt;link rel="stylesheet" href="/css/app.css"&gt;
+  &lt;script src="/js/app.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;!-- nội dung hiển thị --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>&lt;head&gt;</code> giống phần cấu hình của <code>MaterialApp</code> (title, locale, theme) cộng metadata trong <code>AndroidManifest.xml</code> / <code>Info.plist</code>. <code>&lt;body&gt;</code> là cây widget hiển thị.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Thiếu meta viewport, mobile sẽ render trang như desktop rộng 980px rồi thu nhỏ. Thiếu <code>&lt;!DOCTYPE html&gt;</code>, trình duyệt vào quirks mode và CSS chạy khác thường.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Đừng thêm <code>maximum-scale=1</code> hay <code>user-scalable=no</code> vào viewport: người dùng không zoom được.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Thẻ meta và link hay dùng</h3>
+    <div class="tw"><table class="wide">
+      <caption>Metadata trong head</caption>
+      <thead><tr><th scope="col">Thẻ</th><th scope="col">Dùng để</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;meta charset="utf-8"&gt;</code></td><td>Mã hóa ký tự. Thiếu là tiếng Việt có thể vỡ dấu.</td></tr>
+        <tr><td><code>&lt;meta name="viewport" …&gt;</code></td><td>Kích thước viewport trên mobile</td></tr>
+        <tr><td><code>&lt;title&gt;</code></td><td>Tên tab, bookmark, tiêu đề kết quả tìm kiếm. Mỗi trang một title riêng.</td></tr>
+        <tr><td><code>&lt;meta name="description"&gt;</code></td><td>Đoạn mô tả dưới tiêu đề trên Google</td></tr>
+        <tr><td><code>&lt;meta name="theme-color"&gt;</code></td><td>Màu thanh địa chỉ trên mobile, gần giống <code>statusBarColor</code>. Có thể kèm <code>media="(prefers-color-scheme: dark)"</code>.</td></tr>
+        <tr><td><code>&lt;meta name="color-scheme" content="light dark"&gt;</code></td><td>Form control và scrollbar theo dark mode, gần giống <code>ThemeMode.system</code></td></tr>
+        <tr><td><code>&lt;link rel="stylesheet"&gt;</code></td><td>Nạp CSS. Chặn render cho tới khi tải xong.</td></tr>
+        <tr><td><code>&lt;link rel="icon"&gt;</code></td><td>Favicon (app icon của tab)</td></tr>
+        <tr><td><code>&lt;link rel="apple-touch-icon"&gt;</code></td><td>Icon khi "Thêm vào Màn hình chính" trên iOS</td></tr>
+        <tr><td><code>&lt;link rel="manifest"&gt;</code></td><td>Cấu hình PWA: tên, icon, màu, chế độ hiển thị</td></tr>
+        <tr><td><code>&lt;link rel="preload"&gt;</code></td><td>Tải sớm tài nguyên quan trọng (mục 12)</td></tr>
+        <tr><td><code>&lt;meta property="og:…"&gt;</code></td><td>Ảnh và tiêu đề khi chia sẻ link (mục 13)</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;link rel="icon" href="/favicon.ico" sizes="32x32"&gt;
+&lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;  &lt;!-- 180×180 --&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;
+
+&lt;meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)"&gt;
+&lt;meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)"&gt;
+
+&lt;!-- Font: preload phải có crossorigin, kể cả cùng domain --&gt;
+&lt;link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin&gt;
+
+&lt;!-- Open Graph tối thiểu (chi tiết ở mục 13) --&gt;
+&lt;meta property="og:title" content="Cài đặt tài khoản · MyApp"&gt;
+&lt;meta property="og:image" content="https://myapp.example/og/settings.png"&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>preload</code> thiếu <code>as</code> bị bỏ qua. Font preload thiếu <code>crossorigin</code> sẽ bị tải hai lần.</span></p>
+  </div>
+</section>
+
+<!-- ============ 03 SEMANTIC LAYOUT ============ -->
+<section class="sec" id="semantic-layout">
+  <h2><span class="n" aria-hidden="true">03</span>Semantic layout</h2>
+  <p class="sec-lead">Landmark chia trang theo <em>vai trò</em>, không theo vị trí. Screen reader dùng chúng như mục lục để nhảy nhanh.</p>
+
+  <div class="entry">
+    <h3>Các thẻ landmark</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Landmark elements</caption>
+      <thead><tr><th scope="col">Thẻ</th><th scope="col">Ý nghĩa</th><th scope="col">Role ngầm định</th><th scope="col">Gần nhất trong Flutter/Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;header&gt;</code></td><td>Phần đầu của trang hoặc của một khối</td><td><code>banner</code> (khi là con trực tiếp của body)</td><td><code>AppBar</code> / <code>TopAppBar</code></td></tr>
+        <tr><td><code>&lt;nav&gt;</code></td><td>Nhóm link điều hướng chính</td><td><code>navigation</code></td><td><code>Drawer</code>, <code>NavigationBar</code>, <code>NavigationRail</code></td></tr>
+        <tr><td><code>&lt;main&gt;</code></td><td>Nội dung chính, chỉ một cái hiển thị</td><td><code>main</code></td><td><code>body</code> của <code>Scaffold</code></td></tr>
+        <tr><td><code>&lt;aside&gt;</code></td><td>Nội dung phụ, liên quan gián tiếp</td><td><code>complementary</code></td><td><code>endDrawer</code>, panel bên</td></tr>
+        <tr><td><code>&lt;footer&gt;</code></td><td>Chân trang hoặc chân khối</td><td><code>contentinfo</code> (cấp body)</td><td><code>BottomAppBar</code> (gần đúng)</td></tr>
+        <tr><td><code>&lt;section&gt;</code></td><td>Một phần theo chủ đề, có heading</td><td><code>region</code> (chỉ khi có tên)</td><td>–</td></tr>
+        <tr><td><code>&lt;article&gt;</code></td><td>Khối tự đứng độc lập</td><td><code>article</code></td><td>–</td></tr>
+        <tr><td><code>&lt;search&gt;</code></td><td>Vùng chứa form tìm kiếm/lọc</td><td><code>search</code></td><td><code>SearchBar</code> / <code>SearchAnchor</code></td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;body&gt;
+  &lt;a class="skip-link" href="#main"&gt;Bỏ qua tới nội dung chính&lt;/a&gt;
+
+  &lt;header&gt;
+    &lt;a href="/"&gt;&lt;img src="/logo.svg" alt="" width="32" height="32"&gt; MyApp&lt;/a&gt;
+    &lt;nav aria-label="Chính"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="/" aria-current="page"&gt;Tổng quan&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/docs"&gt;Tài liệu&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+    &lt;search&gt;
+      &lt;form action="/search"&gt;
+        &lt;label for="site-q"&gt;Tìm kiếm&lt;/label&gt;
+        &lt;input id="site-q" name="q" type="search"&gt;
+      &lt;/form&gt;
+    &lt;/search&gt;
+  &lt;/header&gt;
+
+  &lt;main id="main"&gt;
+    &lt;h1&gt;Tài liệu&lt;/h1&gt;
+    &lt;section aria-labelledby="install-h"&gt;
+      &lt;h2 id="install-h"&gt;Cài đặt&lt;/h2&gt;
+      …
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;aside aria-label="Bài liên quan"&gt;…&lt;/aside&gt;
+  &lt;footer&gt;© 2026 MyApp&lt;/footer&gt;
+&lt;/body&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Scaffold(appBar, drawer, body, bottomNavigationBar)</code> chia màn hình theo vị trí. Landmark HTML chia theo vai trò: <code>&lt;nav&gt;</code> có thể nằm trên cùng, bên trái hay dưới đáy; vị trí do CSS quyết định.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Có nhiều <code>&lt;nav&gt;</code> hoặc <code>&lt;aside&gt;</code> thì đặt <code>aria-label</code> khác nhau ("Chính", "Mục lục") để screen reader phân biệt. Đừng ghi chữ "navigation" vào label vì role đã được đọc sẵn.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>section, article hay div?</h3>
+    <ul class="points">
+      <li><code>&lt;article&gt;</code>: tự đứng được khi tách ra chỗ khác. Bài blog, comment, card sản phẩm, tin nhắn chat. Test: copy sang trang khác vẫn có nghĩa?</li>
+      <li><code>&lt;section&gt;</code>: một phần theo chủ đề của thứ lớn hơn, <strong>luôn có heading</strong>. Không đặt được heading thì có lẽ là <code>div</code>.</li>
+      <li><code>&lt;div&gt;</code>: chỉ để nhóm cho CSS/JS, không mang ý nghĩa. Dùng thoải mái khi không có thẻ nào phù hợp.</li>
+    </ul>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;section aria-labelledby="reviews-h"&gt;
+  &lt;h2 id="reviews-h"&gt;Đánh giá&lt;/h2&gt;
+
+  &lt;article class="review"&gt;               &lt;!-- mỗi review đứng độc lập --&gt;
+    &lt;h3&gt;Rất dễ dùng&lt;/h3&gt;
+    &lt;p&gt;Cài xong chạy luôn, không cần cấu hình.&lt;/p&gt;
+    &lt;footer&gt;Lan · &lt;time datetime="2026-11-02"&gt;2/11/2026&lt;/time&gt;&lt;/footer&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+
+&lt;div class="grid"&gt;…&lt;/div&gt;                 &lt;!-- chỉ để dàn layout: div là đúng --&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Bọc mọi thứ trong <code>section</code> không làm trang semantic hơn, chỉ tạo nhiễu. Không chắc thì dùng <code>div</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Heading hierarchy (h1–h6)</h3>
+    <p>Heading tạo dàn ý của trang, giống mục lục. Một <code>h1</code> cho nội dung chính, đi xuống từng cấp, không nhảy cấp. Cỡ chữ là việc của CSS.</p>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;h1&gt;Cài đặt&lt;/h1&gt;
+  &lt;h2&gt;Tài khoản&lt;/h2&gt;
+  &lt;h2&gt;Thông báo&lt;/h2&gt;
+    &lt;h3&gt;Email&lt;/h3&gt;
+    &lt;h3&gt;Push&lt;/h3&gt;
+
+&lt;!-- Cần chữ nhỏ mà vẫn là h2? Giữ h2, đổi cỡ bằng CSS. Đừng đổi sang h4 --&gt;
+&lt;h2 class="text-sm"&gt;Ghi chú&lt;/h2&gt;
+
+&lt;!-- Chữ to nhưng không phải tiêu đề? Dùng p + class --&gt;
+&lt;p class="stat-number"&gt;98%&lt;/p&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Text(style: textTheme.headlineSmall)</code> chỉ là style. Muốn screen reader biết đó là heading, Flutter cần <code>Semantics(header: true)</code>, Compose cần <code>Modifier.semantics { heading() }</code>. Trên web thì ngược lại: chính thẻ <code>&lt;h2&gt;</code> là semantic, class mới là style.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Người dùng screen reader thường duyệt trang bằng heading (phím H trong NVDA, rotor trong VoiceOver). Nhảy từ <code>h2</code> sang <code>h4</code> khiến họ tưởng bị thiếu nội dung.</span></p>
+  </div>
+</section>
+
+<!-- ============ 04 TEXT ============ -->
+<section class="sec" id="text">
+  <h2><span class="n" aria-hidden="true">04</span>Nội dung văn bản</h2>
+  <p class="sec-lead">Thẻ inline cho văn bản tương đương các <code>TextSpan</code> có ý nghĩa. Chọn theo nghĩa, CSS lo style.</p>
+
+  <div class="entry">
+    <h3>p, br, hr</h3>
+    <p>Mỗi đoạn văn một <code>&lt;p&gt;</code>. <code>&lt;br&gt;</code> chỉ dùng khi xuống dòng là một phần của nội dung (địa chỉ, thơ). <code>&lt;hr&gt;</code> là chuyển chủ đề, không phải đường kẻ trang trí.</p>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;p&gt;Khoảng cách giữa các đoạn do CSS (margin) quyết định.&lt;/p&gt;
+
+&lt;p&gt;
+  Tầng 4, Tòa nhà A&lt;br&gt;          &lt;!-- xuống dòng có nghĩa --&gt;
+  123 Đường Số 7
+&lt;/p&gt;
+
+&lt;hr&gt;                             &lt;!-- chuyển chủ đề; đường kẻ trang trí thì dùng CSS border --&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Text('dòng 1\ndòng 2')</code> xuống dòng được, còn HTML bỏ qua ký tự xuống dòng và gộp khoảng trắng. Cần <code>&lt;br&gt;</code> hoặc CSS <code>white-space: pre-line</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Đừng dùng <code>&lt;br&gt;&lt;br&gt;</code> để tạo khoảng cách, hay <code>&lt;p&gt;&amp;nbsp;&lt;/p&gt;</code> để đẩy layout.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Nhấn mạnh và định dạng inline</h3>
+    <div class="tw"><table class="wide">
+      <caption>Thẻ văn bản inline</caption>
+      <thead><tr><th scope="col">Thẻ</th><th scope="col">Ý nghĩa</th><th scope="col">Ví dụ</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;strong&gt;</code></td><td>Quan trọng, nghiêm trọng, khẩn</td><td><strong>Không</strong> tắt máy khi đang cập nhật</td></tr>
+        <tr><td><code>&lt;b&gt;</code></td><td>Thu hút chú ý, không thêm tầm quan trọng</td><td>Tên sản phẩm <b>X2</b> trong bài review</td></tr>
+        <tr><td><code>&lt;em&gt;</code></td><td>Nhấn giọng, làm đổi nghĩa câu</td><td>Tôi <em>đã</em> lưu rồi</td></tr>
+        <tr><td><code>&lt;i&gt;</code></td><td>Giọng khác: thuật ngữ, từ nước ngoài</td><td><i lang="la">in vitro</i></td></tr>
+        <tr><td><code>&lt;mark&gt;</code></td><td>Đánh dấu vì liên quan (kết quả tìm kiếm)</td><td>tìm <mark>dialog</mark></td></tr>
+        <tr><td><code>&lt;small&gt;</code></td><td>Chú thích phụ, điều khoản, bản quyền</td><td><small>Đã gồm VAT</small></td></tr>
+        <tr><td><code>&lt;del&gt;</code> / <code>&lt;ins&gt;</code></td><td>Nội dung bị xóa / được thêm</td><td><del>500.000 ₫</del> <ins>390.000 ₫</ins></td></tr>
+        <tr><td><code>&lt;s&gt;</code></td><td>Không còn đúng nữa</td><td><s>Còn hàng</s></td></tr>
+        <tr><td><code>&lt;sup&gt;</code> / <code>&lt;sub&gt;</code></td><td>Chỉ số trên / dưới</td><td>m<sup>2</sup>, H<sub>2</sub>O</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>TextSpan(style: TextStyle(fontWeight: FontWeight.bold))</code> và <code>SpanStyle(fontWeight = FontWeight.Bold)</code> chỉ đổi giao diện. <code>&lt;strong&gt;</code> mang ý nghĩa; chỉ muốn in đậm cho đẹp thì dùng <code>&lt;b&gt;</code> hoặc <code>&lt;span class&gt;</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Đa số screen reader không đọc khác đi với <code>strong</code>/<code>em</code>. Thông tin quan trọng phải nằm trong chữ, đừng chỉ dựa vào định dạng hay màu sắc.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>code, kbd, pre, samp, var</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;p&gt;Gọi &lt;code&gt;dialog.showModal()&lt;/code&gt; để mở. Nhấn &lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt; để tìm.&lt;/p&gt;
+&lt;p&gt;Kết quả: &lt;samp&gt;Build succeeded&lt;/samp&gt;. Với &lt;var&gt;n&lt;/var&gt; phần tử…&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="language-dart"&gt;void main() {
+  runApp(const App());   // pre giữ nguyên khoảng trắng và xuống dòng
+}&lt;/code&gt;&lt;/pre&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Trong <code>pre</code>/<code>code</code>, ký tự <code>&lt;</code> và <code>&amp;</code> vẫn phải escape: viết <code>&amp;lt;div&amp;gt;</code> để hiện ra <code>&lt;div&gt;</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Trích dẫn, viết tắt, thời gian</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;figure&gt;
+  &lt;blockquote cite="https://example.com/talk"&gt;
+    &lt;p&gt;Dùng thẻ native trước, chỉ thêm ARIA khi thật cần.&lt;/p&gt;
+  &lt;/blockquote&gt;
+  &lt;figcaption&gt;Minh Anh, &lt;cite&gt;Bài nói về accessibility&lt;/cite&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Như tài liệu viết: &lt;q&gt;đừng dùng div làm nút&lt;/q&gt;.&lt;/p&gt;  &lt;!-- q: trích trong dòng, tự thêm ngoặc kép --&gt;
+
+&lt;p&gt;&lt;abbr title="Accessible Rich Internet Applications"&gt;ARIA&lt;/abbr&gt; bổ sung semantic.&lt;/p&gt;
+
+&lt;p&gt;Phát hành &lt;time datetime="2026-11-12"&gt;12/11/2026&lt;/time&gt;,
+   họp lúc &lt;time datetime="14:30"&gt;2 giờ 30 chiều&lt;/time&gt;.&lt;/p&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>&lt;time datetime&gt;</code> giống việc tách dữ liệu <code>DateTime</code> khỏi chuỗi đã format bằng <code>DateFormat</code>: máy đọc thuộc tính ISO 8601, người đọc nội dung bên trong.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>title</code> của <code>abbr</code> không hiện trên mobile và với bàn phím. Lần đầu xuất hiện, nên viết đầy đủ ngay trong câu.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Ký tự đặc biệt và comment</h3>
+    <p>Với UTF-8 bạn gõ thẳng ©, —, … được. Chỉ bắt buộc escape <code>&lt;</code>, <code>&amp;</code>, và <code>"</code> bên trong giá trị thuộc tính.</p>
+    <div class="tw"><table>
+      <caption>Entity hay dùng</caption>
+      <thead><tr><th scope="col">Viết</th><th scope="col">Hiện</th><th scope="col">Khi nào</th></tr></thead>
+      <tbody>
+        <tr><td><code>&amp;lt;</code> <code>&amp;gt;</code></td><td>&lt; &gt;</td><td>Hiện code HTML trong trang</td></tr>
+        <tr><td><code>&amp;amp;</code></td><td>&amp;</td><td>Dấu &amp; trong text và URL trong thuộc tính</td></tr>
+        <tr><td><code>&amp;quot;</code></td><td>&quot;</td><td>Ngoặc kép trong giá trị thuộc tính</td></tr>
+        <tr><td><code>&amp;nbsp;</code></td><td>(khoảng trắng không ngắt)</td><td>Giữ liền "10&nbsp;km", "Thứ&nbsp;Hai"</td></tr>
+        <tr><td><code>&amp;shy;</code></td><td>(gạch nối mềm)</td><td>Gợi ý chỗ ngắt từ dài</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Comment: vẫn gửi xuống trình duyệt, ai cũng xem được bằng View Source --&gt;
+&lt;p&gt;10&amp;nbsp;km · &amp;copy; 2026 · a &amp;lt; b &amp;amp;&amp;amp; c&lt;/p&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Không để thông tin nhạy cảm (token, ghi chú nội bộ) trong comment HTML.</span></p>
+  </div>
+</section>
+
+
+<!-- ============ 05 LINKS ============ -->
+<section class="sec" id="links">
+  <h2><span class="n" aria-hidden="true">05</span>Links</h2>
+  <p class="sec-lead"><code>&lt;a href&gt;</code> là cách duy nhất để điều hướng mà trình duyệt, bàn phím và crawler đều hiểu.</p>
+
+  <div class="entry">
+    <h3>Các dạng href</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;a href="https://docs.flutter.dev"&gt;URL tuyệt đối&lt;/a&gt;
+&lt;a href="/docs/forms"&gt;Tương đối từ gốc domain&lt;/a&gt;
+&lt;a href="../images/"&gt;Tương đối từ trang hiện tại&lt;/a&gt;
+&lt;a href="#forms"&gt;Nhảy tới phần tử có id="forms" trong trang&lt;/a&gt;
+&lt;a href="/docs#forms"&gt;Trang khác + anchor&lt;/a&gt;
+
+&lt;a href="mailto:support@example.com?subject=G%C3%B3p%20%C3%BD"&gt;Gửi email&lt;/a&gt;  &lt;!-- tham số phải URL-encode --&gt;
+&lt;a href="tel:+842812345678"&gt;028 1234 5678&lt;/a&gt;                                 &lt;!-- số quốc tế, không khoảng trắng --&gt;
+
+&lt;a href="/files/report.pdf" download="bao-cao-q3.pdf"&gt;Tải báo cáo (PDF, 2 MB)&lt;/a&gt;  &lt;!-- download: chỉ áp dụng cùng origin --&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Link nội bộ ≈ <code>Navigator.push</code> / <code>context.go('/docs')</code> / <code>navController.navigate("docs")</code>. <code>mailto:</code> và <code>tel:</code> ≈ <code>url_launcher</code> hoặc <code>LocalUriHandler.current.openUri()</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Anchor <code>#forms</code> cần phần tử có <code>id="forms"</code>. Header dính (sticky) che mất tiêu đề sau khi nhảy? Dùng CSS <code>scroll-padding-top</code> trên <code>html</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Mở tab mới an toàn</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;a href="https://pub.dev" target="_blank" rel="noopener noreferrer"&gt;
+  pub.dev &lt;span class="visually-hidden"&gt;(mở tab mới)&lt;/span&gt;
+&lt;/a&gt;</code></pre></div>
+    <ul class="points">
+      <li><code>noopener</code>: trang mới không điều khiển được trang cũ qua <code>window.opener</code>. Trình duyệt hiện đại đã mặc định điều này với <code>target="_blank"</code>, ghi rõ vẫn an toàn hơn.</li>
+      <li><code>noreferrer</code>: không gửi header Referer cho trang đích (và ngầm có noopener).</li>
+    </ul>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Đừng mở tab mới cho mọi link. Người dùng tự chọn được bằng Ctrl/Cmd + click; ép tab mới làm hỏng nút Back.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Khi buộc phải mở tab mới, báo trước bằng chữ (có thể ẩn) hoặc icon có label.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Link hay button?</h3>
+    <p>Quy tắc một câu: <strong>đi tới đâu đó</strong> thì là link, <strong>làm gì đó</strong> thì là button.</p>
+    <div class="tw"><table class="wide">
+      <caption>Link và button khác nhau ở đâu</caption>
+      <thead><tr><th scope="col"></th><th scope="col"><code>&lt;a href&gt;</code></th><th scope="col"><code>&lt;button&gt;</code></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Mục đích</th><td>Điều hướng: URL thay đổi</td><td>Hành động: submit, mở dialog, toggle, xóa</td></tr>
+        <tr><th scope="row">Phím</th><td>Enter</td><td>Enter và Space</td></tr>
+        <tr><th scope="row">Chuột phải / Ctrl+click</th><td>Mở tab mới, copy link</td><td>Không có</td></tr>
+        <tr><th scope="row">Screen reader đọc</th><td>"link"</td><td>"nút"</td></tr>
+        <tr><th scope="row">Flutter</th><td><code>context.go('/settings')</code></td><td><code>onPressed: () =&gt; doSomething()</code></td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- ❌ link giả làm nút: href="#" làm nhảy lên đầu trang, đổi URL --&gt;
+&lt;a href="#" onclick="openSettings()"&gt;Mở cài đặt&lt;/a&gt;
+
+&lt;!-- ❌ nút giả làm link: mất Ctrl+click, mất copy link --&gt;
+&lt;button onclick="location.href='/settings'"&gt;Cài đặt&lt;/button&gt;
+
+&lt;!-- ✅ --&gt;
+&lt;button type="button" onclick="openSettings()"&gt;Mở cài đặt&lt;/button&gt;
+&lt;a href="/settings"&gt;Cài đặt&lt;/a&gt;
+
+&lt;!-- Trông như nút nhưng là điều hướng: vẫn là &lt;a&gt;, chỉ style bằng CSS --&gt;
+&lt;a class="btn btn-primary" href="/signup"&gt;Đăng ký miễn phí&lt;/a&gt;</code></pre></div>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Text của link phải tự giải thích khi đứng một mình. Screen reader có thể liệt kê mọi link tách khỏi ngữ cảnh; mười link "Xem thêm" thì vô nghĩa.</span></p>
+  </div>
+</section>
+
+<!-- ============ 06 MEDIA ============ -->
+<section class="sec" id="media">
+  <h2><span class="n" aria-hidden="true">06</span>Hình ảnh &amp; media</h2>
+  <p class="sec-lead">Ảnh là nội dung, nên luôn có alt và kích thước. Phần lớn lỗi hiệu năng web nằm ở ảnh.</p>
+
+  <div class="entry">
+    <h3>img: alt, width/height, loading</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Ảnh nằm dưới màn hình đầu tiên --&gt;
+&lt;img src="/img/settings-screen.webp"
+     alt="Màn hình Cài đặt với công tắc Thông báo đang bật"
+     width="800" height="600"
+     loading="lazy"
+     decoding="async"&gt;
+
+&lt;!-- Ảnh lớn nhất ở đầu trang (LCP): KHÔNG lazy, ưu tiên tải sớm --&gt;
+&lt;img src="/img/hero.webp" alt="…" width="1600" height="900" fetchpriority="high"&gt;
+
+&lt;style&gt;
+  /* Ảnh co giãn mà vẫn giữ tỉ lệ lấy từ width/height */
+  img { max-width: 100%; height: auto; }
+&lt;/style&gt;</code></pre></div>
+    <div class="tw"><table class="wide">
+      <caption>Viết alt thế nào</caption>
+      <thead><tr><th scope="col">Loại ảnh</th><th scope="col">alt nên là</th></tr></thead>
+      <tbody>
+        <tr><td>Mang thông tin</td><td>Ý chính của ảnh, ngắn gọn. Không mở đầu bằng "Ảnh của…"</td></tr>
+        <tr><td>Trang trí thuần túy</td><td><code>alt=""</code> (rỗng, nhưng vẫn phải có thuộc tính)</td></tr>
+        <tr><td>Là nội dung duy nhất của link/nút</td><td>Đích đến hoặc hành động: <code>alt="Trang chủ"</code>, không phải "logo"</td></tr>
+        <tr><td>Chứa chữ</td><td>Chép lại đúng chữ đó</td></tr>
+        <tr><td>Biểu đồ phức tạp</td><td>Alt tóm tắt xu hướng + dữ liệu chi tiết ở bảng hoặc <code>figcaption</code> bên cạnh</td></tr>
+        <tr><td>Ảnh cạnh chữ đã nói đủ</td><td><code>alt=""</code> để tránh đọc lặp</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Image.network(url, semanticLabel: '…')</code> / Compose <code>Image(…, contentDescription = "…")</code>. <code>contentDescription = null</code> ≈ <code>alt=""</code>. <code>width</code>/<code>height</code> giống việc bọc ảnh trong <code>AspectRatio</code> hoặc <code>SizedBox</code> để ảnh chưa tải xong không làm nhảy layout.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Thiếu <code>width</code>/<code>height</code> gây layout shift (CLS). Đừng <code>loading="lazy"</code> cho ảnh trên màn hình đầu tiên: ảnh sẽ tải chậm hơn.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Thiếu hẳn <code>alt</code>, screen reader đọc tên file ("IMG underscore 2041 dot jpg").</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Responsive images: srcset, sizes, picture</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- 1. Cùng ảnh, nhiều độ phân giải; trình duyệt tự chọn theo bề rộng hiển thị --&gt;
+&lt;img src="hero-800.jpg"
+     srcset="hero-400.jpg 400w, hero-800.jpg 800w, hero-1600.jpg 1600w"
+     sizes="(max-width: 600px) 100vw, 50vw"
+     alt="…" width="1600" height="900"&gt;
+
+&lt;!-- 2. Ảnh cỡ cố định, chỉ khác mật độ điểm ảnh --&gt;
+&lt;img src="logo.png" srcset="logo.png 1x, logo@2x.png 2x" alt="MyApp" width="120" height="40"&gt;
+
+&lt;!-- 3. picture: đổi định dạng hoặc đổi bố cục ảnh (art direction).
+        source đầu tiên khớp sẽ thắng, nên đặt điều kiện hẹp lên trước --&gt;
+&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" type="image/avif" srcset="hero-mobile.avif"&gt;
+  &lt;source media="(max-width: 600px)" srcset="hero-mobile.jpg"&gt;
+  &lt;source type="image/avif" srcset="hero.avif"&gt;
+  &lt;img src="hero.jpg" alt="…" width="1600" height="900"&gt;  &lt;!-- bắt buộc có img; alt đặt ở đây --&gt;
+&lt;/picture&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống thư mục <code>2.0x/</code>, <code>3.0x/</code> của asset Flutter hay <code>drawable-xxhdpi</code> của Android: trình duyệt chọn file phù hợp màn hình. Khác biệt: descriptor <code>w</code> cùng <code>sizes</code> chọn theo <em>bề rộng hiển thị</em>, không chỉ theo mật độ điểm ảnh.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Có <code>srcset</code> dạng <code>w</code> mà thiếu <code>sizes</code>, trình duyệt giả định ảnh rộng 100vw và thường tải file to hơn cần.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>figure, figcaption, SVG inline</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;figure&gt;
+  &lt;img src="chart.png" alt="Doanh thu tăng đều qua 4 quý, cao nhất ở Q4" width="640" height="360"&gt;
+  &lt;figcaption&gt;Hình 2. Doanh thu theo quý, 2026&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;!-- SVG trang trí trong nút: ẩn khỏi screen reader, đặt tên cho nút --&gt;
+&lt;button type="button" aria-label="Đóng"&gt;
+  &lt;svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"&gt;
+    &lt;path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2"/&gt;
+  &lt;/svg&gt;
+&lt;/button&gt;
+
+&lt;!-- SVG mang thông tin: role="img" + title --&gt;
+&lt;svg role="img" aria-labelledby="done-t" viewBox="0 0 100 8" width="200" height="16"&gt;
+  &lt;title id="done-t"&gt;Đã hoàn thành 70%&lt;/title&gt;
+  &lt;rect width="70" height="8" fill="currentColor"/&gt;
+&lt;/svg&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>SVG inline ≈ <code>SvgPicture</code> (flutter_svg) / <code>ImageVector</code> trong Compose. <code>currentColor</code> ≈ màu lấy từ <code>IconTheme</code> / <code>LocalContentColor</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>video, audio, iframe</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;video controls width="1280" height="720" preload="metadata" poster="thumb.jpg"&gt;
+  &lt;source src="tutorial.webm" type="video/webm"&gt;
+  &lt;source src="tutorial.mp4" type="video/mp4"&gt;
+  &lt;track kind="captions" src="tutorial.vi.vtt" srclang="vi" label="Tiếng Việt" default&gt;
+  &lt;track kind="captions" src="tutorial.en.vtt" srclang="en" label="English"&gt;
+  &lt;p&gt;Trình duyệt không phát được video. &lt;a href="tutorial.mp4"&gt;Tải video&lt;/a&gt;.&lt;/p&gt;
+&lt;/video&gt;
+
+&lt;!-- Autoplay chỉ chạy khi muted; playsinline để iOS không bật fullscreen --&gt;
+&lt;video autoplay muted loop playsinline src="bg.mp4" aria-hidden="true"&gt;&lt;/video&gt;
+
+&lt;audio controls src="podcast.mp3"&gt;&lt;/audio&gt;
+
+&lt;iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
+        title="Video: cài đặt MyApp trong 2 phút"
+        width="560" height="315" loading="lazy"
+        allow="fullscreen; picture-in-picture"&gt;&lt;/iframe&gt;
+
+&lt;!-- Nội dung không tin cậy: sandbox rỗng = khóa hết, thêm dần quyền cần thiết --&gt;
+&lt;iframe src="/user-preview.html" title="Xem trước" sandbox="allow-scripts"&gt;&lt;/iframe&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>VideoPlayer</code> (video_player) / Media3 ExoPlayer ↔ <code>&lt;video&gt;</code>; <code>WebView</code> ↔ <code>&lt;iframe&gt;</code>. Khác biệt: <code>&lt;video controls&gt;</code> đã có sẵn thanh điều khiển, không cần tự dựng. Phụ đề dùng file WebVTT qua <code>&lt;track&gt;</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>&lt;iframe&gt;</code> bắt buộc có <code>title</code>. Video có lời thoại cần <code>track kind="captions"</code>.</span></p>
+  </div>
+</section>
+
+<!-- ============ 07 LISTS & TABLES ============ -->
+<section class="sec" id="lists-tables">
+  <h2><span class="n" aria-hidden="true">07</span>Lists &amp; tables</h2>
+  <p class="sec-lead">Trong HTML, list và table là <em>ý nghĩa của nội dung</em>, không phải cơ chế cuộn hay công cụ dàn layout.</p>
+
+  <div class="entry">
+    <h3>ul, ol, li</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;ul&gt;                          &lt;!-- thứ tự không quan trọng --&gt;
+  &lt;li&gt;Flutter&lt;/li&gt;
+  &lt;li&gt;Compose Multiplatform&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;                          &lt;!-- thứ tự có nghĩa: các bước, bảng xếp hạng --&gt;
+  &lt;li&gt;Cài SDK&lt;/li&gt;
+  &lt;li&gt;Tạo project&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start="3" reversed&gt;…&lt;/ol&gt; &lt;!-- bắt đầu từ 3, đếm ngược --&gt;
+
+&lt;!-- Bỏ dấu đầu dòng bằng CSS: Safari/VoiceOver có thể mất semantic list,
+     thêm role="list" để giữ lại --&gt;
+&lt;ul class="tags" role="list"&gt;…&lt;/ul&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>ListView</code> / <code>LazyColumn</code> là cơ chế hiển thị và cuộn. <code>&lt;ul&gt;</code> chỉ nói "đây là nhóm item cùng loại"; cuộn do CSS <code>overflow: auto</code>. Không có virtualization sẵn như <code>LazyColumn</code>: danh sách hàng nghìn item cần ảo hóa bằng JS hoặc dùng CSS <code>content-visibility: auto</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Screen reader báo "danh sách, 5 mục" khi vào list, giúp người dùng biết trước quy mô.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Con trực tiếp của <code>ul</code>/<code>ol</code> chỉ được là <code>li</code>. Đừng chèn <code>div</code> giữa <code>ul</code> và <code>li</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>dl, dt, dd: cặp khóa–giá trị</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;dl&gt;
+  &lt;dt&gt;Phiên bản&lt;/dt&gt;   &lt;dd&gt;3.24.0&lt;/dd&gt;
+  &lt;dt&gt;Nền tảng&lt;/dt&gt;    &lt;dd&gt;Android&lt;/dd&gt; &lt;dd&gt;iOS&lt;/dd&gt;   &lt;!-- một dt có thể có nhiều dd --&gt;
+  &lt;dt&gt;Cập nhật&lt;/dt&gt;    &lt;dd&gt;&lt;time datetime="2026-11-01"&gt;1/11/2026&lt;/time&gt;&lt;/dd&gt;
+&lt;/dl&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống màn hình "Thông tin ứng dụng" dựng bằng nhiều <code>ListTile(title, subtitle)</code>. Dùng cho metadata, thông số, glossary.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>table và các phần của nó</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;table&gt;
+  &lt;caption&gt;Phiên bản hệ điều hành được hỗ trợ&lt;/caption&gt;  &lt;!-- tên của bảng --&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;Nền tảng&lt;/th&gt;
+      &lt;th scope="col"&gt;Tối thiểu&lt;/th&gt;
+      &lt;th scope="col"&gt;Khuyến nghị&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;Android&lt;/th&gt;   &lt;!-- header của hàng --&gt;
+      &lt;td&gt;API 24&lt;/td&gt;
+      &lt;td&gt;API 35&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope="row"&gt;iOS&lt;/th&gt;
+      &lt;td&gt;13&lt;/td&gt;
+      &lt;td&gt;18&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;&lt;td colspan="3"&gt;Cập nhật 11/2026&lt;/td&gt;&lt;/tr&gt;   &lt;!-- colspan: gộp 3 cột; rowspan: gộp hàng --&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Table</code> / <code>DataTable</code> trong Flutter; Compose chưa có table dựng sẵn. <code>&lt;table&gt;</code> tự căn độ rộng cột theo nội dung, không phải tính <code>columnWidths</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>&lt;caption&gt;</code> được đọc đầu tiên. <code>th</code> + <code>scope</code> giúp screen reader đọc "Android, Tối thiểu, API 24" khi di chuyển giữa các ô.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Không dùng table để dàn layout (kiểu email HTML cũ); layout dùng CSS Grid. Bảng rộng trên mobile: bọc trong một <code>div</code> có <code>overflow-x: auto</code>.</span></p>
+  </div>
+</section>
+
+
+<!-- ============ 08 FORMS ============ -->
+<section class="sec" id="forms">
+  <h2><span class="n" aria-hidden="true">08</span>Forms</h2>
+  <p class="sec-lead">Phần khác biệt nhất so với mobile: trình duyệt đã có sẵn form, validation, autofill và bàn phím ảo phù hợp. Dùng đúng thuộc tính là đủ cho đa số trường hợp.</p>
+
+  <div class="entry">
+    <h3>form, label, fieldset/legend</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;form action="/api/profile" method="post"&gt;
+  &lt;!-- Cách 1: label for ↔ input id --&gt;
+  &lt;label for="full-name"&gt;Họ và tên&lt;/label&gt;
+  &lt;input id="full-name" name="fullName" autocomplete="name" required&gt;
+
+  &lt;!-- Cách 2: bọc input trong label, không cần id --&gt;
+  &lt;label&gt;
+    &lt;input type="checkbox" name="newsletter" value="yes"&gt; Nhận bản tin hằng tuần
+  &lt;/label&gt;
+
+  &lt;!-- fieldset + legend: nhóm control liên quan; legend là tên nhóm --&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Phương thức liên hệ&lt;/legend&gt;
+    &lt;label&gt;&lt;input type="radio" name="contact" value="email" checked&gt; Email&lt;/label&gt;
+    &lt;label&gt;&lt;input type="radio" name="contact" value="phone"&gt; Điện thoại&lt;/label&gt;
+  &lt;/fieldset&gt;
+
+  &lt;button type="submit"&gt;Lưu&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+<div class="code"><div class="code-head"><span>SPA: chặn submit mặc định, gửi bằng fetch</span></div><pre><code class="language-javascript">const form = document.querySelector('form');
+form.addEventListener('submit', async (e) =&gt; {
+  e.preventDefault();                             // không reload trang
+  const data = Object.fromEntries(new FormData(form)); // key = thuộc tính name
+  await fetch(form.action, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+});</code></pre></div>
+    <ul class="points">
+      <li><code>method="get"</code>: dữ liệu lên URL (<code>?q=…</code>), dùng cho tìm kiếm, lọc. <code>method="post"</code>: dùng khi thay đổi dữ liệu.</li>
+      <li><code>name</code> là key gửi lên server. Input không có <code>name</code> thì không được gửi.</li>
+      <li>Sự kiện <code>submit</code> chỉ chạy khi validation đã qua (trừ khi có <code>novalidate</code>).</li>
+    </ul>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>&lt;label&gt;</code> ≈ <code>InputDecoration(labelText: …)</code> / <code>label = { Text(…) }</code>, nhưng là một phần tử riêng, gắn với input qua <code>for</code>/<code>id</code>. <code>fieldset</code> + <code>legend</code> gần với tiêu đề nhóm trên màn hình cài đặt, có thêm semantics.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>placeholder</code> không thay được label: biến mất khi gõ, tương phản thấp, nhiều screen reader không đọc. Radio/checkbox cùng nhóm nên đặt trong <code>fieldset</code> để legend được đọc kèm.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Trường <code>disabled</code> <strong>không được gửi</strong> khi submit, trường <code>readonly</code> thì có.</span></p>
+  </div>
+
+  <div class="entry" id="input-types">
+    <h3>Các type của input</h3>
+    <p><code>type</code> quyết định control hiển thị, bàn phím ảo trên mobile và validation có sẵn. Cột cuối là control thật, bấm thử được.</p>
+    <div class="tw demo-table"><table class="xwide">
+      <caption>Input types · thử trực tiếp ở cột cuối</caption>
+      <thead><tr><th scope="col">type</th><th scope="col">Dùng cho</th><th scope="col">Flutter / Compose</th><th scope="col">Thử</th></tr></thead>
+      <tbody>
+        <tr><td><code>text</code></td><td>Văn bản một dòng (mặc định)</td><td><code>TextField</code></td><td><input id="d-t-text" type="text" aria-label="Thử type text" placeholder="Gõ gì cũng được"></td></tr>
+        <tr><td><code>email</code></td><td>Email; kiểm tra có <code>@</code>; bàn phím có <code>@</code></td><td><code>TextInputType.emailAddress</code> / <code>KeyboardType.Email</code></td><td><input id="d-t-email" type="email" aria-label="Thử type email" placeholder="ban@vidu.com"></td></tr>
+        <tr><td><code>password</code></td><td>Che ký tự; password manager nhận ra</td><td><code>obscureText: true</code> / <code>PasswordVisualTransformation()</code></td><td><input id="d-t-password" type="password" aria-label="Thử type password" autocomplete="off"></td></tr>
+        <tr><td><code>number</code></td><td>Số lượng có ý nghĩa toán học; có nút tăng/giảm</td><td><code>TextInputType.number</code> / <code>KeyboardType.Number</code></td><td><input id="d-t-number" type="number" aria-label="Thử type number" min="0" max="10" value="2"></td></tr>
+        <tr><td><code>tel</code></td><td>Số điện thoại; bàn phím số, <em>không</em> validate định dạng</td><td><code>TextInputType.phone</code> / <code>KeyboardType.Phone</code></td><td><input id="d-t-tel" type="tel" aria-label="Thử type tel" placeholder="0901 234 567"></td></tr>
+        <tr><td><code>url</code></td><td>URL; phải có scheme (<code>https://</code>)</td><td><code>TextInputType.url</code> / <code>KeyboardType.Uri</code></td><td><input id="d-t-url" type="url" aria-label="Thử type url" placeholder="https://"></td></tr>
+        <tr><td><code>search</code></td><td>Ô tìm kiếm; phím Enter hiện "Tìm"; Esc xóa</td><td><code>SearchBar</code></td><td><input id="d-t-search" type="search" aria-label="Thử type search"></td></tr>
+        <tr><td><code>date</code></td><td>Chọn ngày; <code>value</code> luôn là <code>yyyy-mm-dd</code> dù hiển thị theo locale</td><td><code>showDatePicker</code> / <code>DatePickerDialog</code></td><td><input id="d-t-date" type="date" aria-label="Thử type date"></td></tr>
+        <tr><td><code>time</code></td><td>Giờ; <code>value</code> dạng <code>HH:mm</code></td><td><code>showTimePicker</code> / <code>TimePicker</code></td><td><input id="d-t-time" type="time" aria-label="Thử type time"></td></tr>
+        <tr><td><code>datetime-local</code></td><td>Ngày + giờ, không kèm múi giờ</td><td>2 picker liên tiếp</td><td><input id="d-t-dtl" type="datetime-local" aria-label="Thử type datetime-local"></td></tr>
+        <tr><td><code>checkbox</code></td><td>Bật/tắt độc lập; chỉ gửi khi được chọn</td><td><code>Checkbox</code></td><td><label class="check"><input id="d-t-checkbox" type="checkbox" checked> Nhớ tôi</label></td></tr>
+        <tr><td><code>checkbox</code> + <code>role="switch"</code></td><td>Công tắc có hiệu lực ngay</td><td><code>Switch</code></td><td><label class="check"><input id="d-t-switch" type="checkbox" role="switch" checked> Thông báo</label></td></tr>
+        <tr><td><code>radio</code></td><td>Chọn 1 trong nhóm cùng <code>name</code>; phím mũi tên đổi lựa chọn</td><td><code>Radio(groupValue)</code> / <code>RadioButton</code></td><td><span class="row" role="radiogroup" aria-label="Thử type radio"><label class="check"><input id="d-t-r1" type="radio" name="d-t-radio" checked> A</label><label class="check"><input id="d-t-r2" type="radio" name="d-t-radio"> B</label></span></td></tr>
+        <tr><td><code>range</code></td><td>Giá trị gần đúng trong khoảng</td><td><code>Slider</code></td><td><span class="row"><input id="d-t-range" type="range" min="0" max="100" value="40" aria-label="Thử type range"><output id="d-t-range-out" for="d-t-range">40</output></span></td></tr>
+        <tr><td><code>color</code></td><td>Chọn màu; <code>value</code> dạng <code>#rrggbb</code></td><td>package ngoài</td><td><span class="row"><input id="d-t-color" type="color" value="#c23c12" aria-label="Thử type color"><output id="d-t-color-out" for="d-t-color">#c23c12</output></span></td></tr>
+        <tr><td><code>file</code></td><td>Chọn file; <code>accept</code>, <code>multiple</code>, <code>capture</code></td><td>file_picker / <code>GetContent()</code></td><td><input id="d-t-file" type="file" accept="image/*" aria-label="Thử type file chọn ảnh"></td></tr>
+        <tr><td><code>hidden</code></td><td>Gửi kèm dữ liệu không hiển thị (id bản ghi, CSRF token)</td><td>–</td><td><span class="hint">Không hiển thị gì; người dùng vẫn xem được trong DevTools</span></td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;input type="file" name="avatar" accept="image/png, image/jpeg"&gt;   &lt;!-- lọc loại file --&gt;
+&lt;input type="file" name="docs" accept=".pdf" multiple&gt;                &lt;!-- chọn nhiều file --&gt;
+&lt;input type="file" accept="image/*" capture="environment"&gt;            &lt;!-- mobile: mở thẳng camera sau --&gt;
+&lt;form method="post" enctype="multipart/form-data"&gt;…&lt;/form&gt;           &lt;!-- bắt buộc khi gửi file bằng form thường --&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>type="number"</code> cho mã OTP, số thẻ, số điện thoại là sai: mất số 0 ở đầu, lăn chuột làm đổi giá trị, cho nhập chữ "e". Dùng <code>type="text" inputmode="numeric"</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>type="hidden"</code> không bí mật gì cả. Đừng đặt dữ liệu nhạy cảm ở đó.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>textarea, select/option/optgroup, datalist</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;label for="note"&gt;Ghi chú&lt;/label&gt;
+&lt;textarea id="note" name="note" rows="3" maxlength="200"&gt;&lt;/textarea&gt;
+
+&lt;label for="platform"&gt;Nền tảng&lt;/label&gt;
+&lt;select id="platform" name="platform" required&gt;
+  &lt;option value=""&gt;Chọn nền tảng&lt;/option&gt;   &lt;!-- value rỗng + required = bắt buộc chọn --&gt;
+  &lt;optgroup label="Mobile"&gt;
+    &lt;option value="android"&gt;Android&lt;/option&gt;
+    &lt;option value="ios" selected&gt;iOS&lt;/option&gt;
+  &lt;/optgroup&gt;
+  &lt;optgroup label="Desktop"&gt;
+    &lt;option value="windows"&gt;Windows&lt;/option&gt;
+    &lt;option value="macos"&gt;macOS&lt;/option&gt;
+  &lt;/optgroup&gt;
+&lt;/select&gt;
+
+&lt;label for="fw"&gt;Framework&lt;/label&gt;
+&lt;input id="fw" name="fw" list="fw-list"&gt;    &lt;!-- gợi ý nhưng vẫn gõ tự do --&gt;
+&lt;datalist id="fw-list"&gt;
+  &lt;option value="Flutter"&gt;&lt;/option&gt;
+  &lt;option value="Compose Multiplatform"&gt;&lt;/option&gt;
+  &lt;option value="React Native"&gt;&lt;/option&gt;
+&lt;/datalist&gt;</code></pre></div>
+    <div class="demo" id="demo-select">
+      <p class="demo-label">Thử trực tiếp</p>
+      <form id="d-select-form" class="grid2">
+        <div class="field" style="grid-column:1/-1">
+          <label for="d-note">Ghi chú</label>
+          <textarea id="d-note" name="note" rows="3" maxlength="200">Dùng textarea cho văn bản nhiều dòng.</textarea>
+        </div>
+        <div class="field">
+          <label for="d-platform">Nền tảng</label>
+          <select id="d-platform" name="platform">
+            <option value="">Chọn nền tảng</option>
+            <optgroup label="Mobile">
+              <option value="android">Android</option>
+              <option value="ios" selected>iOS</option>
+            </optgroup>
+            <optgroup label="Desktop">
+              <option value="windows">Windows</option>
+              <option value="macos">macOS</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field">
+          <label for="d-fw">Framework</label>
+          <input id="d-fw" name="fw" list="d-fw-list" value="Flutter">
+          <datalist id="d-fw-list">
+            <option value="Flutter"></option>
+            <option value="Compose Multiplatform"></option>
+            <option value="React Native"></option>
+          </datalist>
+        </div>
+      </form>
+      <pre class="log" id="d-select-log" aria-live="polite"></pre>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>&lt;select&gt;</code> ≈ <code>DropdownButton</code> / <code>DropdownMenu</code> / <code>ExposedDropdownMenuBox</code>. <code>datalist</code> ≈ widget <code>Autocomplete</code>: gợi ý nhưng không ép chọn. <code>&lt;textarea&gt;</code> ≈ <code>TextField(maxLines: null)</code> / <code>singleLine = false</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>&lt;select&gt;</code> và <code>datalist</code> native khó style và trông khác nhau giữa trình duyệt. Chấp nhận giao diện native, hoặc dùng thư viện combobox đã làm đúng a11y; đừng tự dựng dropdown bằng <code>div</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Thuộc tính của input</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Thuộc tính form hay dùng</caption>
+      <thead><tr><th scope="col">Thuộc tính</th><th scope="col">Tác dụng</th><th scope="col">Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>name</code></td><td>Key khi submit / trong <code>FormData</code></td><td>key trong <code>Map</code> bạn tự gom</td></tr>
+        <tr><td><code>value</code></td><td>Giá trị ban đầu (attribute) / hiện tại (property <code>el.value</code>)</td><td><code>TextEditingController(text:)</code> / state</td></tr>
+        <tr><td><code>placeholder</code></td><td>Gợi ý mờ khi rỗng. Không thay label</td><td><code>hintText</code> / <code>placeholder = { }</code></td></tr>
+        <tr><td><code>required</code></td><td>Bắt buộc nhập</td><td><code>validator</code> trả lỗi khi rỗng</td></tr>
+        <tr><td><code>disabled</code></td><td>Không tương tác, không focus, <strong>không submit</strong></td><td><code>enabled: false</code></td></tr>
+        <tr><td><code>readonly</code></td><td>Không sửa được nhưng vẫn focus, copy và submit</td><td><code>readOnly: true</code> / <code>readOnly = true</code></td></tr>
+        <tr><td><code>min</code> / <code>max</code> / <code>step</code></td><td>Giới hạn cho number, range, date, time</td><td><code>Slider(min, max, divisions)</code></td></tr>
+        <tr><td><code>minlength</code> / <code>maxlength</code></td><td>Độ dài chuỗi; <code>maxlength</code> chặn gõ thêm</td><td><code>maxLength</code> / cắt chuỗi trong <code>onValueChange</code></td></tr>
+        <tr><td><code>pattern</code></td><td>Regex phải khớp toàn bộ giá trị; chỉ kiểm tra, không chặn gõ</td><td><code>validator</code> dùng <code>RegExp</code></td></tr>
+        <tr><td><code>multiple</code></td><td>Nhiều giá trị: file, email, select</td><td>–</td></tr>
+        <tr><td><code>autocomplete</code></td><td>Autofill và password manager hiểu đây là trường gì</td><td><code>autofillHints</code> / <code>contentType</code> (Compose 1.8+)</td></tr>
+        <tr><td><code>inputmode</code></td><td>Chọn bàn phím ảo, không đổi validation</td><td><code>keyboardType</code> / <code>KeyboardOptions(keyboardType)</code></td></tr>
+        <tr><td><code>enterkeyhint</code></td><td>Nhãn phím Enter: <code>enter</code>, <code>done</code>, <code>go</code>, <code>next</code>, <code>previous</code>, <code>search</code>, <code>send</code></td><td><code>textInputAction</code> / <code>imeAction</code></td></tr>
+        <tr><td><code>autofocus</code></td><td>Focus ngay khi tải (dialog: phần tử đầu tiên nên focus)</td><td><code>autofocus: true</code></td></tr>
+        <tr><td><code>form="id"</code></td><td>Control nằm ngoài <code>&lt;form&gt;</code> vẫn thuộc form đó</td><td>–</td></tr>
+        <tr><td><code>spellcheck</code>, <code>autocapitalize</code></td><td>Gạch chân chính tả, tự viết hoa trên mobile</td><td><code>autocorrect</code>, <code>textCapitalization</code></td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- autocomplete: password manager &amp; autofill dựa hoàn toàn vào đây --&gt;
+&lt;input name="name"        autocomplete="name"&gt;
+&lt;input name="email"       type="email"    autocomplete="email"&gt;
+&lt;input name="username"    autocomplete="username"&gt;
+&lt;input name="password"    type="password" autocomplete="current-password"&gt;  &lt;!-- đăng nhập --&gt;
+&lt;input name="newPassword" type="password" autocomplete="new-password"&gt;      &lt;!-- đăng ký, đổi mật khẩu --&gt;
+&lt;input name="otp"         inputmode="numeric" autocomplete="one-time-code" maxlength="6"&gt; &lt;!-- iOS/Android gợi ý mã từ SMS --&gt;
+&lt;input name="phone"       type="tel" autocomplete="tel"&gt;
+&lt;input name="address"     autocomplete="street-address"&gt;
+&lt;input name="cardNumber"  inputmode="numeric" autocomplete="cc-number"&gt;
+
+&lt;!-- inputmode: text | numeric | decimal | tel | email | url | search | none --&gt;
+&lt;input name="price" inputmode="decimal" enterkeyhint="done"&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>inputmode</code> chỉ đổi bàn phím, giống <code>keyboardType</code>. <code>type</code> thì đổi cả control lẫn validation. <code>inputFormatters: [FilteringTextInputFormatter.digitsOnly]</code> <strong>không</strong> có tương đương sẵn: <code>pattern</code> chỉ báo lỗi lúc submit; muốn chặn gõ phải tự lọc trong sự kiện <code>input</code>.</span></p>
+  </div>
+
+  <div class="entry" id="validation">
+    <h3>Validation có sẵn, :user-invalid, novalidate</h3>
+    <p>Khi submit, trình duyệt kiểm tra <code>required</code>, <code>type</code>, <code>pattern</code>, <code>min</code>/<code>max</code>, <code>minlength</code>…, hiện bong bóng lỗi và chặn submit. Bạn style trạng thái bằng pseudo-class và thêm lỗi tùy biến bằng JS.</p>
+    <div class="tw"><table class="wide">
+      <caption>Pseudo-class trạng thái form</caption>
+      <thead><tr><th scope="col">Selector</th><th scope="col">Khớp khi</th></tr></thead>
+      <tbody>
+        <tr><td><code>:invalid</code></td><td>Giá trị sai, <em>kể cả khi người dùng chưa chạm</em>: form vừa tải đã đỏ rực</td></tr>
+        <tr><td><code>:user-invalid</code></td><td>Giá trị sai <em>sau khi</em> người dùng sửa và rời ô, hoặc sau khi submit. Nên dùng cái này</td></tr>
+        <tr><td><code>:valid</code> / <code>:user-valid</code></td><td>Giá trị hợp lệ</td></tr>
+        <tr><td><code>:required</code> / <code>:optional</code></td><td>Có / không có <code>required</code></td></tr>
+        <tr><td><code>:placeholder-shown</code></td><td>Ô rỗng đang hiện placeholder</td></tr>
+        <tr><td><code>:disabled</code> / <code>:read-only</code></td><td>Trạng thái tương ứng</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;label for="emp-code"&gt;Mã nhân viên&lt;/label&gt;
+&lt;input id="emp-code" name="code" required
+       pattern="[A-Z]{3}-\d{4}"
+       aria-describedby="emp-code-hint emp-code-err"&gt;
+&lt;p id="emp-code-hint"&gt;3 chữ in hoa, gạch ngang, 4 chữ số. Ví dụ: ABC-0421&lt;/p&gt;
+&lt;p id="emp-code-err" class="error"&gt;&lt;/p&gt;
+
+&lt;style&gt;
+  input:user-invalid { border-color: crimson; }
+&lt;/style&gt;
+
+&lt;script&gt;
+  const input = document.getElementById('emp-code');
+  const err = document.getElementById('emp-code-err');
+
+  input.addEventListener('input', () =&gt; {
+    // Lỗi tùy biến; chuỗi rỗng nghĩa là hợp lệ (≈ validator trả về null)
+    input.setCustomValidity(input.value === 'ABC-0000' ? 'Mã này đã bị khóa.' : '');
+    if (err.textContent) err.textContent = input.validationMessage;
+  });
+  input.addEventListener('invalid', () =&gt; {          // chạy khi submit/checkValidity thất bại
+    err.textContent = input.validationMessage;
+  });
+
+  // input.validity.valueMissing | typeMismatch | patternMismatch | tooShort | rangeOverflow…
+  // form.checkValidity()  → true/false, không hiện gì
+  // form.reportValidity() → hiện bong bóng lỗi + focus ô sai đầu tiên
+&lt;/script&gt;
+
+&lt;!-- novalidate: tắt kiểm tra lúc submit (để tự hiển thị lỗi); API validity vẫn dùng được --&gt;
+&lt;form novalidate&gt;…&lt;/form&gt;
+&lt;!-- formnovalidate trên một nút: bỏ qua kiểm tra chỉ với nút đó, vd. "Lưu nháp" --&gt;
+&lt;button type="submit" formnovalidate&gt;Lưu nháp&lt;/button&gt;</code></pre></div>
+    <div class="demo" id="demo-validation">
+      <p class="demo-label">Thử trực tiếp: nhập sai rồi rời ô, hoặc bấm Đăng ký</p>
+      <form id="d-val" class="grid2">
+        <div class="field">
+          <label for="d-val-email">Email</label>
+          <input id="d-val-email" name="email" type="email" required autocomplete="email" aria-describedby="d-val-email-err">
+          <p class="err" id="d-val-email-err"></p>
+        </div>
+        <div class="field">
+          <label for="d-val-pw">Mật khẩu</label>
+          <input id="d-val-pw" name="password" type="password" required minlength="8" autocomplete="new-password" aria-describedby="d-val-pw-hint d-val-pw-err">
+          <p class="hint" id="d-val-pw-hint">Ít nhất 8 ký tự.</p>
+          <p class="err" id="d-val-pw-err"></p>
+        </div>
+        <div class="field">
+          <label for="d-val-code">Mã nhân viên</label>
+          <input id="d-val-code" name="code" required pattern="[A-Z]{3}-\d{4}" autocomplete="off" aria-describedby="d-val-code-hint d-val-code-err">
+          <p class="hint" id="d-val-code-hint">Dạng ABC-0421. Thử ABC-0000 để xem lỗi tùy biến.</p>
+          <p class="err" id="d-val-code-err"></p>
+        </div>
+        <div class="field">
+          <label for="d-val-age">Tuổi</label>
+          <input id="d-val-age" name="age" type="number" min="18" max="99" inputmode="numeric" aria-describedby="d-val-age-hint d-val-age-err">
+          <p class="hint" id="d-val-age-hint">Không bắt buộc, từ 18 đến 99.</p>
+          <p class="err" id="d-val-age-err"></p>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label class="check"><input id="d-val-agree" name="agree" type="checkbox" required aria-describedby="d-val-agree-err"> Tôi đồng ý với điều khoản</label>
+          <p class="err" id="d-val-agree-err"></p>
+        </div>
+        <div class="row" style="grid-column:1/-1">
+          <button type="submit" class="btn primary">Đăng ký</button>
+          <label class="check"><input id="d-val-novalidate" type="checkbox"> Bật <code>novalidate</code></label>
+        </div>
+      </form>
+      <pre class="log" id="d-val-log" role="status">Chưa submit.</pre>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Form</code> + <code>GlobalKey&lt;FormState&gt;</code>: <code>formKey.currentState!.validate()</code> ≈ <code>form.reportValidity()</code>; <code>validator</code> trả chuỗi lỗi ≈ <code>setCustomValidity(msg)</code>; <code>AutovalidateMode.onUserInteraction</code> ≈ <code>:user-invalid</code>. Compose không có <code>Form</code>: bạn giữ state lỗi rồi truyền <code>isError</code> và <code>supportingText</code>.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Gắn thông báo lỗi vào input bằng <code>aria-describedby</code>. Khi tự validate bằng JS (có <code>novalidate</code>), đặt <code>aria-invalid="true"</code> cho ô sai và chuyển focus tới ô sai đầu tiên.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Validation phía client chỉ để UX. Server luôn phải kiểm tra lại.</span></p>
+  </div>
+
+  <div class="entry" id="button-types">
+    <h3>button type: submit, button, reset</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;form&gt;
+  &lt;button&gt;Lưu&lt;/button&gt;                          &lt;!-- KHÔNG ghi type = submit! --&gt;
+  &lt;button type="submit"&gt;Lưu&lt;/button&gt;            &lt;!-- submit; Enter trong ô nhập cũng kích hoạt nút này --&gt;
+  &lt;button type="button" id="preview"&gt;Xem trước&lt;/button&gt;  &lt;!-- chỉ chạy JS --&gt;
+  &lt;button type="reset"&gt;Xóa hết&lt;/button&gt;         &lt;!-- về giá trị ban đầu; hiếm khi nên dùng --&gt;
+  &lt;button type="submit" name="intent" value="draft" formnovalidate&gt;Lưu nháp&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+  form.addEventListener('submit', (e) =&gt; {
+    e.preventDefault();
+    console.log(e.submitter.value);   // biết nút nào đã submit: "draft"…
+  });
+&lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-buttons">
+      <p class="demo-label">Thử trực tiếp: nút nào submit form?</p>
+      <form id="d-btns" class="grid2">
+        <div class="field">
+          <label for="d-btns-title">Tiêu đề</label>
+          <input id="d-btns-title" name="title" value="Bản nháp 1">
+        </div>
+        <div class="row" style="grid-column:1/-1">
+          <button class="btn primary" id="d-btns-notype">button không ghi type</button>
+          <button type="button" class="btn" id="d-btns-button">type="button"</button>
+          <button type="reset" class="btn">type="reset"</button>
+        </div>
+      </form>
+      <pre class="log" id="d-btns-log" role="status">Bấm thử từng nút.</pre>
+    </div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Lỗi kinh điển: nút "Xem trước", "Thêm dòng", nút mở dropdown đặt trong form mà quên <code>type="button"</code>. Bấm vào là form submit và trang reload. Quy tắc: <strong>luôn ghi type cho button</strong>.</span></p>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Flutter không có khái niệm này: nút không tự gắn vào <code>Form</code>. Trên web, mọi <code>&lt;button&gt;</code> trong <code>&lt;form&gt;</code> mặc định là nút submit của form đó.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Bảng đối chiếu form: Flutter / Compose ↔ HTML</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Form controls và thuộc tính tương đương</caption>
+      <thead><tr><th scope="col">Flutter</th><th scope="col">Compose</th><th scope="col">HTML</th></tr></thead>
+      <tbody>
+        <tr><td><code>TextField(keyboardType: TextInputType.emailAddress)</code></td><td><code>KeyboardOptions(keyboardType = KeyboardType.Email)</code></td><td><code>type="email"</code> (hoặc <code>inputmode="email"</code>)</td></tr>
+        <tr><td><code>TextInputType.number</code></td><td><code>KeyboardType.Number</code> / <code>Decimal</code></td><td><code>inputmode="numeric"</code> / <code>"decimal"</code></td></tr>
+        <tr><td><code>TextInputType.phone</code></td><td><code>KeyboardType.Phone</code></td><td><code>type="tel"</code></td></tr>
+        <tr><td><code>TextInputType.multiline</code>, <code>maxLines: null</code></td><td><code>singleLine = false</code></td><td><code>&lt;textarea&gt;</code></td></tr>
+        <tr><td><code>obscureText: true</code></td><td><code>PasswordVisualTransformation()</code></td><td><code>type="password"</code></td></tr>
+        <tr><td><code>textInputAction: TextInputAction.next</code></td><td><code>imeAction = ImeAction.Next</code></td><td><code>enterkeyhint="next"</code></td></tr>
+        <tr><td><code>autofillHints: [AutofillHints.email]</code></td><td><code>semantics { contentType = ContentType.EmailAddress }</code></td><td><code>autocomplete="email"</code></td></tr>
+        <tr><td><code>maxLength: 50</code></td><td>cắt chuỗi trong <code>onValueChange</code></td><td><code>maxlength="50"</code></td></tr>
+        <tr><td><code>inputFormatters: [digitsOnly]</code></td><td>lọc trong <code>onValueChange</code></td><td>Không có sẵn; lọc trong sự kiện <code>input</code></td></tr>
+        <tr><td><code>Form</code> + <code>validator</code></td><td>state + <code>isError</code> + <code>supportingText</code></td><td><code>required</code>, <code>pattern</code>, <code>min</code>/<code>max</code> + <code>setCustomValidity()</code></td></tr>
+        <tr><td><code>AutovalidateMode.onUserInteraction</code></td><td>–</td><td><code>:user-invalid</code></td></tr>
+        <tr><td><code>enabled: false</code></td><td><code>enabled = false</code></td><td><code>disabled</code></td></tr>
+        <tr><td><code>readOnly: true</code></td><td><code>readOnly = true</code></td><td><code>readonly</code></td></tr>
+        <tr><td><code>Checkbox</code></td><td><code>Checkbox</code></td><td><code>&lt;input type="checkbox"&gt;</code></td></tr>
+        <tr><td><code>Radio(groupValue)</code></td><td><code>RadioButton(selected)</code></td><td><code>&lt;input type="radio"&gt;</code> cùng <code>name</code></td></tr>
+        <tr><td><code>Switch</code></td><td><code>Switch</code></td><td><code>&lt;input type="checkbox" role="switch"&gt;</code></td></tr>
+        <tr><td><code>Slider</code></td><td><code>Slider</code></td><td><code>&lt;input type="range"&gt;</code></td></tr>
+        <tr><td><code>DropdownButton</code> / <code>DropdownMenu</code></td><td><code>ExposedDropdownMenuBox</code></td><td><code>&lt;select&gt;</code></td></tr>
+        <tr><td><code>Autocomplete</code></td><td>–</td><td><code>&lt;input list&gt;</code> + <code>&lt;datalist&gt;</code></td></tr>
+        <tr><td><code>showDatePicker</code></td><td><code>DatePickerDialog</code></td><td><code>&lt;input type="date"&gt;</code></td></tr>
+        <tr><td><code>focusNode.requestFocus()</code></td><td><code>focusRequester.requestFocus()</code></td><td><code>el.focus()</code></td></tr>
+        <tr><td><code>controller.text</code></td><td><code>state.value</code></td><td><code>input.value</code></td></tr>
+        <tr><td><code>onChanged</code></td><td><code>onValueChange</code></td><td>sự kiện <code>input</code> (mỗi lần gõ) / <code>change</code> (khi rời ô hoặc chọn xong)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+
+<!-- ============ 09 INTERACTIVE ============ -->
+<section class="sec" id="interactive">
+  <h2><span class="n" aria-hidden="true">09</span>Thành phần tương tác có sẵn</h2>
+  <p class="sec-lead">Accordion, dialog, menu, thanh tiến độ: trình duyệt đã có sẵn, kèm bàn phím và a11y. Dùng chúng trước khi viết JS hay cài thư viện.</p>
+
+  <div class="entry">
+    <h3>details / summary: mở rộng – thu gọn</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;details&gt;
+  &lt;summary&gt;Vì sao nút trong form tự submit?&lt;/summary&gt;  &lt;!-- luôn hiển thị, bấm để mở/đóng --&gt;
+  &lt;p&gt;Vì type mặc định của button là "submit".&lt;/p&gt;
+&lt;/details&gt;
+
+&lt;details open&gt;…&lt;/details&gt;               &lt;!-- mở sẵn --&gt;
+
+&lt;!-- Accordion: cùng name → chỉ một mục mở cùng lúc --&gt;
+&lt;details name="faq"&gt;…&lt;/details&gt;
+&lt;details name="faq"&gt;…&lt;/details&gt;
+
+&lt;script&gt;
+  details.open = true;                                      // mở bằng JS
+  details.addEventListener('toggle', () =&gt; console.log(details.open));
+&lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-details">
+      <p class="demo-label">Thử trực tiếp: accordion với name="d-faq"</p>
+      <details name="d-faq" open>
+        <summary>details có cần JavaScript không?</summary>
+        <div><p>Không. Mở, đóng, bàn phím và trạng thái cho screen reader đều có sẵn.</p></div>
+      </details>
+      <details name="d-faq">
+        <summary>Làm sao chỉ cho mở một mục?</summary>
+        <div><p>Đặt cùng thuộc tính <code>name</code> cho các <code>details</code>. Mở mục này thì mục khác tự đóng.</p></div>
+      </details>
+      <details name="d-faq">
+        <summary>Animation khi mở thì sao?</summary>
+        <div><p>Cần CSS; hỗ trợ animate chiều cao của nội dung chưa đồng đều giữa các trình duyệt.</p></div>
+      </details>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>ExpansionTile</code>: <code>initiallyExpanded</code> ↔ <code>open</code>, <code>onExpansionChanged</code> ↔ sự kiện <code>toggle</code>. Compose không có sẵn, thường tự làm bằng <code>AnimatedVisibility</code> + state.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>summary</code> đã là một nút có trạng thái mở/đóng. Đừng đặt link hay nút khác bên trong <code>summary</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>dialog: showModal và form method="dialog"</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;button type="button" id="open-delete"&gt;Xóa dự án&lt;/button&gt;
+
+&lt;dialog id="confirm-delete" aria-labelledby="cd-title"&gt;
+  &lt;h2 id="cd-title"&gt;Xóa dự án?&lt;/h2&gt;
+  &lt;p&gt;Thao tác này không hoàn tác được.&lt;/p&gt;
+  &lt;!-- method="dialog": submit sẽ ĐÓNG dialog, không gửi request.
+       value của nút được submit thành dialog.returnValue --&gt;
+  &lt;form method="dialog"&gt;
+    &lt;button value="cancel" autofocus&gt;Hủy&lt;/button&gt;
+    &lt;button value="confirm"&gt;Xóa&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;script&gt;
+  const dlg = document.getElementById('confirm-delete');
+  document.getElementById('open-delete').addEventListener('click', () =&gt; dlg.showModal());
+
+  dlg.addEventListener('close', () =&gt; {
+    if (dlg.returnValue === 'confirm') deleteProject();  // ≈ kết quả của Navigator.pop
+  });
+
+  // Đóng khi bấm ra backdrop: click vào backdrop có target là chính dialog.
+  // Giữ padding của dialog = 0 và đặt padding cho phần tử bên trong.
+  dlg.addEventListener('click', (e) =&gt; { if (e.target === dlg) dlg.close('cancel'); });
+&lt;/script&gt;
+
+&lt;style&gt;
+  dialog::backdrop { background: rgb(0 0 0 / .5); }   /* ≈ barrierColor */
+&lt;/style&gt;</code></pre></div>
+    <div class="demo" id="demo-dialog">
+      <p class="demo-label">Thử trực tiếp: mở, rồi thử Esc, Tab, bấm ra ngoài</p>
+      <div class="row">
+        <button type="button" class="btn danger" id="d-dlg-open">Xóa dự án…</button>
+      </div>
+      <pre class="log" id="d-dlg-log" role="status">returnValue: (chưa mở)</pre>
+      <dialog id="d-dlg" aria-labelledby="d-dlg-title" aria-describedby="d-dlg-desc">
+        <div class="dlg-body">
+          <h2 id="d-dlg-title">Xóa dự án “Mobile App”?</h2>
+          <p id="d-dlg-desc">Thao tác này không hoàn tác được. Focus đang bị giữ trong hộp thoại; Esc để đóng.</p>
+          <form method="dialog" class="row">
+            <button class="btn" value="cancel" autofocus>Hủy</button>
+            <button class="btn danger" value="confirm">Xóa</button>
+          </form>
+        </div>
+      </dialog>
+    </div>
+    <div class="tw"><table class="wide">
+      <caption>showModal() khác show() thế nào</caption>
+      <thead><tr><th scope="col"></th><th scope="col"><code>showModal()</code></th><th scope="col"><code>show()</code> hoặc thuộc tính <code>open</code></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Backdrop, phần còn lại bị chặn</th><td class="yes">Có</td><td class="no">Không</td></tr>
+        <tr><th scope="row">Esc để đóng</th><td class="yes">Có</td><td class="no">Không</td></tr>
+        <tr><th scope="row">Giữ focus trong dialog</th><td class="yes">Có</td><td class="no">Không</td></tr>
+        <tr><th scope="row">Trả focus về nút mở khi đóng</th><td class="yes">Có</td><td>Có</td></tr>
+        <tr><th scope="row">Nằm trên mọi thứ (top layer, không cần z-index)</th><td class="yes">Có</td><td class="no">Không</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>showDialog(context, builder)</code> trả <code>Future</code> ≈ <code>showModal()</code> + sự kiện <code>close</code> + <code>returnValue</code>. <code>Navigator.pop(context, 'confirm')</code> ≈ <code>dialog.close('confirm')</code>. <code>barrierDismissible: true</code> ≈ đoạn JS bắt click backdrop ở trên. <code>AlertDialog(title, content, actions)</code> ≈ <code>h2</code> + <code>p</code> + <code>form method="dialog"</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Đừng mở modal bằng thuộc tính <code>open</code>: bạn sẽ có dialog non-modal, không backdrop, không giữ focus. Có cách mở không cần JS bằng <code>command</code>/<code>commandfor</code> trên nút, nhưng còn mới; kiểm tra hỗ trợ trình duyệt trước khi dùng.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Popover API: menu, tooltip, toast</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- popover="auto" (mặc định): bấm ra ngoài hoặc Esc tự đóng; mở cái khác thì cái cũ đóng --&gt;
+&lt;button type="button" popovertarget="more-menu"&gt;Tùy chọn&lt;/button&gt;
+&lt;div id="more-menu" popover&gt;
+  &lt;button type="button"&gt;Đổi tên&lt;/button&gt;
+  &lt;button type="button"&gt;Nhân bản&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- popover="manual": chỉ đóng khi bạn gọi; hợp với toast --&gt;
+&lt;button type="button" popovertarget="toast" popovertargetaction="show"&gt;Lưu&lt;/button&gt;
+&lt;div id="toast" popover="manual" role="status"&gt;
+  Đã lưu.
+  &lt;button type="button" popovertarget="toast" popovertargetaction="hide"&gt;Đóng&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  const menu = document.getElementById('more-menu');
+  menu.showPopover(); menu.hidePopover(); menu.togglePopover();
+  menu.addEventListener('toggle', (e) =&gt; console.log(e.newState));  // "open" | "closed"
+&lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-popover">
+      <p class="demo-label">Thử trực tiếp</p>
+      <div class="row">
+        <button type="button" class="btn" id="d-menu-btn" popovertarget="d-menu">Tùy chọn ▾</button>
+        <button type="button" class="btn primary" popovertarget="d-toast" popovertargetaction="show">Hiện toast (manual)</button>
+      </div>
+      <div id="d-menu" class="menu" popover>
+        <button type="button" data-action="Đổi tên">Đổi tên</button>
+        <button type="button" data-action="Nhân bản">Nhân bản</button>
+        <button type="button" data-action="Chuyển vào lưu trữ">Chuyển vào lưu trữ</button>
+      </div>
+      <div id="d-toast" class="toast" popover="manual" role="status">
+        <span>Đã lưu thay đổi.</span>
+        <button type="button" popovertarget="d-toast" popovertargetaction="hide">Đóng</button>
+      </div>
+      <pre class="log" id="d-pop-log" role="status">Mở menu rồi bấm ra ngoài hoặc nhấn Esc: menu tự đóng. Toast manual thì không.</pre>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>PopupMenuButton</code>, <code>MenuAnchor</code>, <code>Tooltip</code>, <code>OverlayEntry</code>; Compose <code>DropdownMenu</code>, <code>Popup</code>. Khác <code>dialog</code>: popover không chặn phần còn lại của trang và không giữ focus.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>popovertarget</code> tự gắn trạng thái mở/đóng cho nút và đưa focus vào popover theo đúng thứ tự Tab. Menu kiểu ứng dụng (<code>role="menu"</code>) còn cần điều hướng bằng phím mũi tên; với vài nút đơn giản thì không cần role đó.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Popover mặc định hiện giữa màn hình. Đặt cạnh nút bằng CSS anchor positioning (chưa có ở mọi trình duyệt) hoặc tính vị trí bằng JS như demo này. Cần người dùng trả lời trước khi làm tiếp → <code>dialog</code>; thông tin phụ, menu, toast → <code>popover</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>progress, meter, output</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;label for="upload"&gt;Đang tải lên&lt;/label&gt;
+&lt;progress id="upload" max="100" value="42"&gt;42%&lt;/progress&gt;  &lt;!-- tiến độ của một tác vụ --&gt;
+
+&lt;progress aria-label="Đang tải dữ liệu"&gt;&lt;/progress&gt;       &lt;!-- không có value = indeterminate --&gt;
+
+&lt;label for="disk"&gt;Dung lượng đã dùng&lt;/label&gt;
+&lt;!-- meter: một số đo trong khoảng đã biết (pin, ổ đĩa, độ mạnh mật khẩu), không phải tiến độ --&gt;
+&lt;meter id="disk" min="0" max="128" low="80" high="110" optimum="20" value="96"&gt;96 / 128 GB&lt;/meter&gt;
+
+&lt;form oninput="total.value = (+qty.value) * (+price.value)"&gt;
+  &lt;label&gt;Số lượng &lt;input name="qty" type="number" value="2" min="1"&gt;&lt;/label&gt;
+  &lt;label&gt;Đơn giá &lt;input name="price" type="number" value="150000"&gt;&lt;/label&gt;
+  Thành tiền: &lt;output name="total" for="qty price"&gt;300000&lt;/output&gt;  &lt;!-- kết quả tính, được đọc khi đổi --&gt;
+&lt;/form&gt;</code></pre></div>
+    <div class="demo" id="demo-progress">
+      <p class="demo-label">Thử trực tiếp</p>
+      <div class="grid2">
+        <div class="field">
+          <label for="d-prog">Tải lên: <span id="d-prog-text">30%</span></label>
+          <progress id="d-prog" max="100" value="30">30%</progress>
+          <div class="row">
+            <button type="button" class="btn" id="d-prog-inc">+10%</button>
+            <button type="button" class="btn" id="d-prog-reset">Về 0</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="d-meter">Dung lượng đã dùng</label>
+          <meter id="d-meter" min="0" max="128" low="80" high="110" optimum="20" value="96">96 / 128 GB</meter>
+          <label for="d-meter-in" class="hint">Kéo để đổi giá trị: <output id="d-meter-out" for="d-meter-in">96</output> / 128 GB</label>
+          <input id="d-meter-in" type="range" min="0" max="128" value="96">
+        </div>
+        <form class="field" id="d-calc">
+          <span class="lbl">Tính tiền với output</span>
+          <div class="grid2">
+            <div class="field"><label for="d-qty" class="hint">Số lượng</label><input id="d-qty" name="qty" type="number" value="2" min="1"></div>
+            <div class="field"><label for="d-price" class="hint">Đơn giá (₫)</label><input id="d-price" name="price" type="number" value="150000" min="0" step="1000"></div>
+          </div>
+          <p>Thành tiền: <output id="d-total" name="total" for="d-qty d-price">300.000 ₫</output></p>
+        </form>
+      </div>
+    </div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>LinearProgressIndicator(value: 0.42)</code> ≈ <code>&lt;progress value="42" max="100"&gt;</code>; <code>value: null</code> ≈ bỏ thuộc tính <code>value</code>. <code>meter</code> không có widget tương ứng (gần nhất là thanh dung lượng tự vẽ). <code>output</code> ≈ <code>Text</code> hiển thị kết quả kèm <code>Semantics(liveRegion: true)</code>.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Không có thẻ cho vòng xoay kiểu <code>CircularProgressIndicator</code>: dùng CSS/SVG với <code>role="progressbar"</code> và <code>aria-valuenow</code>, <code>aria-valuemin</code>, <code>aria-valuemax</code>.</span></p>
+  </div>
+</section>
+
+<!-- ============ 10 A11Y ============ -->
+<section class="sec" id="a11y">
+  <h2><span class="n" aria-hidden="true">10</span>Accessibility (a11y)</h2>
+  <p class="sec-lead">Cây accessibility của trình duyệt giống Semantics tree của Flutter: được dựng từ thẻ HTML. Thẻ đúng thì phần lớn việc đã xong.</p>
+
+  <div class="entry">
+    <h3>Nguyên tắc: thẻ semantic trước, ARIA sau</h3>
+    <ol class="points">
+      <li>Có thẻ hoặc thuộc tính native làm được → dùng native. ARIA chỉ cho phần tự dựng.</li>
+      <li>Không đổi semantic của thẻ native khi không thật cần (<code>&lt;h2 role="tab"&gt;</code> là sai).</li>
+      <li>Mọi control ARIA tương tác phải dùng được bằng bàn phím: ARIA chỉ đổi cách đọc, không thêm hành vi.</li>
+      <li>Không đặt <code>aria-hidden="true"</code> hay <code>role="presentation"</code> lên phần tử focus được.</li>
+      <li>Mọi control tương tác phải có accessible name (tên được đọc lên).</li>
+    </ol>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- ❌ Dựng lại button bằng ARIA: phải tự lo tabindex, Enter, Space, disabled… --&gt;
+&lt;div role="button" tabindex="0"
+     onclick="save()"
+     onkeydown="if (event.key === 'Enter' || event.key === ' ') save()"&gt;Lưu&lt;/div&gt;
+
+&lt;!-- ✅ --&gt;
+&lt;button type="button" onclick="save()"&gt;Lưu&lt;/button&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống Flutter: widget Material đã có <code>Semantics</code> sẵn; bạn chỉ thêm <code>Semantics</code> khi tự vẽ bằng <code>CustomPaint</code> hay <code>GestureDetector</code>. Web y hệt: thẻ native có sẵn semantics, ARIA dành cho phần tự dựng.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Thuộc tính ARIA hay dùng</h3>
+    <div class="tw"><table class="xwide">
+      <caption>ARIA attributes và tương đương trong Flutter / Compose</caption>
+      <thead><tr><th scope="col">Thuộc tính</th><th scope="col">Dùng khi</th><th scope="col">Ví dụ</th><th scope="col">Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>role</code></td><td>Phần tự dựng không có thẻ native</td><td><code>role="switch"</code>, <code>role="tablist"</code>, <code>role="alert"</code></td><td><code>Semantics(button: true)</code> / <code>semantics { role = Role.Tab }</code></td></tr>
+        <tr><td><code>aria-label</code></td><td>Đặt tên khi không có chữ nhìn thấy</td><td><code>&lt;button aria-label="Đóng"&gt;</code></td><td><code>Semantics(label:)</code> / <code>contentDescription</code></td></tr>
+        <tr><td><code>aria-labelledby</code></td><td>Đặt tên bằng chữ đã có trên trang (ưu tiên hơn aria-label)</td><td><code>&lt;dialog aria-labelledby="title"&gt;</code></td><td><code>Semantics(label:)</code> lấy từ text sẵn có</td></tr>
+        <tr><td><code>aria-describedby</code></td><td>Mô tả thêm: gợi ý, thông báo lỗi</td><td><code>&lt;input aria-describedby="pw-hint"&gt;</code></td><td><code>Semantics(hint:)</code> / <code>supportingText</code></td></tr>
+        <tr><td><code>aria-hidden="true"</code></td><td>Ẩn khỏi screen reader: icon trang trí, nội dung lặp</td><td><code>&lt;svg aria-hidden="true"&gt;</code></td><td><code>ExcludeSemantics</code> / <code>clearAndSetSemantics { }</code></td></tr>
+        <tr><td><code>aria-expanded</code></td><td>Nút mở/đóng một vùng khác (tự dựng)</td><td><code>&lt;button aria-expanded="false"&gt;</code></td><td><code>stateDescription</code></td></tr>
+        <tr><td><code>aria-controls</code></td><td>Nút điều khiển phần tử nào (hỗ trợ hạn chế, vẫn nên có)</td><td><code>aria-controls="panel-1"</code></td><td>–</td></tr>
+        <tr><td><code>aria-current</code></td><td>Mục hiện tại trong một nhóm</td><td><code>aria-current="page"</code> trong nav</td><td><code>Semantics(selected: true)</code></td></tr>
+        <tr><td><code>aria-pressed</code></td><td>Nút toggle bật/tắt</td><td><code>&lt;button aria-pressed="true"&gt;B&lt;/button&gt;</code></td><td><code>Semantics(toggled:)</code></td></tr>
+        <tr><td><code>aria-live</code></td><td>Đọc nội dung khi nó thay đổi</td><td><code>aria-live="polite"</code></td><td><code>Semantics(liveRegion: true)</code> / <code>liveRegion = LiveRegionMode.Polite</code></td></tr>
+        <tr><td><code>aria-invalid</code></td><td>Trường đang lỗi (khi tự validate)</td><td><code>aria-invalid="true"</code></td><td><code>semantics { error("…") }</code></td></tr>
+        <tr><td><code>aria-disabled</code></td><td>Vô hiệu nhưng vẫn focus được để giải thích lý do</td><td><code>aria-disabled="true"</code></td><td><code>enabled: false</code></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span><code>aria-label</code> trên <code>div</code> hay <code>span</code> không có role thường bị bỏ qua. Nó chỉ có tác dụng đáng tin trên phần tử tương tác, landmark, hoặc phần tử có role.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>aria-live: thông báo thay đổi</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;p role="status" id="save-status"&gt;&lt;/p&gt;   &lt;!-- ≈ aria-live="polite": đọc khi người dùng rảnh --&gt;
+&lt;p role="alert" id="error-box"&gt;&lt;/p&gt;      &lt;!-- ≈ aria-live="assertive": cắt ngang để đọc ngay --&gt;
+
+&lt;script&gt;
+  // Vùng live phải có sẵn trong DOM TRƯỚC khi nội dung thay đổi
+  document.getElementById('save-status').textContent = 'Đã lưu bản nháp lúc 10:42';
+&lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-live">
+      <p class="demo-label">Thử trực tiếp (bật screen reader để nghe)</p>
+      <div class="row">
+        <button type="button" class="btn" id="d-live-save">Lưu nháp</button>
+        <button type="button" class="btn danger" id="d-live-err">Gây lỗi mạng</button>
+      </div>
+      <p class="log" role="status" id="d-live-status"></p>
+      <p class="err" role="alert" id="d-live-alert"></p>
+    </div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Dùng <code>assertive</code> / <code>role="alert"</code> tiết kiệm: nó cắt ngang mọi thứ đang đọc. Thông báo "đã lưu", "đã thêm vào giỏ" chỉ cần <code>role="status"</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>tabindex, thứ tự focus, focus-visible, skip link</h3>
+    <div class="tw"><table class="wide">
+      <caption>Giá trị tabindex</caption>
+      <thead><tr><th scope="col">Giá trị</th><th scope="col">Tác dụng</th><th scope="col">Flutter / Compose</th></tr></thead>
+      <tbody>
+        <tr><td><code>tabindex="0"</code></td><td>Đưa phần tử tự dựng vào thứ tự Tab, theo vị trí trong DOM</td><td><code>Focus</code> / <code>Modifier.focusable()</code></td></tr>
+        <tr><td><code>tabindex="-1"</code></td><td>Không vào thứ tự Tab, nhưng focus được bằng JS (heading đích, vùng kết quả, main sau skip link)</td><td><code>FocusNode(skipTraversal: true)</code></td></tr>
+        <tr><td><code>tabindex="1"</code> trở lên</td><td class="no">Đừng dùng: nhảy lên trước mọi thứ, phá thứ tự tự nhiên</td><td>–</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Thứ tự focus = thứ tự trong DOM. Đảo vị trí bằng CSS (order, row-reverse, grid)
+     KHÔNG đổi thứ tự Tab → giữ DOM theo thứ tự đọc hợp lý --&gt;
+
+&lt;h2 id="results" tabindex="-1"&gt;Kết quả&lt;/h2&gt;
+&lt;script&gt;
+  // Sau khi tải kết quả (SPA), đưa focus tới đây để screen reader đọc
+  document.getElementById('results').focus();
+&lt;/script&gt;
+
+&lt;style&gt;
+  /* Outline chỉ hiện khi dùng bàn phím, không hiện khi click chuột */
+  :focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }
+  /* ❌ Đừng bao giờ: *:focus { outline: none; } */
+
+  /* Skip link: ẩn ngoài màn hình, hiện ra khi được focus */
+  .skip-link { position: absolute; left: 8px; top: -100px; }
+  .skip-link:focus { top: 8px; }
+
+  /* Ẩn với mắt, vẫn được screen reader đọc */
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+&lt;/style&gt;
+
+&lt;body&gt;
+  &lt;a class="skip-link" href="#main"&gt;Bỏ qua tới nội dung chính&lt;/a&gt;  &lt;!-- phần tử focus được đầu tiên --&gt;
+  &lt;header&gt;…menu dài…&lt;/header&gt;
+  &lt;main id="main" tabindex="-1"&gt;…&lt;/main&gt;
+&lt;/body&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>el.focus()</code> ≈ <code>focusNode.requestFocus()</code> / <code>focusRequester.requestFocus()</code>. Flutter có <code>FocusTraversalGroup</code> + <code>OrderedTraversalPolicy</code> để đổi thứ tự; web không có policy, thứ tự Tab chính là thứ tự DOM.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Trang này có skip link: tải lại trang và nhấn Tab một lần để thấy. <code>display: none</code> và <code>hidden</code> ẩn với cả screen reader; <code>.visually-hidden</code> chỉ ẩn với mắt.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Alt text và label cho icon button</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Icon button: đặt tên bằng aria-label --&gt;
+&lt;button type="button" aria-label="Tìm kiếm"&gt;
+  &lt;svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"&gt;…&lt;/svg&gt;
+&lt;/button&gt;
+
+&lt;!-- Hoặc chữ ẩn: Google Translate dịch được, aria-label thì không chắc --&gt;
+&lt;button type="button"&gt;
+  &lt;svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"&gt;…&lt;/svg&gt;
+  &lt;span class="visually-hidden"&gt;Tìm kiếm&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Icon + chữ nhìn thấy: ẩn icon, giữ chữ --&gt;
+&lt;button type="button"&gt;
+  &lt;svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"&gt;…&lt;/svg&gt;
+  Tải xuống
+&lt;/button&gt;
+
+&lt;!-- Toggle: tên giữ nguyên, trạng thái nằm ở aria-pressed --&gt;
+&lt;button type="button" aria-label="Tắt tiếng" aria-pressed="false"&gt;🔇&lt;/button&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>IconButton(tooltip: 'Tìm kiếm')</code> (Flutter dùng tooltip làm semantic label), <code>Icon(semanticLabel:)</code>; Compose <code>Icon(contentDescription = "Tìm kiếm")</code>, hoặc <code>null</code> khi đã có <code>Text</code> bên cạnh.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Thuộc tính <code>title</code> không phải accessible name đáng tin, và không hiện trên màn hình cảm ứng.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Kiểm tra a11y</h3>
+    <ul class="points">
+      <li><strong>Bàn phím</strong>: bỏ chuột, đi hết các luồng chính bằng Tab, Shift+Tab, Enter, Space, Esc, phím mũi tên. Luôn thấy focus đang ở đâu.</li>
+      <li><strong>Zoom</strong> 200% và 400%: nội dung không bị cắt, không phải cuộn ngang.</li>
+      <li><strong>Screen reader</strong>: NVDA (Windows, miễn phí), Narrator (Windows), VoiceOver (macOS: <kbd>Cmd</kbd>+<kbd>F5</kbd>; iOS), TalkBack (Android).</li>
+      <li><strong>Chrome DevTools</strong>: Elements → tab Accessibility xem cây a11y, accessible name, role; Lighthouse → Accessibility; Rendering → Emulate vision deficiencies.</li>
+      <li><strong>Firefox</strong>: Accessibility Inspector có "Show Tabbing Order" và kiểm tra độ tương phản.</li>
+      <li><strong>Extension</strong>: axe DevTools, WAVE.</li>
+    </ul>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống bật TalkBack/VoiceOver để test app mobile, hay <code>showSemanticsDebugger: true</code> trong <code>MaterialApp</code>. Tab Accessibility của DevTools ≈ Semantics debugger cho web.</span></p>
+  </div>
+</section>
+
+<!-- ============ 11 GLOBAL ATTRIBUTES ============ -->
+<section class="sec" id="global-attrs">
+  <h2><span class="n" aria-hidden="true">11</span>Global attributes &amp; data</h2>
+  <p class="sec-lead">Thuộc tính dùng được trên mọi thẻ.</p>
+
+  <div class="entry">
+    <h3>Bảng global attributes</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Global attributes</caption>
+      <thead><tr><th scope="col">Thuộc tính</th><th scope="col">Dùng để</th><th scope="col">Ghi chú / tương đương</th></tr></thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>Định danh duy nhất: <code>label for</code>, anchor <code>#</code>, <code>aria-*</code>, <code>getElementById</code></td><td>≈ <code>GlobalKey</code>. Trùng id gây lỗi a11y khó thấy</td></tr>
+        <tr><td><code>class</code></td><td>Gắn style/JS cho nhóm phần tử; nhiều class cách nhau dấu cách</td><td>≈ dùng lại <code>TextStyle</code>/<code>ButtonStyle</code> từ theme</td></tr>
+        <tr><td><code>style</code></td><td>CSS inline</td><td>Hạn chế dùng: khó override, không theo theme</td></tr>
+        <tr><td><code>title</code></td><td>Tooltip khi rê chuột</td><td>≈ <code>Tooltip</code>, nhưng không hiện với touch/bàn phím. Đừng đặt thông tin quan trọng</td></tr>
+        <tr><td><code>hidden</code></td><td>Ẩn hoàn toàn như <code>display:none</code>, cả với screen reader</td><td>≈ <code>Visibility(visible: false)</code> / <code>Offstage</code></td></tr>
+        <tr><td><code>lang</code></td><td>Ngôn ngữ của một đoạn, để screen reader phát âm đúng</td><td>≈ <code>Locale</code></td></tr>
+        <tr><td><code>dir</code></td><td><code>ltr</code>, <code>rtl</code>, <code>auto</code></td><td>≈ <code>Directionality</code> / <code>LocalLayoutDirection</code></td></tr>
+        <tr><td><code>tabindex</code></td><td>Xem mục 10</td><td>≈ <code>Focus</code>, <code>skipTraversal</code></td></tr>
+        <tr><td><code>contenteditable</code></td><td>Cho sửa nội dung trực tiếp</td><td>Cơ sở của rich-text editor; khó làm đúng, thường dùng thư viện</td></tr>
+        <tr><td><code>draggable</code></td><td>Kéo-thả HTML5</td><td>≈ <code>Draggable</code>/<code>DragTarget</code>; kém trên touch, cân nhắc Pointer Events</td></tr>
+        <tr><td><code>inert</code></td><td>Vô hiệu cả một vùng: không click, không focus, ẩn với screen reader</td><td>≈ <code>IgnorePointer</code> + <code>ExcludeFocus</code> + <code>ExcludeSemantics</code> cùng lúc</td></tr>
+        <tr><td><code>translate="no"</code></td><td>Không cho công cụ dịch đổi chữ</td><td>Tên sản phẩm, code</td></tr>
+        <tr><td><code>spellcheck</code></td><td>Bật/tắt gạch chân chính tả</td><td>≈ <code>autocorrect</code></td></tr>
+        <tr><td><code>data-*</code></td><td>Gắn dữ liệu tùy ý, đọc qua <code>el.dataset</code></td><td><code>data-testid</code> ≈ <code>Key('…')</code> / <code>Modifier.testTag()</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="entry">
+    <h3>data-* và dataset</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;button type="button" class="add-to-cart" data-product-id="SKU-1024" data-price="390000"&gt;
+  Thêm vào giỏ
+&lt;/button&gt;
+
+&lt;script&gt;
+  // Event delegation: một listener cho mọi nút (≈ một callback dùng chung)
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('.add-to-cart');
+    if (!btn) return;
+    const { productId, price } = btn.dataset;  // data-product-id → dataset.productId
+    console.log(productId, Number(price));     // dataset luôn là string
+  });
+&lt;/script&gt;
+
+&lt;style&gt;
+  [data-state="loading"] { opacity: .5; pointer-events: none; }  /* style theo data-* */
+&lt;/style&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Viết HTML trong React/JSX: <code>class</code> → <code>className</code>, <code>for</code> → <code>htmlFor</code>, <code>tabindex</code> → <code>tabIndex</code>, <code>style</code> nhận object; <code>aria-*</code> và <code>data-*</code> giữ nguyên dạng gạch ngang.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>inert: khóa cả một vùng</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Ví dụ: khóa form trong lúc đang gửi, hoặc khóa nội dung phía sau một panel tự dựng --&gt;
+&lt;form id="checkout" inert&gt;…&lt;/form&gt;
+&lt;script&gt; document.getElementById('checkout').inert = false; &lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-inert">
+      <p class="demo-label">Thử trực tiếp: bật inert rồi thử Tab hoặc click vào vùng bên dưới</p>
+      <label class="check"><input id="d-inert-toggle" type="checkbox"> Đặt <code>inert</code> cho vùng bên dưới</label>
+      <div class="row" id="d-inert-zone">
+        <label for="d-inert-input" class="vh">Ô nhập thử</label>
+        <input id="d-inert-input" placeholder="Ô nhập thử" style="max-width:220px">
+        <button type="button" class="btn" id="d-inert-btn">Nút thử</button>
+        <span class="hint" id="d-inert-count">Đã bấm 0 lần</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 12 SCRIPTS ============ -->
+<section class="sec" id="scripts">
+  <h2><span class="n" aria-hidden="true">12</span>Script &amp; tài nguyên</h2>
+  <p class="sec-lead">Script mặc định chặn trình duyệt parse HTML. <code>defer</code>, <code>async</code> và <code>type="module"</code> quyết định khi nào code chạy.</p>
+
+  <div class="entry">
+    <h3>defer, async, type="module"</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Cách nạp script</caption>
+      <thead><tr><th scope="col">Cách viết</th><th scope="col">Tải</th><th scope="col">Chạy khi nào</th><th scope="col">Thứ tự</th><th scope="col">Dùng cho</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;script src&gt;</code></td><td>Chặn parse</td><td>Ngay khi tải xong</td><td>Giữ</td><td class="no">Hầu như không nên</td></tr>
+        <tr><td><code>defer</code></td><td>Song song</td><td>Sau khi parse xong HTML, trước <code>DOMContentLoaded</code></td><td>Giữ</td><td class="yes">Script chính của ứng dụng</td></tr>
+        <tr><td><code>async</code></td><td>Song song</td><td>Ngay khi tải xong, có thể chen giữa lúc parse</td><td>Không đảm bảo</td><td>Script độc lập: analytics, quảng cáo</td></tr>
+        <tr><td><code>type="module"</code></td><td>Song song</td><td>Như <code>defer</code> (mặc định)</td><td>Giữ</td><td class="yes">Code hiện đại dùng <code>import</code>/<code>export</code></td></tr>
+        <tr><td><code>type="module" async</code></td><td>Song song</td><td>Ngay khi module và các import tải xong</td><td>Không đảm bảo</td><td>Module độc lập</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;head&gt;
+  &lt;!-- Đặt trong head kèm defer: tải sớm mà không chặn render --&gt;
+  &lt;script src="/js/app.js" defer&gt;&lt;/script&gt;
+
+  &lt;!-- Import map phải đứng trước module dùng nó --&gt;
+  &lt;script type="importmap"&gt;
+    { "imports": { "lit": "https://cdn.jsdelivr.net/npm/lit@3.2.1/+esm" } }
+  &lt;/script&gt;
+  &lt;script type="module" src="/js/main.js"&gt;&lt;/script&gt;   &lt;!-- strict mode, tự defer --&gt;
+
+  &lt;script async src="https://analytics.example.com/a.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;!-- Dữ liệu khởi tạo: không chạy, chỉ để đọc --&gt;
+  &lt;script type="application/json" id="initial-data"&gt;{"userId": 42, "plan": "pro"}&lt;/script&gt;
+
+  &lt;noscript&gt;
+    &lt;p&gt;Trình đặt lịch cần JavaScript. Vui lòng bật JavaScript trong trình duyệt.&lt;/p&gt;
+  &lt;/noscript&gt;
+&lt;/body&gt;</code></pre></div>
+<div class="code"><div class="code-head"><span>JavaScript</span></div><pre><code class="language-javascript">const initial = JSON.parse(document.getElementById('initial-data').textContent);
+
+// Tải module khi cần ≈ deferred import trong Dart (import 'x.dart' deferred as x)
+button.addEventListener('click', async () =&gt; {
+  const { openEditor } = await import('./editor.js');
+  openEditor();
+});</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Script thường (không <code>defer</code>) trong <code>head</code> mà truy cập DOM sẽ nhận <code>null</code>, vì <code>body</code> chưa được parse. Cách cũ là đặt script cuối <code>body</code>; cách nên dùng là để trong <code>head</code> kèm <code>defer</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>preload, prefetch, preconnect</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Bắt tay sớm (DNS + TCP + TLS) với domain sắp dùng --&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link rel="dns-prefetch" href="https://api.example.com"&gt;   &lt;!-- nhẹ hơn: chỉ phân giải DNS --&gt;
+
+&lt;!-- Cần NGAY cho trang này, trình duyệt phát hiện muộn (font trong CSS, ảnh nền) --&gt;
+&lt;link rel="preload" href="/img/hero.avif" as="image" fetchpriority="high"&gt;
+&lt;link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin&gt;
+&lt;link rel="modulepreload" href="/js/editor.js"&gt;           &lt;!-- preload cho ES module --&gt;
+
+&lt;!-- Có thể cần cho trang SAU; tải lúc rảnh, ưu tiên thấp --&gt;
+&lt;link rel="prefetch" href="/js/settings-page.js"&gt;</code></pre></div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Preload thứ không dùng trong vài giây đầu: Chrome cảnh báo ở Console và tốn băng thông. Chỉ preconnect 2–3 domain quan trọng nhất.</span></p>
+  </div>
+</section>
+
+<!-- ============ 13 SEO ============ -->
+<section class="sec" id="seo">
+  <h2><span class="n" aria-hidden="true">13</span>SEO &amp; chia sẻ</h2>
+  <p class="sec-lead">Phần lớn SEO kỹ thuật nằm trong <code>head</code> và trong việc dùng đúng heading, link, <code>main</code>.</p>
+
+  <div class="entry">
+    <h3>Metadata cho tìm kiếm và chia sẻ link</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;html lang="vi"&gt;
+&lt;head&gt;
+  &lt;title&gt;Đổi mật khẩu · Trung tâm trợ giúp MyApp&lt;/title&gt;  &lt;!-- ~50–60 ký tự, mỗi trang một title --&gt;
+  &lt;meta name="description" content="Đổi mật khẩu MyApp trên web và điện thoại trong 3 bước."&gt;  &lt;!-- ~150 ký tự --&gt;
+
+  &lt;!-- URL chính thức khi cùng nội dung có nhiều URL (?utm=…, /amp, http/https) --&gt;
+  &lt;link rel="canonical" href="https://help.myapp.example/doi-mat-khau"&gt;
+
+  &lt;!-- Phiên bản ngôn ngữ khác --&gt;
+  &lt;link rel="alternate" hreflang="en" href="https://help.myapp.example/en/change-password"&gt;
+
+  &lt;!-- Chỉ cho trang KHÔNG muốn index: staging, trang kết quả tìm kiếm nội bộ --&gt;
+  &lt;meta name="robots" content="noindex"&gt;
+
+  &lt;!-- Open Graph: Facebook, Zalo, Slack, LinkedIn… đọc khi hiển thị link preview --&gt;
+  &lt;meta property="og:type" content="article"&gt;
+  &lt;meta property="og:title" content="Đổi mật khẩu MyApp"&gt;
+  &lt;meta property="og:description" content="3 bước, chưa tới 1 phút."&gt;
+  &lt;meta property="og:image" content="https://help.myapp.example/og/doi-mat-khau.png"&gt; &lt;!-- URL tuyệt đối, 1200×630 --&gt;
+  &lt;meta property="og:image:alt" content="Màn hình đổi mật khẩu của MyApp"&gt;
+  &lt;meta property="og:url" content="https://help.myapp.example/doi-mat-khau"&gt;
+  &lt;meta property="og:locale" content="vi_VN"&gt;
+
+  &lt;!-- X (Twitter): tự lấy og:* nếu thiếu, chỉ cần khai báo loại card --&gt;
+  &lt;meta name="twitter:card" content="summary_large_image"&gt;
+
+  &lt;!-- Structured data (JSON-LD): giúp Google hiểu nội dung, có thể hiện rich result --&gt;
+  &lt;script type="application/ld+json"&gt;
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Đổi mật khẩu MyApp",
+    "datePublished": "2026-11-12",
+    "author": { "@type": "Organization", "name": "MyApp" }
+  }
+  &lt;/script&gt;
+&lt;/head&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Flutter web mặc định vẽ lên canvas, nên crawler khó đọc nội dung và link. Vì vậy trang marketing, blog, tài liệu thường làm bằng HTML thật; Flutter web hợp với phần ứng dụng sau đăng nhập.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Đừng để <code>noindex</code> của staging lọt lên production. Kiểm tra nhanh bằng Lighthouse (mục SEO) và công cụ kiểm tra link preview của từng mạng xã hội.</span></p>
+  </div>
+</section>
+
+<!-- ============ 14 WEB COMPONENTS ============ -->
+<section class="sec" id="web-components">
+  <h2><span class="n" aria-hidden="true">14</span>Template &amp; Web Components (giới thiệu)</h2>
+  <p class="sec-lead">Cách có sẵn của nền tảng web để tạo "widget" tái sử dụng. Đủ để hiểu khái niệm; dự án thật thường dùng Lit hoặc một framework.</p>
+
+  <div class="entry">
+    <h3>template: khuôn chưa render</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Nội dung template không render, script không chạy, ảnh không tải: chỉ là khuôn --&gt;
+&lt;template id="row-tpl"&gt;
+  &lt;li class="row"&gt;&lt;span class="name"&gt;&lt;/span&gt; &lt;button type="button"&gt;Xóa&lt;/button&gt;&lt;/li&gt;
+&lt;/template&gt;
+&lt;ul id="list"&gt;&lt;/ul&gt;
+
+&lt;script&gt;
+  const tpl = document.getElementById('row-tpl');
+  for (const name of ['Flutter', 'Compose']) {
+    const node = tpl.content.cloneNode(true);         // ≈ gọi itemBuilder một lần
+    node.querySelector('.name').textContent = name;   // textContent: an toàn, không chèn HTML
+    document.getElementById('list').append(node);
+  }
+&lt;/script&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống <code>itemBuilder</code> của <code>ListView.builder</code>: một khuôn, nhân bản theo dữ liệu. Khác biệt: không tự rebuild khi dữ liệu đổi; bạn tự cập nhật DOM.</span></p>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Gán <code>innerHTML</code> bằng dữ liệu người dùng nhập là lỗ hổng XSS. Dùng <code>textContent</code> cho chữ.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Custom element, Shadow DOM, slot</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;user-card&gt;
+  &lt;img slot="avatar" src="/a.jpg" alt="" width="48" height="48"&gt;
+  &lt;span slot="name"&gt;Ngọc Anh&lt;/span&gt;
+  &lt;p&gt;Mobile developer&lt;/p&gt;                     &lt;!-- không có slot= → vào slot mặc định --&gt;
+&lt;/user-card&gt;
+
+&lt;script&gt;
+  class UserCard extends HTMLElement {          // ≈ class UserCard extends StatelessWidget
+    constructor() {
+      super();
+      this.attachShadow({ mode: 'open' }).innerHTML = `
+        &lt;style&gt;
+          /* CSS trong shadow root được đóng gói: không rò ra ngoài, không bị ngoài ảnh hưởng */
+          :host { display: flex; gap: 12px; align-items: center; }
+        &lt;/style&gt;
+        &lt;slot name="avatar"&gt;&lt;/slot&gt;
+        &lt;div&gt;&lt;strong&gt;&lt;slot name="name"&gt;&lt;/slot&gt;&lt;/strong&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/div&gt;`;
+    }
+    static observedAttributes = ['variant'];
+    attributeChangedCallback(name, oldValue, newValue) {
+      // ≈ didUpdateWidget: tự cập nhật khi attribute đổi
+    }
+  }
+  customElements.define('user-card', UserCard);  // tên bắt buộc có dấu gạch ngang
+&lt;/script&gt;
+
+&lt;!-- Declarative Shadow DOM: shadow root viết sẵn trong HTML, không cần JS (hợp với SSR) --&gt;
+&lt;user-badge&gt;
+  &lt;template shadowrootmode="open"&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/template&gt;
+  Pro
+&lt;/user-badge&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>slot</code> ≈ tham số <code>child</code>/<code>children</code> của widget, hay đúng tên gọi trong Compose: <em>slot API</em> (<code>content: @Composable () -&gt; Unit</code>, <code>title = { … }</code>). Custom element ≈ widget/composable tái sử dụng, nhưng không có cơ chế state và rebuild sẵn.</span></p>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>aria-labelledby</code> và <code>label for</code> không trỏ xuyên qua ranh giới shadow DOM. Cẩn thận khi bọc input trong custom element.</span></p>
+  </div>
+</section>
+
+<!-- ============ 15 PATTERNS ============ -->
+<section class="sec" id="patterns">
+  <h2><span class="n" aria-hidden="true">15</span>Pattern hay dùng</h2>
+  <p class="sec-lead">Snippet copy-paste được, đã đúng semantic và a11y. Style tối giản để bạn thay bằng CSS của dự án.</p>
+
+  <div class="entry">
+    <h3>Khung trang semantic hoàn chỉnh</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="vi"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Dự án · MyApp&lt;/title&gt;
+  &lt;meta name="description" content="Danh sách dự án của bạn trên MyApp."&gt;
+  &lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
+  &lt;link rel="stylesheet" href="/css/app.css"&gt;
+  &lt;script src="/js/app.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;a class="skip-link" href="#main"&gt;Bỏ qua tới nội dung chính&lt;/a&gt;
+
+  &lt;header class="site-header"&gt;
+    &lt;a class="logo" href="/"&gt;MyApp&lt;/a&gt;
+    &lt;nav aria-label="Chính"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="/"&gt;Tổng quan&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/projects" aria-current="page"&gt;Dự án&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/settings"&gt;Cài đặt&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main id="main" tabindex="-1"&gt;
+    &lt;h1&gt;Dự án&lt;/h1&gt;
+    &lt;section aria-labelledby="active-h"&gt;
+      &lt;h2 id="active-h"&gt;Đang hoạt động&lt;/h2&gt;
+      &lt;ul class="project-list"&gt;…&lt;/ul&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;footer class="site-footer"&gt;
+    &lt;p&gt;© 2026 MyApp · &lt;a href="/privacy"&gt;Quyền riêng tư&lt;/a&gt;&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+  </div>
+
+  <div class="entry">
+    <h3>Form đăng nhập / đăng ký chuẩn a11y</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;form class="auth" action="/login" method="post" novalidate&gt;
+  &lt;h1&gt;Đăng nhập&lt;/h1&gt;
+
+  &lt;div class="field"&gt;
+    &lt;label for="login-email"&gt;Email&lt;/label&gt;
+    &lt;!-- autocomplete="username" cho email đăng nhập: password manager ghép đúng cặp --&gt;
+    &lt;input id="login-email" name="email" type="email" required
+           autocomplete="username" enterkeyhint="next"
+           aria-describedby="login-email-err"&gt;
+    &lt;p id="login-email-err" class="error"&gt;&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div class="field"&gt;
+    &lt;label for="login-pw"&gt;Mật khẩu&lt;/label&gt;
+    &lt;input id="login-pw" name="password" type="password" required minlength="8"
+           autocomplete="current-password" enterkeyhint="go"&gt;
+    &lt;button type="button" class="toggle-pw" aria-controls="login-pw" aria-pressed="false"&gt;
+      Hiện mật khẩu
+    &lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;label&gt;&lt;input type="checkbox" name="remember"&gt; Ghi nhớ đăng nhập&lt;/label&gt;
+  &lt;button type="submit"&gt;Đăng nhập&lt;/button&gt;
+  &lt;p&gt;&lt;a href="/forgot"&gt;Quên mật khẩu?&lt;/a&gt; · &lt;a href="/signup"&gt;Tạo tài khoản&lt;/a&gt;&lt;/p&gt;
+&lt;/form&gt;
+
+&lt;!-- Đăng ký: đổi autocomplete và mô tả yêu cầu mật khẩu --&gt;
+&lt;input id="signup-pw" name="password" type="password" required minlength="8"
+       autocomplete="new-password" aria-describedby="signup-pw-hint"&gt;
+&lt;p id="signup-pw-hint"&gt;Ít nhất 8 ký tự, có cả chữ và số.&lt;/p&gt;
+
+&lt;script&gt;
+  const pw = document.getElementById('login-pw');
+  document.querySelector('.toggle-pw').addEventListener('click', (e) =&gt; {
+    const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    e.currentTarget.setAttribute('aria-pressed', String(show));
+  });
+&lt;/script&gt;</code></pre></div>
+    <div class="demo" id="demo-login">
+      <p class="demo-label">Thử trực tiếp</p>
+      <form id="d-login" class="grid2" style="max-width:520px">
+        <p class="lbl" style="grid-column:1/-1;font-size:1.05rem">Đăng nhập</p>
+        <div class="field" style="grid-column:1/-1">
+          <label for="d-login-email">Email</label>
+          <input id="d-login-email" name="email" type="email" required autocomplete="username" enterkeyhint="next" value="minh@vidu.com">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label for="d-login-pw">Mật khẩu</label>
+          <div class="row" style="flex-wrap:nowrap">
+            <input id="d-login-pw" name="password" type="password" required minlength="8" autocomplete="current-password" enterkeyhint="go" style="flex:1;min-width:0">
+            <button type="button" class="btn" id="d-login-toggle" aria-controls="d-login-pw" aria-pressed="false">Hiện</button>
+          </div>
+        </div>
+        <label class="check" style="grid-column:1/-1"><input id="d-login-remember" name="remember" type="checkbox"> Ghi nhớ đăng nhập</label>
+        <div class="row" style="grid-column:1/-1">
+          <button type="submit" class="btn primary">Đăng nhập</button>
+          <a href="#demo-login">Quên mật khẩu?</a>
+        </div>
+      </form>
+      <pre class="log" id="d-login-log" role="status">Mật khẩu cần ít nhất 8 ký tự.</pre>
+    </div>
+  </div>
+
+  <div class="entry">
+    <h3>Navigation có trạng thái active</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;nav aria-label="Chính"&gt;
+  &lt;ul class="nav-list"&gt;
+    &lt;li&gt;&lt;a href="/"&gt;Tổng quan&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/projects" aria-current="page"&gt;Dự án&lt;/a&gt;&lt;/li&gt;  &lt;!-- trang hiện tại --&gt;
+    &lt;li&gt;&lt;a href="/settings"&gt;Cài đặt&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+
+&lt;style&gt;
+  .nav-list { display: flex; gap: 16px; list-style: none; padding: 0; }
+  /* Style theo ARIA: không cần thêm class .active riêng */
+  .nav-list a[aria-current="page"] { font-weight: 600; border-bottom: 2px solid; }
+&lt;/style&gt;</code></pre></div>
+    <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>≈ <code>NavigationBar(selectedIndex: 1)</code>, nhưng trạng thái "đang chọn" nằm ngay trên link. Sidebar của trang này dùng đúng pattern này với <code>aria-current="location"</code> cho mục đang xem.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Card bấm được cả khối</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;article class="card"&gt;
+  &lt;img src="/p/1024.webp" alt="" width="400" height="300" loading="lazy"&gt;  &lt;!-- tiêu đề đã nói đủ --&gt;
+  &lt;h3&gt;&lt;a class="card-link" href="/products/1024"&gt;Tai nghe chống ồn X2&lt;/a&gt;&lt;/h3&gt;
+  &lt;p&gt;Pin 30 giờ, sạc nhanh USB-C.&lt;/p&gt;
+  &lt;p class="price"&gt;&lt;data value="1990000"&gt;1.990.000 ₫&lt;/data&gt;&lt;/p&gt;
+  &lt;button type="button"&gt;Thêm vào giỏ&lt;/button&gt;
+&lt;/article&gt;
+
+&lt;style&gt;
+  .card { position: relative; }
+  /* Mở rộng vùng bấm của link tiêu đề phủ cả card */
+  .card-link::after { content: ""; position: absolute; inset: 0; }
+  /* Nút vẫn bấm riêng được */
+  .card button { position: relative; z-index: 1; }
+&lt;/style&gt;</code></pre></div>
+    <div class="demo" id="demo-card">
+      <p class="demo-label">Thử trực tiếp: click bất kỳ đâu trên card, hoặc Tab tới tiêu đề</p>
+      <div class="card-demo">
+        <article class="card">
+          <div class="thumb" aria-hidden="true"></div>
+          <h4><a href="#demo-card" data-card="Tai nghe chống ồn X2">Tai nghe chống ồn X2</a></h4>
+          <p>Pin 30 giờ, sạc nhanh USB-C.</p>
+          <p class="price"><data value="1990000">1.990.000 ₫</data></p>
+          <button type="button" class="btn" data-cart="Tai nghe chống ồn X2">Thêm vào giỏ</button>
+        </article>
+        <article class="card">
+          <div class="thumb" aria-hidden="true"></div>
+          <h4><a href="#demo-card" data-card="Loa bluetooth Mini">Loa bluetooth Mini</a></h4>
+          <p>Chống nước IPX7, 12 giờ phát nhạc.</p>
+          <p class="price"><data value="790000">790.000 ₫</data></p>
+          <button type="button" class="btn" data-cart="Loa bluetooth Mini">Thêm vào giỏ</button>
+        </article>
+      </div>
+      <p class="log" id="d-card-log" role="status">Chưa bấm.</p>
+    </div>
+    <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Bọc cả card trong <code>&lt;a&gt;</code> làm screen reader đọc toàn bộ card thành một link dài, và không được đặt <code>&lt;button&gt;</code> bên trong <code>&lt;a&gt;</code>.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Modal bằng dialog</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;button type="button" class="open-rename"&gt;Đổi tên&lt;/button&gt;
+
+&lt;dialog class="modal" id="rename-dialog" aria-labelledby="rename-title"&gt;
+  &lt;form method="dialog" class="modal-body"&gt;
+    &lt;h2 id="rename-title"&gt;Đổi tên dự án&lt;/h2&gt;
+    &lt;label for="rename-input"&gt;Tên mới&lt;/label&gt;
+    &lt;input id="rename-input" name="name" required maxlength="60" autofocus&gt;
+    &lt;div class="modal-actions"&gt;
+      &lt;button type="submit" value="cancel" formnovalidate&gt;Hủy&lt;/button&gt;
+      &lt;button type="submit" value="save"&gt;Lưu&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;style&gt;
+  .modal { padding: 0; border: 0; border-radius: 12px; max-width: min(440px, 100vw - 32px); }
+  .modal-body { padding: 20px; display: grid; gap: 12px; }
+  .modal::backdrop { background: rgb(0 0 0 / .5); }
+  body:has(dialog[open]) { overflow: hidden; }   /* khóa cuộn trang phía sau */
+&lt;/style&gt;
+
+&lt;script&gt;
+  const dlg = document.getElementById('rename-dialog');
+  document.querySelector('.open-rename').addEventListener('click', () =&gt; dlg.showModal());
+  dlg.addEventListener('click', (e) =&gt; { if (e.target === dlg) dlg.close('cancel'); });
+  dlg.addEventListener('close', () =&gt; {
+    if (dlg.returnValue === 'save') rename(dlg.querySelector('input').value);
+  });
+&lt;/script&gt;</code></pre></div>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Focus vào ô nhập khi mở (<code>autofocus</code>), Esc đóng, focus trở về nút "Đổi tên" khi đóng: tất cả có sẵn nhờ <code>showModal()</code>. Demo dùng được ở mục 9.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Accordion bằng details</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;div class="accordion"&gt;
+  &lt;details name="faq" open&gt;
+    &lt;summary&gt;Có dùng thử miễn phí không?&lt;/summary&gt;
+    &lt;p&gt;Có, 14 ngày, không cần thẻ.&lt;/p&gt;
+  &lt;/details&gt;
+  &lt;details name="faq"&gt;
+    &lt;summary&gt;Huỷ gói thế nào?&lt;/summary&gt;
+    &lt;p&gt;Vào Cài đặt → Gói dịch vụ → Huỷ.&lt;/p&gt;
+  &lt;/details&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  .accordion summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
+  .accordion summary::marker { color: #888; }       /* tam giác mặc định đổi màu được */
+  .accordion details + details { border-top: 1px solid #ddd; }
+&lt;/style&gt;</code></pre></div>
+  </div>
+
+  <div class="entry">
+    <h3>Bảng dữ liệu có caption, sắp xếp được</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;!-- Wrapper cuộn ngang trên mobile; focus được để cuộn bằng phím --&gt;
+&lt;div class="table-wrap" role="region" aria-labelledby="members-cap" tabindex="0"&gt;
+  &lt;table&gt;
+    &lt;caption id="members-cap"&gt;Thành viên dự án&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th scope="col" aria-sort="ascending"&gt;
+          &lt;button type="button"&gt;Tên&lt;/button&gt;                &lt;!-- nút trong th để sắp xếp --&gt;
+        &lt;/th&gt;
+        &lt;th scope="col"&gt;&lt;button type="button"&gt;Vai trò&lt;/button&gt;&lt;/th&gt;
+        &lt;th scope="col" class="num"&gt;&lt;button type="button"&gt;Commit&lt;/button&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;&lt;th scope="row"&gt;An&lt;/th&gt;&lt;td&gt;Mobile&lt;/td&gt;&lt;td class="num"&gt;128&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre></div>
+    <div class="demo" id="demo-sort">
+      <p class="demo-label">Thử trực tiếp: bấm tiêu đề cột để sắp xếp</p>
+      <div class="tw"><table id="d-sort">
+        <caption>Thành viên dự án (5)</caption>
+        <thead><tr>
+          <th scope="col" aria-sort="ascending"><button type="button" class="sort-btn" data-col="0" data-type="text">Tên <span class="arrow" aria-hidden="true">↑</span></button></th>
+          <th scope="col"><button type="button" class="sort-btn" data-col="1" data-type="text">Vai trò <span class="arrow" aria-hidden="true"></span></button></th>
+          <th scope="col" class="num"><button type="button" class="sort-btn" data-col="2" data-type="num">Commit <span class="arrow" aria-hidden="true"></span></button></th>
+        </tr></thead>
+        <tbody>
+          <tr><th scope="row">An</th><td>Mobile</td><td class="num">128</td></tr>
+          <tr><th scope="row">Bảo</th><td>Backend</td><td class="num">342</td></tr>
+          <tr><th scope="row">Chi</th><td>Design</td><td class="num">57</td></tr>
+          <tr><th scope="row">Dũng</th><td>QA</td><td class="num">96</td></tr>
+          <tr><th scope="row">Hà</th><td>Mobile</td><td class="num">211</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>aria-sort</code> chỉ đặt trên cột đang được sắp xếp (<code>ascending</code> / <code>descending</code>); bỏ thuộc tính khỏi các cột còn lại.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Nút icon có label</h3>
+<div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;button type="button" class="icon-button" aria-label="Thêm vào yêu thích" aria-pressed="false"&gt;
+  &lt;svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"&gt;
+    &lt;path d="M12 21s-7-4.4-9.3-8.6C1 9 3 5 6.8 5c2 0 3.4 1.1 5.2 3 1.8-1.9 3.2-3 5.2-3C21 5 23 9 21.3 12.4 19 16.6 12 21 12 21z"
+          fill="none" stroke="currentColor" stroke-width="2"/&gt;
+  &lt;/svg&gt;
+&lt;/button&gt;
+
+&lt;style&gt;
+  .icon-button { inline-size: 44px; block-size: 44px; }   /* vùng chạm tối thiểu ~44px */
+  .icon-button[aria-pressed="true"] path { fill: currentColor; }
+&lt;/style&gt;</code></pre></div>
+    <div class="demo" id="demo-icons">
+      <p class="demo-label">Thử trực tiếp: Tab tới từng nút, mở tab Accessibility trong DevTools để xem tên</p>
+      <div class="icon-demo">
+        <button type="button" class="icon-btn" aria-label="Thêm vào yêu thích" aria-pressed="false" id="d-fav">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M12 21s-7-4.4-9.3-8.6C1 9 3 5 6.8 5c2 0 3.4 1.1 5.2 3 1.8-1.9 3.2-3 5.2-3C21 5 23 9 21.3 12.4 19 16.6 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <button type="button" class="icon-btn" aria-label="Chia sẻ">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <button type="button" class="icon-btn">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Tải xuống
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 PITFALLS ============ -->
+<section class="sec" id="pitfalls">
+  <h2><span class="n" aria-hidden="true">16</span>Lỗi hay gặp &amp; debug</h2>
+  <p class="sec-lead">Trình duyệt không báo lỗi, nên những lỗi này sống rất lâu. Rà một lượt trước mỗi PR.</p>
+
+  <div class="entry">
+    <h3>Bảng lỗi hay gặp</h3>
+    <div class="tw"><table class="xwide">
+      <caption>Sai, đúng và lý do</caption>
+      <thead><tr><th scope="col">Sai</th><th scope="col">Đúng</th><th scope="col">Vì sao</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;div onclick&gt;</code> / <code>&lt;span onclick&gt;</code></td><td><code>&lt;button type="button"&gt;</code></td><td>Mất focus, Enter/Space, semantics</td></tr>
+        <tr><td><code>&lt;span onclick="go('/x')"&gt;</code></td><td><code>&lt;a href="/x"&gt;</code></td><td>Mất Ctrl+click, copy link, crawler</td></tr>
+        <tr><td>Input chỉ có <code>placeholder</code></td><td><code>&lt;label for&gt;</code> + input</td><td>Screen reader không có tên; placeholder biến mất khi gõ</td></tr>
+        <tr><td><code>&lt;img src&gt;</code> không <code>alt</code></td><td><code>alt="mô tả"</code> hoặc <code>alt=""</code></td><td>Screen reader đọc tên file</td></tr>
+        <tr><td><code>h1</code> → <code>h3</code> vì muốn chữ nhỏ</td><td><code>h1</code> → <code>h2</code>, chỉnh cỡ bằng CSS</td><td>Dàn ý bị thủng</td></tr>
+        <tr><td><code>&lt;p&gt;&lt;div&gt;…&lt;/div&gt;&lt;/p&gt;</code></td><td><code>&lt;div&gt;&lt;p&gt;…&lt;/p&gt;&lt;div&gt;…&lt;/div&gt;&lt;/div&gt;</code></td><td><code>p</code> chỉ chứa nội dung inline; trình duyệt tự đóng <code>p</code></td></tr>
+        <tr><td><code>&lt;a href&gt;&lt;button&gt;…&lt;/button&gt;&lt;/a&gt;</code></td><td>Chọn một: <code>&lt;a class="btn"&gt;</code> hoặc <code>&lt;button&gt;</code></td><td>Không lồng phần tử tương tác vào nhau</td></tr>
+        <tr><td><code>&lt;button&gt;</code> trong form không ghi type</td><td><code>type="button"</code> hoặc <code>type="submit"</code></td><td>Mặc định là submit → reload trang</td></tr>
+        <tr><td><code>&lt;ul&gt;&lt;div&gt;&lt;li&gt;</code></td><td><code>&lt;ul&gt;&lt;li&gt;</code></td><td>Con của <code>ul</code> chỉ được là <code>li</code></td></tr>
+        <tr><td>id trùng lặp</td><td>id duy nhất toàn trang</td><td><code>label for</code>, <code>aria-*</code> trỏ nhầm phần tử</td></tr>
+        <tr><td><code>tabindex="5"</code></td><td><code>0</code> hoặc <code>-1</code></td><td>Phá thứ tự focus tự nhiên</td></tr>
+        <tr><td><code>:focus { outline: none }</code></td><td>Style riêng cho <code>:focus-visible</code></td><td>Người dùng bàn phím không biết mình đang ở đâu</td></tr>
+        <tr><td><code>&lt;table&gt;</code> để dàn layout</td><td>CSS Grid / Flex</td><td>Screen reader đọc như dữ liệu bảng</td></tr>
+        <tr><td><code>type="number"</code> cho số điện thoại, OTP</td><td><code>type="tel"</code> / <code>inputmode="numeric"</code></td><td>Mất số 0 đầu, lăn chuột đổi giá trị</td></tr>
+        <tr><td><code>user-scalable=no</code> trong viewport</td><td>Bỏ đi</td><td>Chặn người dùng zoom</td></tr>
+        <tr><td><code>aria-label</code> trên <code>div</code> không role</td><td>Thẻ semantic hoặc chữ nhìn thấy</td><td>Thường bị bỏ qua</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Demo "trình duyệt sửa HTML" ở mục 1 cho thấy DOM thật sau khi lồng sai. Mở DevTools → Elements để xem cây DOM của chính trang bạn.</span></p>
+  </div>
+
+  <div class="entry">
+    <h3>Công cụ kiểm tra</h3>
+    <div class="tw"><table class="wide">
+      <caption>Công cụ và việc nó bắt được</caption>
+      <thead><tr><th scope="col">Công cụ</th><th scope="col">Bắt được gì</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://validator.w3.org/nu/" rel="noopener noreferrer" target="_blank">W3C Validator</a></td><td>Lồng thẻ sai, id trùng, thuộc tính không hợp lệ. Dán HTML hoặc nhập URL</td></tr>
+        <tr><td>Lighthouse (Chrome DevTools)</td><td>Accessibility, SEO, Best Practices, Performance trong một lần chạy</td></tr>
+        <tr><td>DevTools → Elements → Accessibility</td><td>Role, accessible name, cây a11y của từng phần tử</td></tr>
+        <tr><td>DevTools → Issues</td><td>Form field thiếu label, thiếu <code>id</code>/<code>name</code>, <code>autocomplete</code> sai</td></tr>
+        <tr><td>axe DevTools, WAVE</td><td>Quét a11y chi tiết: tương phản, ARIA sai, landmark</td></tr>
+        <tr><td>Firefox Accessibility Inspector</td><td>Thứ tự Tab trực quan, kiểm tra tương phản</td></tr>
+      </tbody>
+    </table></div>
+<div class="code"><div class="code-head"><span>Dán vào Console để rà nhanh</span></div><pre><code class="language-javascript">// Ảnh thiếu alt
+document.querySelectorAll('img:not([alt])').forEach((el) =&gt; console.warn('Thiếu alt:', el));
+
+// Control thiếu tên
+document.querySelectorAll('input:not([type=hidden]), select, textarea').forEach((el) =&gt; {
+  const named = el.labels?.length || el.getAttribute('aria-label') || el.getAttribute('aria-labelledby');
+  if (!named) console.warn('Thiếu label:', el);
+});
+
+// Button không có type bên trong form
+document.querySelectorAll('form button:not([type])').forEach((el) =&gt; console.warn('Button thiếu type:', el));
+
+// id trùng
+const seen = new Set();
+document.querySelectorAll('[id]').forEach((el) =&gt; {
+  if (seen.has(el.id)) console.warn('id trùng:', el.id);
+  seen.add(el.id);
+});
+
+// Dàn ý heading
+document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) =&gt;
+  console.log('  '.repeat(h.tagName[1] - 1) + h.tagName, h.textContent.trim()));</code></pre></div>
+  </div>
+</section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <p>Dựa trên HTML Living Standard và WAI-ARIA. Trước khi dùng tính năng mới, kiểm tra hỗ trợ trình duyệt trên <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noopener noreferrer">MDN</a> hoặc <a href="https://caniuse.com/" target="_blank" rel="noopener noreferrer">Can I use</a>. Pattern a11y chi tiết: <a href="https://www.w3.org/WAI/ARIA/apg/" target="_blank" rel="noopener noreferrer">ARIA Authoring Practices Guide</a>.</p>
+</footer>
+
+
+<p id="live" class="vh" role="status"></p>
+
+<script>window.Prism = window.Prism || {}; window.Prism.manual = true;</script>
+<script src="../assets/vendor/prism/components/prism-core.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-markup.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-css.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-clike.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-javascript.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-dart.min.js"></script>
+<script src="../assets/vendor/prism/components/prism-kotlin.min.js"></script>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const root = document.documentElement;
+  const live = $('#live');
+  const announce = (msg) => { live.textContent = ''; setTimeout(() => { live.textContent = msg; }, 50); };
+  const fmtVnd = (n) => new Intl.NumberFormat('vi-VN').format(n) + ' ₫';
+
+  /* ---------- Syntax highlighting ---------- */
+  try { if (window.Prism && Prism.highlightAll) Prism.highlightAll(); } catch (_) {}
+
+  /* ---------- Theme ---------- */
+  const themeLabel = $('#theme-label');
+  const THEME_NAMES = { system: 'Theo hệ thống', light: 'Sáng', dark: 'Tối' };
+  const ORDER = ['system', 'light', 'dark'];
+  const hostTheme = root.getAttribute('data-theme');
+  let theme = 'system';
+  try { theme = localStorage.getItem('cheatsheet-theme') || 'system'; } catch (_) {}
+  if (!ORDER.includes(theme)) theme = 'system';
+  function applyTheme() {
+    if (theme === 'system') {
+      if (hostTheme) root.setAttribute('data-theme', hostTheme); else root.removeAttribute('data-theme');
+    } else {
+      root.setAttribute('data-theme', theme);
+    }
+    themeLabel.textContent = THEME_NAMES[theme];
+  }
+  applyTheme();
+  $('#theme-btn').addEventListener('click', () => {
+    theme = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length];
+    try { localStorage.setItem('cheatsheet-theme', theme); } catch (_) {}
+    applyTheme();
+    announce('Giao diện: ' + THEME_NAMES[theme]);
+  });
+
+  /* ---------- Mobile menu ---------- */
+  const menuBtn = $('#menu-btn'), toc = $('#toc'), scrim = $('#scrim');
+  const mainEl = $('#main'), footerEl = $('.site-footer');
+  const mq = window.matchMedia('(max-width: 920px)');
+  function setMenu(open, focus = true) {
+    toc.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    scrim.hidden = !open;
+    mainEl.inert = open; footerEl.inert = open;
+    if (open && focus) (toc.querySelector('a[aria-current]') || toc.querySelector('a')).focus();
+  }
+  menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
+  scrim.addEventListener('click', () => setMenu(false));
+  toc.addEventListener('click', (e) => { if (e.target.closest('a') && mq.matches) setMenu(false, false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toc.classList.contains('open')) { setMenu(false); menuBtn.focus(); }
+  });
+  mq.addEventListener('change', () => setMenu(false, false));
+
+  /* ---------- Scrollspy ---------- */
+  const tocLinks = new Map($$('#toc a').map((a) => [a.getAttribute('href').slice(1), a]));
+  const secs = $$('.sec');
+  let ticking = false;
+  function updateSpy() {
+    ticking = false;
+    const line = 140;
+    let current = null;
+    for (const s of secs) {
+      if (s.hidden) continue;
+      if (s.getBoundingClientRect().top <= line) current = s; else break;
+    }
+    if (!current) current = secs.find((s) => !s.hidden) || null;
+    tocLinks.forEach((a, id) => {
+      if (current && id === current.id) {
+        if (!a.hasAttribute('aria-current')) {
+          a.setAttribute('aria-current', 'location');
+          if (!mq.matches) {
+            const tr = toc.getBoundingClientRect(), ar = a.getBoundingClientRect();
+            if (ar.top < tr.top + 40 || ar.bottom > tr.bottom - 40) toc.scrollTop += ar.top - tr.top - tr.height / 3;
+          }
+        }
+      } else a.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(updateSpy); } }, { passive: true });
+  updateSpy();
+
+  /* ---------- Search ---------- */
+  const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').toLowerCase();
+  const normKeep = (t) => { let o = ''; for (let i = 0; i < t.length; i++) { const n = norm(t[i]); o += n.length === 1 ? n : t[i]; } return o; };
+  const q = $('#q'), statusEl = $('#search-status'), emptyEl = $('#no-results'), emptyQ = $('#no-results-q');
+  const index = secs.map((sec) => ({
+    sec,
+    li: tocLinks.get(sec.id) ? tocLinks.get(sec.id).closest('li') : null,
+    title: norm(sec.querySelector('h2').textContent),
+    entries: $$('.entry', sec).map((el) => ({ el, text: norm(el.textContent) })),
+  }));
+  const canHL = typeof CSS !== 'undefined' && CSS.highlights && typeof Highlight === 'function';
+
+  function paintHighlights(terms) {
+    if (!canHL) return;
+    CSS.highlights.delete('hit');
+    const useful = terms.filter((t) => t.length >= 2);
+    if (!useful.length) return;
+    const ranges = [];
+    const walker = document.createTreeWalker($('#content'), NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (n.parentElement && !n.parentElement.closest('[hidden], textarea, .code-head, .hero, .empty')
+        ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+    });
+    let node;
+    while ((node = walker.nextNode()) && ranges.length < 800) {
+      const t = normKeep(node.data);
+      for (const term of useful) {
+        let i = 0;
+        while ((i = t.indexOf(term, i)) !== -1) {
+          const r = new Range(); r.setStart(node, i); r.setEnd(node, i + term.length); ranges.push(r); i += term.length;
+        }
+      }
+    }
+    if (ranges.length) CSS.highlights.set('hit', new Highlight(...ranges));
+  }
+
+  function runSearch() {
+    const raw = q.value.trim();
+    const terms = norm(raw).split(/\s+/).filter(Boolean);
+    let nEntries = 0, nSecs = 0;
+    for (const item of index) {
+      if (!terms.length) {
+        item.sec.hidden = false; if (item.li) item.li.hidden = false;
+        item.entries.forEach((e) => { e.el.hidden = false; });
+        continue;
+      }
+      const titleHit = terms.every((t) => item.title.includes(t));
+      let any = false;
+      for (const e of item.entries) {
+        const hit = titleHit || terms.every((t) => e.text.includes(t) || item.title.includes(t));
+        e.el.hidden = !hit;
+        if (hit) { any = true; nEntries++; }
+      }
+      item.sec.hidden = !any; if (item.li) item.li.hidden = !any;
+      if (any) nSecs++;
+    }
+    emptyEl.hidden = !(terms.length && nEntries === 0);
+    emptyQ.textContent = raw;
+    statusEl.textContent = !terms.length ? '' : nEntries
+      ? `${nEntries} mục khớp “${raw}” trong ${nSecs} phần. Enter để tới mục đầu tiên, Esc để xóa.`
+      : 'Không có mục nào khớp.';
+    paintHighlights(terms);
+    updateSpy();
+    markScrollables();
+  }
+  let searchTimer;
+  q.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(runSearch, 140); });
+  q.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && q.value) { e.preventDefault(); q.value = ''; runSearch(); }
+  });
+  $('#search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearTimeout(searchTimer); runSearch();
+    const first = $$('.entry').find((el) => !el.hidden && !el.closest('.sec').hidden);
+    if (!first) return;
+    const h = first.querySelector('h3');
+    h.setAttribute('tabindex', '-1');
+    first.scrollIntoView({ block: 'start' });
+    h.focus({ preventScroll: true });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target;
+    if (t.closest && t.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"]')) return;
+    e.preventDefault(); q.focus(); q.select();
+  });
+
+  /* ---------- Copy buttons ---------- */
+  $$('.code').forEach((block) => {
+    const head = block.querySelector('.code-head');
+    const code = block.querySelector('code');
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Sao chép';
+    let timer;
+    const done = (msg) => {
+      btn.textContent = msg; announce(msg);
+      clearTimeout(timer); timer = setTimeout(() => { btn.textContent = 'Sao chép'; }, 1800);
+    };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(code);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      done('Đã chọn, nhấn Ctrl+C');
+    };
+    btn.addEventListener('click', () => {
+      const text = code.textContent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => done('Đã chép ✓'), fallback);
+        } else fallback();
+      } catch (_) { fallback(); }
+    });
+    head.append(btn);
+  });
+
+  /* ---------- Scrollable regions: focusable only when they overflow ---------- */
+  function markScrollables() {
+    $$('.tw').forEach((w) => {
+      if (w.scrollWidth > w.clientWidth + 1) {
+        w.tabIndex = 0; w.setAttribute('role', 'region');
+        const cap = w.querySelector('caption');
+        w.setAttribute('aria-label', (cap ? cap.textContent.trim() : 'Bảng') + ' (cuộn ngang)');
+      } else { w.removeAttribute('tabindex'); w.removeAttribute('role'); w.removeAttribute('aria-label'); }
+    });
+    $$('.code pre').forEach((p) => {
+      if (p.scrollWidth > p.clientWidth + 1) {
+        p.tabIndex = 0; p.setAttribute('role', 'region');
+        p.setAttribute('aria-label', 'Code ' + p.closest('.code').querySelector('.code-head span').textContent + ' (cuộn ngang)');
+      } else { p.removeAttribute('tabindex'); p.removeAttribute('role'); p.removeAttribute('aria-label'); }
+    });
+  }
+  let rsTimer;
+  window.addEventListener('resize', () => { clearTimeout(rsTimer); rsTimer = setTimeout(markScrollables, 200); });
+  markScrollables();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(markScrollables);
+
+  /* ================= DEMOS ================= */
+
+  /* 01: parser */
+  const pIn = $('#d-parse-in'), pOut = $('#d-parse-out');
+  const parse = () => {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = pIn.value;
+    pOut.textContent = tpl.innerHTML.trim() || '(trống)';
+  };
+  pIn.addEventListener('input', parse); parse();
+
+  /* 01: div vs button */
+  const tapLog = $('#d-tap-log');
+  $('#d-fake').addEventListener('click', () => { tapLog.textContent = 'div nhận click chuột/chạm. Nhưng Tab không tới được, Enter/Space không làm gì.'; });
+  $('#d-real').addEventListener('click', (e) => {
+    tapLog.textContent = e.detail === 0
+      ? 'button được kích hoạt bằng bàn phím (Enter/Space). Miễn phí!'
+      : 'button được click. Thử lại bằng Tab rồi Enter hoặc Space.';
+  });
+
+  /* 08: input types */
+  const range = $('#d-t-range'), rangeOut = $('#d-t-range-out');
+  range.addEventListener('input', () => { rangeOut.value = range.value; });
+  const color = $('#d-t-color'), colorOut = $('#d-t-color-out');
+  color.addEventListener('input', () => { colorOut.value = color.value; });
+
+  /* 08: select / datalist */
+  const selForm = $('#d-select-form'), selLog = $('#d-select-log');
+  const showSel = () => {
+    const fd = new FormData(selForm);
+    selLog.textContent = 'FormData → ' + JSON.stringify(Object.fromEntries(fd), null, 1).replace(/\n\s*/g, ' ');
+  };
+  selForm.addEventListener('input', showSel); selForm.addEventListener('change', showSel);
+  selForm.addEventListener('submit', (e) => e.preventDefault());
+  showSel();
+
+  /* 08: validation */
+  const val = $('#d-val'), valLog = $('#d-val-log');
+  const valFields = $$('input:not(#d-val-novalidate)', val);
+  const errOf = (el) => document.getElementById(el.id + '-err');
+  const shown = new Set();
+  const showErr = (el) => {
+    const err = errOf(el); if (!err) return;
+    if (el.validity.valid) { err.textContent = ''; el.removeAttribute('aria-invalid'); }
+    else { err.textContent = el.validationMessage; el.setAttribute('aria-invalid', 'true'); }
+  };
+  const codeEl = $('#d-val-code');
+  codeEl.addEventListener('input', () => {
+    codeEl.setCustomValidity(codeEl.value === 'ABC-0000' ? 'Mã ABC-0000 đã bị khóa. Dùng mã khác.' : '');
+  });
+  valFields.forEach((el) => {
+    el.addEventListener('invalid', () => { shown.add(el); showErr(el); });
+    el.addEventListener('blur', () => { if (el.value || el.type === 'checkbox') { shown.add(el); showErr(el); } });
+    el.addEventListener('input', () => { if (shown.has(el)) showErr(el); });
+    el.addEventListener('change', () => { if (shown.has(el)) showErr(el); });
+  });
+  $('#d-val-novalidate').addEventListener('change', (e) => {
+    val.noValidate = e.target.checked;
+    valLog.textContent = e.target.checked
+      ? 'novalidate BẬT: bấm Đăng ký, form submit dù dữ liệu sai.'
+      : 'novalidate TẮT: trình duyệt chặn submit khi có ô sai.';
+  });
+  val.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const ok = val.checkValidity();
+    const data = Object.fromEntries(new FormData(val));
+    if (data.password) data.password = '•'.repeat(data.password.length);
+    valLog.textContent = (ok ? '✓ Hợp lệ, sự kiện submit đã chạy.\n' : '⚠ Submit đã chạy với dữ liệu SAI (novalidate). Phải tự kiểm tra: checkValidity() = false\n')
+      + JSON.stringify(data);
+    if (!ok) valFields.forEach((el) => { shown.add(el); showErr(el); });
+  });
+
+  /* 08: button types */
+  const btns = $('#d-btns'), btnsLog = $('#d-btns-log');
+  btns.addEventListener('submit', (e) => {
+    e.preventDefault();
+    btnsLog.textContent = `⚠ Form đã SUBMIT (e.submitter = "${e.submitter ? e.submitter.textContent.trim() : 'Enter'}").\nNgoài đời, trang sẽ reload nếu không có preventDefault().`;
+  });
+  $('#d-btns-button').addEventListener('click', () => { btnsLog.textContent = 'type="button": chỉ chạy JS, form không submit.'; });
+  btns.addEventListener('reset', () => { setTimeout(() => { btnsLog.textContent = 'type="reset": các ô quay về giá trị ban đầu.'; }); });
+
+  /* 09: dialog */
+  const dlg = $('#d-dlg'), dlgLog = $('#d-dlg-log');
+  if (typeof dlg.showModal === 'function') {
+    $('#d-dlg-open').addEventListener('click', () => { dlg.returnValue = ''; dlg.showModal(); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close('backdrop'); });
+    dlg.addEventListener('close', () => {
+      dlgLog.textContent = 'Sự kiện close · returnValue: "' + (dlg.returnValue || '(Esc)') + '"' +
+        (dlg.returnValue === 'confirm' ? ' → gọi deleteProject()' : '');
+    });
+  } else dlgLog.textContent = 'Trình duyệt này không hỗ trợ <dialog>.';
+
+  /* 09: popover */
+  const menu = $('#d-menu'), menuBtnD = $('#d-menu-btn'), popLog = $('#d-pop-log');
+  if (Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover')) {
+    menu.addEventListener('beforetoggle', (e) => {
+      if (e.newState !== 'open') return;
+      const r = menuBtnD.getBoundingClientRect();
+      menu.style.top = Math.round(r.bottom + 6) + 'px';
+      menu.style.left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 220))) + 'px';
+    });
+    menu.addEventListener('toggle', (e) => { popLog.textContent = 'menu toggle → newState: "' + e.newState + '"'; });
+    menu.addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-action]'); if (!b) return;
+      menu.hidePopover(); menuBtnD.focus();
+      popLog.textContent = 'Đã chọn: ' + b.dataset.action;
+    });
+    window.addEventListener('scroll', () => { if (menu.matches(':popover-open')) menu.hidePopover(); }, { passive: true });
+  } else popLog.textContent = 'Trình duyệt này chưa hỗ trợ Popover API.';
+
+  /* 09: progress / meter / output */
+  const prog = $('#d-prog'), progText = $('#d-prog-text');
+  const setProg = (v) => { prog.value = v; prog.textContent = v + '%'; progText.textContent = v + '%'; };
+  $('#d-prog-inc').addEventListener('click', () => setProg(Math.min(100, prog.value + 10)));
+  $('#d-prog-reset').addEventListener('click', () => setProg(0));
+  const meter = $('#d-meter'), meterIn = $('#d-meter-in'), meterOut = $('#d-meter-out');
+  meterIn.addEventListener('input', () => { meter.value = +meterIn.value; meter.textContent = meterIn.value + ' / 128 GB'; meterOut.value = meterIn.value; });
+  const calc = $('#d-calc');
+  const doCalc = () => { $('#d-total').value = fmtVnd((+$('#d-qty').value || 0) * (+$('#d-price').value || 0)); };
+  calc.addEventListener('input', doCalc); calc.addEventListener('submit', (e) => e.preventDefault()); doCalc();
+
+  /* 10: live regions */
+  $('#d-live-save').addEventListener('click', () => {
+    const t = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    $('#d-live-status').textContent = 'Đã lưu bản nháp lúc ' + t;
+  });
+  $('#d-live-err').addEventListener('click', () => {
+    const a = $('#d-live-alert'); a.textContent = '';
+    setTimeout(() => { a.textContent = 'Mất kết nối. Thay đổi chưa được lưu.'; }, 50);
+  });
+
+  /* 11: inert */
+  const zone = $('#d-inert-zone'); let inertCount = 0;
+  $('#d-inert-toggle').addEventListener('change', (e) => { zone.inert = e.target.checked; });
+  $('#d-inert-btn').addEventListener('click', () => { inertCount++; $('#d-inert-count').textContent = 'Đã bấm ' + inertCount + ' lần'; });
+
+  /* 15: login */
+  const loginPw = $('#d-login-pw'), loginToggle = $('#d-login-toggle'), loginLog = $('#d-login-log');
+  loginToggle.addEventListener('click', () => {
+    const show = loginPw.type === 'password';
+    loginPw.type = show ? 'text' : 'password';
+    loginToggle.setAttribute('aria-pressed', String(show));
+    loginToggle.textContent = show ? 'Ẩn' : 'Hiện';
+  });
+  $('#d-login').addEventListener('submit', (e) => {
+    e.preventDefault();
+    loginLog.textContent = '✓ Hợp lệ. Gửi đăng nhập cho ' + $('#d-login-email').value + (($('#d-login-remember').checked) ? ' (ghi nhớ)' : '') + '. (demo, không gửi đi đâu)';
+  });
+
+  /* 15: card */
+  const cardLog = $('#d-card-log');
+  $('#demo-card').addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-card]');
+    const cart = e.target.closest('button[data-cart]');
+    if (link) { e.preventDefault(); cardLog.textContent = 'Mở trang sản phẩm: ' + link.dataset.card; }
+    else if (cart) cardLog.textContent = 'Đã thêm vào giỏ: ' + cart.dataset.cart + ' (link của card không bị kích hoạt)';
+  });
+
+  /* 15: sortable table */
+  const sortTable = $('#d-sort');
+  const sortState = { col: 0, dir: 'ascending' };
+  sortTable.querySelector('thead').addEventListener('click', (e) => {
+    const b = e.target.closest('.sort-btn'); if (!b) return;
+    const col = +b.dataset.col;
+    const dir = sortState.col === col && sortState.dir === 'ascending' ? 'descending' : 'ascending';
+    sortState.col = col; sortState.dir = dir;
+    const tbody = sortTable.tBodies[0];
+    const rows = Array.from(tbody.rows);
+    const coll = new Intl.Collator('vi');
+    rows.sort((a, b2) => {
+      const x = a.cells[col].textContent.trim(), y = b2.cells[col].textContent.trim();
+      const c = b.dataset.type === 'num' ? (+x - +y) : coll.compare(x, y);
+      return dir === 'ascending' ? c : -c;
+    });
+    rows.forEach((r) => tbody.append(r));
+    $$('th', sortTable.tHead).forEach((th, i) => {
+      const arrow = th.querySelector('.arrow');
+      if (i === col) { th.setAttribute('aria-sort', dir); arrow.textContent = dir === 'ascending' ? '↑' : '↓'; }
+      else { th.removeAttribute('aria-sort'); arrow.textContent = ''; }
+    });
+    announce('Đã sắp xếp theo ' + b.firstChild.textContent.trim() + (dir === 'ascending' ? ', tăng dần' : ', giảm dần'));
+  });
+
+  /* 15: icon toggle */
+  const fav = $('#d-fav');
+  fav.addEventListener('click', () => {
+    const on = fav.getAttribute('aria-pressed') !== 'true';
+    fav.setAttribute('aria-pressed', String(on));
+    fav.querySelector('path').setAttribute('fill', on ? 'currentColor' : 'none');
+  });
+})();
+</script>
+</body>
+</html>
