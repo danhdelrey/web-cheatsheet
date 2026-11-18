@@ -411,6 +411,65 @@ html.tw-failed .k-stage::after { content: "Không tải được tw-compiler.js 
 .k-toast.show { opacity: 1; translate: -50% -6px; }
 .k-foot { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--k-line); color: var(--k-muted); font-size: 13px; }
 
+/* ---------- Bảng từng bước ---------- */
+.k-tb { border: 1px solid var(--k-line); border-radius: 12px; overflow: hidden; background: var(--k-surface); }
+.k-tb.ready .k-tb-src { display: none; }
+.k-tb-src { display: grid; gap: 10px; margin: 0; padding: 14px 16px 14px 34px; color: var(--k-muted); font-size: 14px; }
+.k-tb-rail { display: flex; gap: 6px; overflow-x: auto; padding: 10px 12px; background: var(--k-sunken); scrollbar-width: thin; }
+.k-tb-step {
+  flex: 1 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px;
+  border: 1px solid var(--k-line); border-radius: 99px; background: var(--k-surface); color: var(--k-muted);
+  font: 500 12px/1.2 var(--k-font); white-space: nowrap; cursor: pointer;
+}
+.k-tb-step b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--k-sunken); font: 600 11px/1 var(--k-mono); }
+.k-tb-step:hover { border-color: var(--k-accent); color: var(--k-ink); }
+.k-tb-step.done b { background: var(--k-accent-soft); color: var(--k-accent-text); }
+.k-tb-step[aria-current="step"] { border-color: var(--k-accent); background: var(--k-accent-soft); color: var(--k-accent-text); font-weight: 600; }
+.k-tb-step[aria-current="step"] b { background: var(--k-accent); color: var(--k-accent-ink); }
+.k-tb-progress { height: 3px; background: var(--k-line); }
+.k-tb-progress i { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: var(--k-accent); transition: width .3s ease; }
+.k-tb-body { display: grid; gap: 12px; padding: 14px 16px 16px; min-width: 0; }
+.k-tb-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.k-tb-count { font: 600 12px/1 var(--k-mono); color: var(--k-accent-text); }
+.k-tb-title { margin-right: auto; font-size: 17px; font-weight: 650; letter-spacing: -.01em; }
+.k-tb-nav { display: flex; gap: 6px; }
+.k-tb-nav .k-btn:disabled { opacity: .4; cursor: default; }
+.k-tb-desc { display: grid; gap: 6px; }
+.k-tb-desc p { margin: 0; color: var(--k-muted); font-size: 14px; max-width: 90ch; text-wrap: pretty; }
+.k-tb-desc p b { color: var(--k-ink); }
+.k-tb-desc code { white-space: normal; overflow-wrap: anywhere; }
+.k-tb-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.k-tb-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font: 500 11.5px/1.4 var(--k-mono); color: var(--k-faint); }
+.k-stage.k-plain { background-image: none; background-color: #fff; resize: horizontal; max-width: 100%; min-width: 260px; }
+.k-tb-diff { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.k-tb-diff > span { margin-right: 4px; font: 600 11px/1.4 var(--k-font); color: var(--k-faint); text-transform: uppercase; letter-spacing: .04em; }
+.k-tb-cls {
+  padding: 2px 8px; border-radius: 6px; border: 1px solid; font: 500 12px/1.5 var(--k-mono); cursor: copy; background: none;
+}
+.k-tb-cls.add { color: #15803d; border-color: #86efac; background: #f0fdf4; }
+.k-tb-cls.del { color: #b91c1c; border-color: #fecaca; background: #fef2f2; text-decoration: line-through; }
+:root[data-theme="dark"] .k-tb-cls.add { color: #86efac; border-color: #166534; background: #052e16; }
+:root[data-theme="dark"] .k-tb-cls.del { color: #fca5a5; border-color: #7f1d1d; background: #450a0a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .k-tb-cls.add { color: #86efac; border-color: #166534; background: #052e16; }
+  :root:not([data-theme="light"]) .k-tb-cls.del { color: #fca5a5; border-color: #7f1d1d; background: #450a0a; }
+}
+.k-tb-none { font-size: 13px; color: var(--k-faint); }
+.k-tb-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.k-tb-tab {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid var(--k-line); border-radius: 99px;
+  background: var(--k-surface); color: var(--k-muted); font: 600 12px/1.2 var(--k-mono); cursor: pointer;
+}
+.k-tb-tab[aria-selected="true"] { background: var(--k-ink); border-color: var(--k-ink); color: var(--k-surface); }
+.k-tb-tab i { display: none; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+.k-tb-tab.changed i { display: inline-block; }
+.k-tb-legend { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--k-muted); }
+.k-tb-legend::before { content: ""; width: 14px; height: 12px; border-radius: 2px; background: rgb(34 197 94 / .25); box-shadow: inset 3px 0 #22c55e; }
+.k-tb-ln { display: inline-block; min-width: calc(100% + 28px); margin: 0 -14px; padding: 0 14px; }
+.k-tb-ln.add { background: rgb(34 197 94 / .16); box-shadow: inset 3px 0 #22c55e; animation: k-tb-flash 1.2s ease-out; }
+@keyframes k-tb-flash { from { background: rgb(34 197 94 / .42); } }
+@media (prefers-reduced-motion: reduce) { .k-tb-ln.add { animation: none; } .k-tb-progress i { transition: none; } }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {
   body { display: block; }
@@ -2357,6 +2416,141 @@ document.documentElement.classList.toggle('dark', dark);</code></pre>
   </div>
   <div class="k-grid">
 
+  <article class="k-card k-wide" id="table-steps">
+    <h3>Bảng dữ liệu từng bước <span class="k-badge">bấm Tiếp</span></h3>
+    <p>Cùng bảng với <a href="../css/#table-steps">bản CSS thuần</a>, nhưng dựng bằng class. Mỗi bước: demo chạy thật, HTML với dòng vừa đổi tô xanh, các class được thêm hoặc bỏ, và CSS mà các class mới sinh ra (biên dịch ngay trong trình duyệt).</p>
+    <div class="k-tb" data-tw-tb>
+      <ol class="k-tb-src">
+        <li data-short="HTML">
+          <b>HTML ngữ nghĩa, chưa có class</b>
+          <p>Dùng đủ <code>&lt;caption&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tfoot&gt;</code> và <code>&lt;th scope&gt;</code>. Khác với HTML trần: <b>preflight</b> của Tailwind đã đặt sẵn <code>border-collapse: collapse</code> và xoá padding, nên các ô dính sát nhau. <code>th</code> vẫn đậm và căn giữa theo trình duyệt.</p>
+<script type="text/x-classes"># chưa có class nào</script>
+        </li>
+        <li data-short="Viền">
+          <b>Viền và bề rộng</b>
+          <p><code>w-full</code> cho bảng lấp đầy cha. <code>border border-slate-300</code> phải gắn lên <b>từng ô</b>, vì viền không kế thừa. Không cần <code>border-collapse</code>: preflight đã bật sẵn.</p>
+<script type="text/x-classes">table: w-full border border-slate-300
+th: border border-slate-300
+td: border border-slate-300
+footTh: border border-slate-300</script>
+        </li>
+        <li data-short="Padding">
+          <b>Padding, cỡ chữ và căn trái</b>
+          <p><code>px-4 py-2.5</code> trên mỗi ô (16px ngang, 10px dọc). <code>text-left</code> ghi đè kiểu căn giữa mặc định của <code>th</code>. <code>text-sm text-slate-700</code> đặt ở <code>table</code> để mọi ô kế thừa.</p>
+<script type="text/x-classes">table: w-full border border-slate-300 text-sm text-slate-700
+caption: pb-2 text-left font-semibold text-slate-900
+th: border border-slate-300 px-4 py-2.5 text-left
+td: border border-slate-300 px-4 py-2.5
+footTh: border border-slate-300 px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Header">
+          <b>Header nổi bật, chỉ kẻ ngang</b>
+          <p>Bỏ <code>border</code> khỏi mọi ô; thay bằng <code>divide-y divide-slate-200</code> trên <code>tbody</code>: một đường kẻ giữa các hàng mà không phải gắn class cho từng hàng. Header: <code>bg-slate-50 text-xs uppercase tracking-wide text-slate-500</code> đặt trên <code>thead</code> cho các ô kế thừa.</p>
+<script type="text/x-classes">table: w-full text-sm text-slate-700
+caption: pb-2 text-left font-semibold text-slate-900
+thead: bg-slate-50 text-xs tracking-wide text-slate-500 uppercase
+headTr: border-b border-slate-200
+th: px-4 py-2.5 text-left font-semibold
+tbody: divide-y divide-slate-200
+td: px-4 py-2.5
+footTh: px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Zebra">
+          <b>Hàng xen màu và hover</b>
+          <p><code>even:bg-slate-50</code> là <code>:nth-child(even)</code>, <code>hover:bg-sky-50</code> là <code>:hover</code> (v4 chỉ áp trên thiết bị có chuột). Gắn lên từng <code>tr</code> trong <code>tbody</code>. Rê chuột vào bảng để thử.</p>
+<script type="text/x-classes">table: w-full text-sm text-slate-700
+caption: pb-2 text-left font-semibold text-slate-900
+thead: bg-slate-50 text-xs tracking-wide text-slate-500 uppercase
+headTr: border-b border-slate-200
+th: px-4 py-2.5 text-left font-semibold
+tbody: divide-y divide-slate-200
+tr: even:bg-slate-50 hover:bg-sky-50
+td: px-4 py-2.5
+footTh: px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Cột số">
+          <b>Cột số căn phải và dòng tổng</b>
+          <p><code>text-right tabular-nums</code> cho cột SL và Thành tiền: chữ số cùng bề rộng nên hàng đơn vị thẳng nhau. Ô tiêu đề cột số bỏ <code>text-left</code>: đừng để <code>text-left</code> và <code>text-right</code> cùng nằm trên một ô, bên nào thắng phụ thuộc thứ tự trong file CSS sinh ra. <code>tfoot</code> có <code>border-t-2</code>.</p>
+<script type="text/x-classes">table: w-full text-sm text-slate-700
+caption: pb-2 text-left font-semibold text-slate-900
+thead: bg-slate-50 text-xs tracking-wide text-slate-500 uppercase
+headTr: border-b border-slate-200
+th: px-4 py-2.5 text-left font-semibold
+tbody: divide-y divide-slate-200
+tr: even:bg-slate-50 hover:bg-sky-50
+td: px-4 py-2.5
+id: font-mono text-slate-500
+num: text-right tabular-nums
+tfoot: border-t-2 border-slate-300 font-semibold text-slate-900
+footTh: px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Badge">
+          <b>Badge trạng thái</b>
+          <p><code>inline-flex rounded-full px-2 py-0.5 text-xs</code> tạo viên thuốc. <code>ring-1 ring-inset ring-emerald-600/20</code> vẽ viền mảnh bên trong mà không làm badge to ra; <code>/20</code> là độ trong 20%.</p>
+<script type="text/x-classes">table: w-full text-sm text-slate-700
+caption: pb-2 text-left font-semibold text-slate-900
+thead: bg-slate-50 text-xs tracking-wide text-slate-500 uppercase
+headTr: border-b border-slate-200
+th: px-4 py-2.5 text-left font-semibold
+tbody: divide-y divide-slate-200
+tr: even:bg-slate-50 hover:bg-sky-50
+td: px-4 py-2.5
+id: font-mono text-slate-500
+num: text-right tabular-nums
+badge: inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset
+ok: bg-emerald-50 text-emerald-700 ring-emerald-600/20
+ship: bg-sky-50 text-sky-700 ring-sky-600/20
+wait: bg-amber-50 text-amber-800 ring-amber-600/20
+tfoot: border-t-2 border-slate-300 font-semibold text-slate-900
+footTh: px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Cuộn + sticky">
+          <b>Khung cuộn và header dính</b>
+          <p>Bọc bảng trong <code>div</code> có <code>max-h-60 overflow-auto rounded-xl border</code>, cho bảng <code>min-w-xl</code> (36rem) để hẹp quá thì cuộn ngang. <code>sticky top-0</code> chuyển từ <code>thead</code> xuống từng <code>th</code>, kèm nền riêng. Viền của ô sticky không đi theo khi cuộn, nên thay <code>border-b</code> bằng <code>shadow-[inset_0_-1px_0_…]</code>.</p>
+          <p>Kéo góc phải dưới của khung demo để thu hẹp, hoặc cuộn bên trong bảng.</p>
+<script type="text/x-classes">wrap: max-h-60 overflow-auto rounded-xl border border-slate-200 bg-white
+table: w-full min-w-xl text-sm text-slate-700
+caption: px-4 pt-3 pb-2 text-left font-semibold text-slate-900
+thead: text-xs tracking-wide text-slate-500 uppercase
+th: sticky top-0 bg-slate-50 px-4 py-2.5 text-left font-semibold shadow-[inset_0_-1px_0_var(--color-slate-200)]
+tbody: divide-y divide-slate-200
+tr: even:bg-slate-50 hover:bg-sky-50
+td: px-4 py-2.5
+id: font-mono text-slate-500
+num: text-right tabular-nums
+badge: inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset
+ok: bg-emerald-50 text-emerald-700 ring-emerald-600/20
+ship: bg-sky-50 text-sky-700 ring-sky-600/20
+wait: bg-amber-50 text-amber-800 ring-amber-600/20
+tfoot: border-t-2 border-slate-300 font-semibold text-slate-900
+footTh: px-4 py-2.5 text-left</script>
+        </li>
+        <li data-short="Gom class">
+          <b>Gom class lặp lên thẻ cha</b>
+          <p><code>px-4 py-2.5</code> đang lặp ở mọi ô. Biến thể tuỳ ý <code>[&amp;_td]:px-4</code> sinh ra selector <code>.class td</code>, nên đặt một lần trên <code>table</code> là đủ. Chỉ gom thứ không bị ô nào ghi đè: <code>.x td</code> có specificity cao hơn class trên ô, gom cả <code>text-left</code> lên sẽ đè mất <code>text-right</code> của cột số.</p>
+          <p>Trong Angular/React, cách gọn hơn nữa là tách component <code>&lt;app-table&gt;</code> để chỉ viết class một lần.</p>
+<script type="text/x-classes">wrap: max-h-60 overflow-auto rounded-xl border border-slate-200 bg-white
+table: w-full min-w-xl text-sm text-slate-700 [&_td]:px-4 [&_td]:py-2.5 [&_th]:px-4 [&_th]:py-2.5
+caption: px-4 pt-3 pb-2 text-left font-semibold text-slate-900
+thead: text-xs tracking-wide text-slate-500 uppercase
+th: sticky top-0 bg-slate-50 text-left font-semibold shadow-[inset_0_-1px_0_var(--color-slate-200)]
+tbody: divide-y divide-slate-200
+tr: even:bg-slate-50 hover:bg-sky-50
+id: font-mono text-slate-500
+num: text-right tabular-nums
+badge: inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset
+ok: bg-emerald-50 text-emerald-700 ring-emerald-600/20
+ship: bg-sky-50 text-sky-700 ring-sky-600/20
+wait: bg-amber-50 text-amber-800 ring-amber-600/20
+tfoot: border-t-2 border-slate-300 font-semibold text-slate-900
+footTh: text-left</script>
+        </li>
+      </ol>
+    </div>
+    <div class="k-note map"><b>📱 Flutter</b><div><p><code>DataTable(headingRowColor:, dataRowColor: WidgetStateProperty…, columns: [DataColumn(numeric: true)])</code>: <code>numeric: true</code> chính là <code>text-right tabular-nums</code>. Compose không có bảng sẵn: <code>LazyColumn</code> + <code>stickyHeader {}</code> + mỗi hàng một <code>Row</code> với <code>Modifier.weight()</code>.</p></div></div>
+    <div class="k-note warn"><b>⚠️ Lưu ý</b><div><p><code>rounded-*</code> và <code>overflow-*</code> không có tác dụng trên <code>&lt;table&gt;</code> khi viền đã collapse: đặt ở <code>div</code> bọc ngoài như bước 8. <code>divide-y</code> chỉ kẻ giữa các con trực tiếp, nên đặt lên <code>tbody</code>, không đặt lên <code>table</code>.</p></div></div>
+  </article>
+
   <article class="k-card">
     <h3>Bộ nút</h3>
     <div class="k-stage" data-code>
@@ -2899,6 +3093,199 @@ ${BRAND}`;
     });
     update();
   });
+
+  /* ---------- Bảng từng bước: đọc .k-tb-src (class theo vai trò), dựng stepper + demo + diff HTML + CSS sinh ra ---------- */
+  (function tableSteps() {
+    const tb = $('[data-tw-tb]');
+    if (!tb) return;
+    const ROWS = [
+      ['#1024', 'Bàn phím cơ 75%', 'ok', 'Đã giao', '1', '1.590.000₫'],
+      ['#1025', 'Chuột không dây', 'ship', 'Đang giao', '2', '780.000₫'],
+      ['#1026', 'Màn hình 4K 27 inch', 'wait', 'Chờ xử lý', '1', '8.490.000₫'],
+      ['#1027', 'Giá đỡ laptop nhôm', 'ok', 'Đã giao', '1', '450.000₫']
+    ];
+    function tableLines(C) {
+      const j = (...xs) => xs.filter(Boolean).join(' ');
+      const a = s => (s ? ' class="' + s + '"' : '');
+      const out = [];
+      const pad = C.wrap ? '  ' : '';
+      const L = (d, s) => out.push(pad + '  '.repeat(d) + s);
+      if (C.wrap) out.push('<div' + a(C.wrap) + '>');
+      L(0, '<table' + a(C.table) + '>');
+      L(1, '<caption' + a(C.caption) + '>Đơn hàng tháng 11</caption>');
+      L(1, '<thead' + a(C.thead) + '>');
+      L(2, '<tr' + a(C.headTr) + '>');
+      const th = C.th || '';
+      // Ô tiêu đề cột số: bỏ text-left để không đụng text-right
+      const thNum = j(th.split(' ').filter(c => c !== 'text-left').join(' '), C.num);
+      ['Mã', 'Sản phẩm', 'Trạng thái'].forEach(t => L(3, '<th scope="col"' + a(th) + '>' + t + '</th>'));
+      L(3, '<th scope="col"' + a(thNum) + '>SL</th>');
+      L(3, '<th scope="col"' + a(thNum) + '>Thành tiền</th>');
+      L(2, '</tr>');
+      L(1, '</thead>');
+      L(1, '<tbody' + a(C.tbody) + '>');
+      ROWS.forEach(([id, name, tone, status, qty, sum]) => {
+        L(2, '<tr' + a(C.tr) + '>');
+        L(3, '<td' + a(j(C.td, C.id)) + '>' + id + '</td>');
+        L(3, '<td' + a(C.td) + '>' + name + '</td>');
+        L(3, '<td' + a(C.td) + '>' + (C.badge ? '<span' + a(j(C.badge, C[tone])) + '>' + status + '</span>' : status) + '</td>');
+        L(3, '<td' + a(j(C.td, C.num)) + '>' + qty + '</td>');
+        L(3, '<td' + a(j(C.td, C.num)) + '>' + sum + '</td>');
+        L(2, '</tr>');
+      });
+      L(1, '</tbody>');
+      L(1, '<tfoot' + a(C.tfoot) + '>');
+      L(2, '<tr>');
+      L(3, '<th scope="row" colspan="3"' + a(C.footTh) + '>Tổng cộng</th>');
+      L(3, '<td' + a(j(C.td, C.num)) + '>5</td>');
+      L(3, '<td' + a(j(C.td, C.num)) + '>11.310.000₫</td>');
+      L(2, '</tr>');
+      L(1, '</tfoot>');
+      L(0, '</table>');
+      if (C.wrap) out.push('</div>');
+      return out;
+    }
+    // Diff theo dãy con chung dài nhất (LCS): true = dòng mới hoặc vừa sửa
+    function changed(prev, cur) {
+      // so sánh bỏ thụt lề: bọc thêm một thẻ ngoài cùng không làm cả khối bị tính là "đổi"
+    const a = prev.map(l => l.trim()), b = cur.map(l => l.trim());
+    const n = a.length, m = b.length;
+      const dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+      for (let i = n - 1; i >= 0; i--) for (let k = m - 1; k >= 0; k--)
+        dp[i][k] = a[i] === b[k] ? dp[i + 1][k + 1] + 1 : Math.max(dp[i + 1][k], dp[i][k + 1]);
+      const out = cur.map(() => true);
+      let i = 0, k = 0;
+      while (i < n && k < m) {
+        if (a[i] === b[k]) { out[k] = false; i++; k++; }
+        else if (dp[i + 1][k] >= dp[i][k + 1]) i++;
+        else k++;
+      }
+      return out.map((v, x) => v && !!b[x]);
+    }
+    function paint(codeEl, lines, flags, lang) {
+      const g = window.Prism && Prism.languages && Prism.languages[lang];
+      const hi = l => (g ? Prism.highlight(l, g, lang) : esc(l));
+      codeEl.innerHTML = lines.map((l, i) => '<span class="k-tb-ln' + (flags[i] ? ' add' : '') + '">' + (l ? hi(l) : ' ') + '</span>').join('\n');
+    }
+    const steps = $$('.k-tb-src > li', tb).map(li => {
+      const C = {};
+      li.querySelector('script').textContent.split('\n').forEach(line => {
+        const m = line.match(/^\s*(\w+)\s*:\s*(.+?)\s*$/);
+        if (m) C[m[1]] = m[2];
+      });
+      const html = tableLines(C);
+      return {
+        title: li.querySelector('b').textContent,
+        short: li.dataset.short,
+        desc: Array.from(li.children).filter(el => el.tagName === 'P').map(p => p.outerHTML).join(''),
+        html,
+        cls: new Set(classesFromHtml(html.join('\n')))
+      };
+    });
+    steps.forEach(s => ensure([...s.cls]));
+    const N = steps.length;
+    const ui = document.createElement('div');
+    ui.innerHTML =
+      '<div class="k-tb-rail" aria-label="Các bước">' +
+      steps.map((s, i) => '<button type="button" class="k-tb-step" data-i="' + i + '"><b>' + (i + 1) + '</b>' + esc(s.short) + '</button>').join('') +
+      '</div><div class="k-tb-progress"><i></i></div>' +
+      '<div class="k-tb-body">' +
+      '<div class="k-tb-head"><span class="k-tb-count"></span><span class="k-tb-title"></span>' +
+      '<div class="k-tb-nav"><button type="button" class="k-btn k-tb-prev">← Trước</button><button type="button" class="k-btn k-tb-play">▶ Tự chạy</button><button type="button" class="k-btn k-primary k-tb-next">Tiếp →</button></div></div>' +
+      '<div class="k-tb-desc" aria-live="polite"></div>' +
+      '<div class="k-tb-cap"><span>Demo chạy thật</span><span>kéo góc phải dưới để đổi bề rộng</span></div>' +
+      '<div class="k-stage k-plain k-tb-stage"></div>' +
+      '<div class="k-tb-diff"></div>' +
+      '<div class="k-tb-tabs" role="tablist"><button type="button" class="k-tb-tab" role="tab" data-tab="html"><i></i>HTML</button><button type="button" class="k-tb-tab" role="tab" data-tab="css"><i></i>CSS của class mới</button><span class="k-tb-legend">dòng mới / vừa sửa</span></div>' +
+      '<pre class="k-tb-pre" data-tab="html"><code class="language-markup"></code></pre>' +
+      '<pre class="k-tb-pre" data-tab="css"><code class="language-css"></code></pre>' +
+      '</div>';
+    tb.append(ui);
+    tb.classList.add('ready');
+    const stage = $('.k-tb-stage', ui);
+    const diffEl = $('.k-tb-diff', ui);
+    const codes = { html: $('pre[data-tab="html"] code', ui), css: $('pre[data-tab="css"] code', ui) };
+    Object.values(codes).forEach(decorate);
+    const tabs = $$('.k-tb-tab', ui);
+    const cssCache = new Map();
+    let cur = 0, timer = null, token = 0;
+    function showTab(t) {
+      tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+      $$('pre.k-tb-pre', ui).forEach(pre => { pre.closest('.k-code').hidden = pre.dataset.tab !== t; });
+    }
+    async function cssFor(i, added) {
+      if (!added.length) return '/* Bước này không thêm class mới */';
+      if (!TW) return '/* Không tải được tw-compiler.js */';
+      if (!cssCache.has(i)) {
+        cssCache.set(i, TW.build(refSrc(), added, { fresh: true }).then(css => css
+          .replace(/^\/\*![^*]*\*\/\s*/, '').replace(/^@layer properties;\s*/, '')
+          .split(/\n@property /)[0].trim()));
+      }
+      try { return await cssCache.get(i); } catch (e) { cssCache.delete(i); return '/* ' + e.message + ' */'; }
+    }
+    async function go(i, fromPlay) {
+      if (!fromPlay) stop();
+      cur = Math.max(0, Math.min(N - 1, i));
+      const my = ++token;
+      const s = steps[cur], p = steps[cur - 1];
+      $$('.k-tb-step', ui).forEach((b, k) => {
+        b.classList.toggle('done', k < cur);
+        if (k === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      });
+      const active = $$('.k-tb-step', ui)[cur], rail = $('.k-tb-rail', ui);
+      rail.scrollLeft = active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2;
+      $('.k-tb-progress i', ui).style.setProperty('--p', String((cur + 1) / N));
+      $('.k-tb-count', ui).textContent = 'Bước ' + (cur + 1) + '/' + N;
+      $('.k-tb-title', ui).textContent = s.title;
+      $('.k-tb-desc', ui).innerHTML = s.desc;
+      $('.k-tb-prev', ui).disabled = cur === 0;
+      $('.k-tb-next', ui).disabled = cur === N - 1;
+      stage.innerHTML = s.html.join('\n');
+      const prevCls = p ? p.cls : new Set();
+      const added = [...s.cls].filter(c => !prevCls.has(c));
+      const removed = [...prevCls].filter(c => !s.cls.has(c));
+      diffEl.innerHTML = '<span>Class</span>' + (added.length || removed.length
+        ? added.map(c => '<button type="button" class="k-tb-cls add" title="Bấm để copy">+ ' + esc(c) + '</button>').join('') +
+          removed.map(c => '<button type="button" class="k-tb-cls del" title="Bấm để copy">− ' + esc(c) + '</button>').join('')
+        : '<em class="k-tb-none">chưa có class nào, chỉ có HTML</em>');
+      const fh = p ? changed(p.html, s.html) : s.html.map(() => false);
+      paint(codes.html, s.html, fh, 'markup');
+      tabs[0].classList.toggle('changed', fh.some(Boolean));
+      tabs[1].classList.toggle('changed', added.length > 0);
+      if (!$$('.k-tb-tab[aria-selected="true"]', ui).length) showTab('html');
+      const pre = codes.html.parentElement, first = $('.k-tb-ln.add', pre);
+      pre.scrollTop = first ? Math.max(0, first.getBoundingClientRect().top - pre.getBoundingClientRect().top + pre.scrollTop - 40) : 0;
+      const css = await cssFor(cur, added);
+      if (my === token) setCode(codes.css, css);
+    }
+    function stop() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+      $('.k-tb-play', ui).textContent = '▶ Tự chạy';
+    }
+    $('.k-tb-play', ui).addEventListener('click', () => {
+      if (timer) { stop(); return; }
+      if (cur === N - 1) go(0, true);
+      $('.k-tb-play', ui).textContent = '⏸ Dừng';
+      timer = setInterval(() => { if (cur >= N - 1) stop(); else go(cur + 1, true); }, 2800);
+    });
+    $('.k-tb-prev', ui).addEventListener('click', () => go(cur - 1));
+    $('.k-tb-next', ui).addEventListener('click', () => go(cur + 1));
+    $$('.k-tb-step', ui).forEach(b => b.addEventListener('click', () => go(+b.dataset.i)));
+    tabs.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+    diffEl.addEventListener('click', e => {
+      const b = e.target.closest('.k-tb-cls');
+      if (b) copyToast(b.textContent.slice(2));
+    });
+    tb.addEventListener('keydown', e => {
+      if (!e.target.closest('.k-tb-rail, .k-tb-nav')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+    });
+    // Chạy sau khi phần khởi động cuối script tô màu mọi <pre> (Prism sẽ xoá các dòng đã tô nếu chạy trước)
+    queueMicrotask(() => go(0));
+  })();
 
   /* ---------- Thang spacing / max-width / cỡ chữ ---------- */
   const fmt = n => String(+n.toFixed(4));
