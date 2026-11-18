@@ -22,7 +22,8 @@
     { slug: 'html', name: 'HTML', sub: 'Thẻ, thuộc tính, a11y', mark: '</>', color: '#c23c12' },
     { slug: 'css', name: 'CSS', sub: 'Flexbox, Grid, theming', mark: '{ }', color: '#0a776d' },
     { slug: 'js-ts', name: 'JavaScript & TypeScript', sub: 'ES2023+, TS strict', mark: 'JS', color: '#2a64aa' },
-    { slug: 'angular', name: 'Angular', sub: 'v17+ → v22, signals', mark: 'A', color: '#b81d55' }
+    { slug: 'angular', name: 'Angular', sub: 'v17+ → v22, signals', mark: 'A', color: '#b81d55' },
+    { slug: 'tailwind', name: 'Tailwind CSS', sub: 'v4.3, demo trực quan', mark: 'tw', color: '#0369a1' }
   ];
 
   var CSS = [
@@ -82,7 +83,7 @@
       menu.appendChild(a);
     });
     var home = el('div', { 'class': 'cs-home' },
-      '<a href="' + base + '"><span class="cs-txt"><b>← Trang chủ</b><small>Tìm xuyên cả 4 cheatsheet</small></span></a>');
+      '<a href="' + base + '"><span class="cs-txt"><b>← Trang chủ</b><small>Tìm xuyên cả 5 cheatsheet</small></span></a>');
     menu.appendChild(home);
 
     function setOpen(open) {

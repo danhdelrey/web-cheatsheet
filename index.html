@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Web Cheatsheets</title>
-<meta name="description" content="Bốn cheatsheet HTML, CSS, JavaScript/TypeScript và Angular cho dev đã quen Flutter, Jetpack Compose, Dart và Kotlin.">
+<meta name="description" content="Năm cheatsheet HTML, CSS, JavaScript/TypeScript, Angular và Tailwind CSS cho dev đã quen Flutter, Jetpack Compose, Dart và Kotlin.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script src="assets/site.js"></script>
@@ -21,6 +21,7 @@
   --c-css:#0a776d;  --c-css-soft:#d8efeb;
   --c-js:#2a64aa;   --c-js-soft:#e1ebf8;
   --c-ng:#b81d55;   --c-ng-soft:#fbe7ee;
+  --c-tw:#0369a1;   --c-tw-soft:#e0f2fe;
   --shadow:0 1px 2px rgba(23,26,34,.05),0 4px 14px rgba(23,26,34,.05);
   --font-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
@@ -34,6 +35,7 @@
     --c-css:#3fc4b4;  --c-css-soft:#123430;
     --c-js:#6ea8ee;   --c-js-soft:#172a42;
     --c-ng:#ff6c9c;   --c-ng-soft:#3a1726;
+    --c-tw:#38bdf8;   --c-tw-soft:#0c2a3f;
     --shadow:0 1px 2px rgba(0,0,0,.3);
     color-scheme:dark;
   }
@@ -45,6 +47,7 @@
   --c-css:#3fc4b4;  --c-css-soft:#123430;
   --c-js:#6ea8ee;   --c-js-soft:#172a42;
   --c-ng:#ff6c9c;   --c-ng-soft:#3a1726;
+  --c-tw:#38bdf8;   --c-tw-soft:#0c2a3f;
   --shadow:0 1px 2px rgba(0,0,0,.3);
   color-scheme:dark;
 }
@@ -98,6 +101,7 @@ h1{margin:0;font-size:clamp(28px,5vw,44px);line-height:1.12;letter-spacing:-.025
 [data-k="css"]{--c:var(--c-css);--cs:var(--c-css-soft)}
 [data-k="js-ts"]{--c:var(--c-js);--cs:var(--c-js-soft)}
 [data-k="angular"]{--c:var(--c-ng);--cs:var(--c-ng-soft)}
+[data-k="tailwind"]{--c:var(--c-tw);--cs:var(--c-tw-soft)}
 .card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
   border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
 .card-head{display:flex;gap:14px;align-items:flex-start;padding:20px 20px 0;text-decoration:none}
@@ -156,12 +160,12 @@ footer p{margin:0}
   </header>
 
   <section class="hero">
-    <p class="eyebrow">HTML → CSS → JS/TS → Angular</p>
+    <p class="eyebrow">HTML → CSS → JS/TS → Angular → Tailwind</p>
     <h1>Cheatsheet web cho dev Flutter &amp; Compose</h1>
-    <p class="lede">Bốn bảng tra dùng hằng ngày. Mỗi mục đặt cạnh widget, composable, Dart hoặc Kotlin bạn đã quen, kèm snippet copy được và những chỗ dễ mang thói quen sai sang.</p>
+    <p class="lede">Năm bảng tra dùng hằng ngày. Mỗi mục đặt cạnh widget, composable, Dart hoặc Kotlin bạn đã quen, kèm snippet copy được và những chỗ dễ mang thói quen sai sang.</p>
     <div class="search" role="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <label for="q" class="vh">Tìm trong cả bốn cheatsheet</label>
+      <label for="q" class="vh">Tìm trong cả năm cheatsheet</label>
       <input id="q" type="search" placeholder="Tìm xuyên trang: flex, dialog, promise, signal…" autocomplete="off" spellcheck="false" enterkeyhint="go">
       <kbd aria-hidden="true">/</kbd>
     </div>
@@ -190,7 +194,9 @@ footer p{margin:0}
     { k: 'js-ts', step: '03', name: 'JavaScript & TypeScript', full: 'JS & TS cho dev Dart & Kotlin', mark: 'JS',
       intro: 'JavaScript ES2023+ và TypeScript strict. Mỗi mục chỉ ra chỗ JS/TS khác Dart, Kotlin hoặc dễ gây bug hơn; snippet có nút Run chạy ngay trên trang.' },
     { k: 'angular', step: '04', name: 'Angular', full: 'Angular v17+ → v22', mark: 'A',
-      intro: 'Standalone component, signals, built-in control flow, DI, RxJS, forms, routing, @defer, testing và bảng chuyển cú pháp cũ sang mới.' }
+      intro: 'Standalone component, signals, built-in control flow, DI, RxJS, forms, routing, @defer, testing và bảng chuyển cú pháp cũ sang mới.' },
+    { k: 'tailwind', step: '05', name: 'Tailwind CSS', full: 'Tailwind CSS v4.3 trực quan', mark: 'tw',
+      intro: 'Mỗi class có demo chạy thật: lab flex/grid bấm chip, bảng màu và thang spacing click là copy, thước breakpoint, container query, playground biên dịch ngay trong trình duyệt.' }
   ];
   var INDEX = window.CHEATSHEET_INDEX || {};
   var $ = function (id) { return document.getElementById(id); };
@@ -237,7 +243,7 @@ footer p{margin:0}
         '<a class="open" href="' + s.k + '/">Mở<span class="vh"> ' + esc(s.name) + '</span> <span aria-hidden="true">→</span></a></div>' +
     '</article>';
   }).join('');
-  var idleStatus = totalSec + ' mục, ' + totalEntry + ' mục con trong 4 cheatsheet.';
+  var idleStatus = totalSec + ' mục, ' + totalEntry + ' mục con trong ' + SHEETS.length + ' cheatsheet.';
   status.textContent = idleStatus;
 
   /* ---------- Search ---------- */
