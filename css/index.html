@@ -745,6 +745,96 @@ td.wrap, td.wrap code { white-space: normal; }
 .c3 .dot { position: absolute; inset: 0; margin: auto; }
 .c4 .dot { position: absolute; top: 50%; left: 50%; translate: -50% -50%; }
 
+/* ---------- Bảng từng bước (table builder) ---------- */
+.tb {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.tb.ready .tb-src { display: none; }
+.tb-src { display: grid; gap: 10px; padding: 14px 16px; }
+.tb-rail {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 12px;
+  background: var(--sunken);
+  scrollbar-width: thin;
+}
+.tb-step {
+  flex: 1 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: 500 12px/1.2 var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
+  & b {
+    display: grid;
+    place-items: center;
+    inline-size: 22px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--sunken);
+    font: 600 11px/1 var(--font-mono);
+  }
+  &:hover { border-color: var(--accent); color: var(--ink); }
+  &.done b { background: var(--accent-soft); color: var(--accent); }
+  &[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+  &[aria-current="step"] b { background: var(--accent); color: var(--accent-ink); }
+}
+.tb-progress { block-size: 3px; background: var(--line); }
+.tb-progress i { display: block; block-size: 100%; inline-size: calc(var(--p, 0) * 100%); background: var(--accent); transition: inline-size .3s ease; }
+.tb-body { display: grid; gap: 12px; padding: 14px 16px 16px; }
+.tb-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.tb-count { font: 600 12px/1 var(--font-mono); color: var(--accent); }
+.tb-title { margin-inline-end: auto; font: 600 var(--step-1)/1.3 var(--font-display); }
+.tb-nav { display: flex; gap: 6px; }
+.tb-nav .icon-btn:disabled { opacity: .4; cursor: default; }
+.tb-nav .tb-next { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.tb-nav .tb-next:hover:not(:disabled) { background: color-mix(in oklab, var(--accent) 85%, var(--ink)); }
+.tb-desc { display: grid; gap: 6px; font-size: 14px; }
+.tb-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font: 500 12px/1.4 var(--font-mono); color: var(--muted); }
+.tb-frame {
+  resize: horizontal;
+  overflow: hidden;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 240px;
+  border: 1.5px dashed color-mix(in oklab, var(--muted) 60%, transparent);
+  border-radius: 8px;
+  background: #fff;
+}
+.tb-frame iframe { display: block; inline-size: 100%; block-size: 220px; border: 0; background: #fff; color-scheme: light; }
+.tb-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.tb-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: 600 12px/1.2 var(--font-mono);
+  cursor: pointer;
+  &[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+  & i { display: none; inline-size: 7px; aspect-ratio: 1; border-radius: 50%; background: #22c55e; }
+  &.changed i { display: inline-block; }
+}
+.tb-legend { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.tb-legend::before { content: ""; inline-size: 14px; block-size: 12px; border-radius: 2px; background: color-mix(in oklab, #22c55e 22%, transparent); box-shadow: inset 3px 0 #16a34a; }
+.tb-ln { display: inline-block; min-inline-size: calc(100% + 32px); margin-inline: -16px; padding-inline: 16px; }
+.tb-ln.add { background: color-mix(in oklab, #22c55e 16%, transparent); box-shadow: inset 3px 0 #16a34a; animation: tb-flash 1.2s ease-out; }
+@keyframes tb-flash { from { background: color-mix(in oklab, #22c55e 45%, transparent); } }
+
 .empty-state {
   padding: 48px 20px;
   text-align: center;
@@ -2367,6 +2457,306 @@ h2, :target { scroll-margin-top: 80px; } /* chừa chỗ cho sticky header khi n
     <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><code>LazyVerticalGrid(GridCells.Adaptive(260.dp))</code>; <code>margin-top: auto</code> trong column ≈ <code>Spacer(Modifier.weight(1f))</code> đặt trước hàng nút.</p></div></div>
   </article>
 
+  <article class="entry" id="table-steps">
+    <h3>Bảng dữ liệu từng bước: <code>&lt;table&gt;</code> từ HTML trần tới bảng hoàn chỉnh</h3>
+    <p>Tám bước, mỗi bước chỉ thêm vài dòng. Bấm <b>Tiếp</b> hoặc chọn số bước: khung kết quả chạy đúng đoạn code bên dưới, dòng mới hoặc vừa sửa được tô xanh. Cùng bảng này viết bằng class có ở <a href="../tailwind/#table-steps">bản Tailwind</a>.</p>
+    <div class="tb" data-tb>
+      <ol class="tb-src">
+        <li data-short="HTML">
+          <b>HTML ngữ nghĩa, chưa có CSS</b>
+          <p>Bắt đầu bằng đúng thẻ: <code>&lt;caption&gt;</code> là tiêu đề bảng (screen reader đọc lên), <code>&lt;thead&gt;</code> / <code>&lt;tbody&gt;</code> / <code>&lt;tfoot&gt;</code> chia vùng, <code>&lt;th scope="col"&gt;</code> là ô tiêu đề cột.</p>
+          <p>Style mặc định của trình duyệt: các ô cách nhau 2px (<code>border-spacing</code>), không có viền, <code>th</code> in đậm và căn giữa, font thường là serif.</p>
+<script type="text/x-css">/* Chưa có CSS: đây là style mặc định của trình duyệt */</script>
+        </li>
+        <li data-short="Viền">
+          <b>Viền và bề rộng</b>
+          <p><code>border-collapse: collapse</code> gộp viền của hai ô kề nhau thành một đường. Để mặc định (<code>separate</code>) sẽ thấy viền đôi và khe hở 2px. <code>width: 100%</code> cho bảng lấp đầy cha; mặc định bảng chỉ rộng vừa nội dung.</p>
+          <p>Viền đặt trên <code>th</code>, <code>td</code>. Thẻ <code>tr</code> chỉ hiện viền khi đã <code>collapse</code>.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #cbd5e1;
+}</script>
+        </li>
+        <li data-short="Padding">
+          <b>Padding, font và căn trái</b>
+          <p>Padding đặt trên ô (<code>tr</code> không nhận padding). <code>th</code> mặc định căn giữa, nên ép <code>text-align: left</code> cho thẳng cột với dữ liệu. <code>font</code> và <code>color</code> khai báo ở <code>table</code> sẽ kế thừa xuống mọi ô.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border: 1px solid #cbd5e1;
+  padding: 10px 16px;
+  text-align: left;
+}</script>
+        </li>
+        <li data-short="Header">
+          <b>Header nổi bật, chỉ kẻ ngang</b>
+          <p>Bảng dữ liệu hiện đại thường bỏ viền dọc, chỉ giữ một đường kẻ dưới mỗi hàng: đổi <code>border</code> thành <code>border-bottom</code> (dòng tô xanh trong rule <code>th, td</code>). Header chữ nhỏ, viết hoa, màu nhạt và có nền để tách khỏi dữ liệu.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+thead th {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}</script>
+        </li>
+        <li data-short="Zebra">
+          <b>Hàng xen màu và hover</b>
+          <p><code>:nth-child(even)</code> tô nền hàng chẵn để mắt dò theo hàng ngang dễ hơn; <code>:hover</code> làm nổi hàng đang trỏ. Rê chuột vào bảng để thử.</p>
+          <p>Nền đặt trên <code>tr</code> được, nó hiện bên dưới các ô trong hàng.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+thead th {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #eff6ff; }</script>
+        </li>
+        <li data-short="Cột số" data-flags="num id">
+          <b>Cột số căn phải và dòng tổng</b>
+          <p>Số căn phải để hàng đơn vị thẳng nhau; <code>font-variant-numeric: tabular-nums</code> cho mọi chữ số cùng bề rộng nên cột không bị lệch. HTML thêm class <code>num</code> và <code>id</code> (xem tab HTML). <code>&lt;tfoot&gt;</code> có đường kẻ đậm phía trên.</p>
+          <p><code>.num</code> (0-1-0) thắng <code>th, td</code> (0-0-1) nhờ specificity, nên không cần <code>!important</code>.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+thead th {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #eff6ff; }
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.id { font-family: ui-monospace, monospace; color: #64748b; }
+
+tfoot th, tfoot td {
+  border-top: 2px solid #cbd5e1;
+  border-bottom: 0;
+  font-weight: 600;
+  color: #0f172a;
+}</script>
+        </li>
+        <li data-short="Badge" data-flags="num id badge">
+          <b>Badge trạng thái</b>
+          <p>Bọc chữ trạng thái trong <code>&lt;span class="badge ok"&gt;</code>. <code>display: inline-block</code> để padding dọc có tác dụng thật, <code>border-radius: 999px</code> bo tròn hai đầu như viên thuốc. Nền nhạt, chữ đậm cùng tông màu.</p>
+<script type="text/x-css">table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+thead th {
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #eff6ff; }
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.id { font-family: ui-monospace, monospace; color: #64748b; }
+
+tfoot th, tfoot td {
+  border-top: 2px solid #cbd5e1;
+  border-bottom: 0;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge.ok   { background: #ecfdf5; color: #047857; }
+.badge.ship { background: #f0f9ff; color: #0369a1; }
+.badge.wait { background: #fffbeb; color: #92400e; }</script>
+        </li>
+        <li data-short="Cuộn + sticky" data-flags="num id badge wrap">
+          <b>Khung cuộn và header dính</b>
+          <p>Bảng rộng hơn màn hình sẽ phá layout trên mobile. Bọc bảng trong <code>.table-wrap</code> có <code>overflow: auto</code> và cho bảng <code>min-width</code>: hẹp quá thì bảng cuộn ngang thay vì bóp chữ. <code>max-height</code> cộng <code>position: sticky; top: 0</code> trên <code>th</code> giữ header đứng yên khi cuộn dọc.</p>
+          <p>Kéo góc phải dưới của khung kết quả để thu hẹp, hoặc cuộn bên trong bảng để thấy header dính.</p>
+<script type="text/x-css">.table-wrap {
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font: 14px/1.5 system-ui, sans-serif;
+  color: #334155;
+}
+
+caption {
+  padding: 12px 16px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 16px;
+  text-align: left;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  box-shadow: inset 0 -1px #e2e8f0; /* viền của ô sticky không đi theo, dùng bóng thay */
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #eff6ff; }
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.id { font-family: ui-monospace, monospace; color: #64748b; }
+
+tfoot th, tfoot td {
+  border-top: 2px solid #cbd5e1;
+  border-bottom: 0;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge.ok   { background: #ecfdf5; color: #047857; }
+.badge.ship { background: #f0f9ff; color: #0369a1; }
+.badge.wait { background: #fffbeb; color: #92400e; }</script>
+        </li>
+      </ol>
+    </div>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p><span class="fl">Flutter</span>: <code>Table(border: TableBorder(horizontalInside: …), columnWidths: …)</code> hoặc <code>DataTable(columns:, rows:)</code>. <span class="cp">Compose</span> không có bảng dựng sẵn: thường là <code>LazyColumn</code>, mỗi hàng một <code>Row</code> với <code>Modifier.weight()</code>. Khác biệt lớn: bảng HTML tự tính bề rộng cột theo nội dung của <b>mọi</b> hàng (giống <code>IntrinsicColumnWidth</code>), không cần khai báo trước.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p>Với <code>border-collapse: collapse</code>, <code>border-radius</code> trên <code>&lt;table&gt;</code> không có tác dụng: bo góc và đặt <code>overflow</code> ở thẻ bọc ngoài. Chỉ dùng <code>&lt;table&gt;</code> cho dữ liệu dạng bảng; đừng dựng layout trang bằng table, dùng Grid.</p></div></div>
+  </article>
+
   <article class="entry">
     <h3>Sidebar + content</h3>
 <pre><code class="language-css">/* Có media query */
@@ -2575,6 +2965,190 @@ h2, :target { scroll-margin-top: 80px; } /* chừa chỗ cho sticky header khi n
     mode = modes[(modes.indexOf(mode) + 1) % modes.length];
     applyTheme(mode);
     store.set('cheatsheet-theme', mode);
+  });
+
+  /* ---------- Bảng từng bước: đọc .tb-src, dựng stepper + iframe kết quả + code tô dòng thay đổi ---------- */
+  const TB_ROWS = [
+    ['#1024', 'Bàn phím cơ 75%', 'ok', 'Đã giao', '1', '1.590.000₫'],
+    ['#1025', 'Chuột không dây', 'ship', 'Đang giao', '2', '780.000₫'],
+    ['#1026', 'Màn hình 4K 27 inch', 'wait', 'Chờ xử lý', '1', '8.490.000₫'],
+    ['#1027', 'Giá đỡ laptop nhôm', 'ok', 'Đã giao', '1', '450.000₫']
+  ];
+  function tbTableLines(C) {
+    const j = (...xs) => xs.filter(Boolean).join(' ');
+    const a = s => (s ? ' class="' + s + '"' : '');
+    const out = [];
+    const pad = C.wrap ? '  ' : '';
+    const L = (d, s) => out.push(pad + '  '.repeat(d) + s);
+    if (C.wrap) out.push('<div' + a(C.wrap) + '>');
+    L(0, '<table' + a(C.table) + '>');
+    L(1, '<caption' + a(C.caption) + '>Đơn hàng tháng 11</caption>');
+    L(1, '<thead' + a(C.thead) + '>');
+    L(2, '<tr' + a(C.headTr) + '>');
+    const th = C.th || '';
+    const thNum = j(th.split(' ').filter(c => c !== 'text-left').join(' '), C.num);
+    ['Mã', 'Sản phẩm', 'Trạng thái'].forEach(t => L(3, '<th scope="col"' + a(th) + '>' + t + '</th>'));
+    L(3, '<th scope="col"' + a(thNum) + '>SL</th>');
+    L(3, '<th scope="col"' + a(thNum) + '>Thành tiền</th>');
+    L(2, '</tr>');
+    L(1, '</thead>');
+    L(1, '<tbody' + a(C.tbody) + '>');
+    TB_ROWS.forEach(([id, name, tone, status, qty, sum]) => {
+      L(2, '<tr' + a(C.tr) + '>');
+      L(3, '<td' + a(j(C.td, C.id)) + '>' + id + '</td>');
+      L(3, '<td' + a(C.td) + '>' + name + '</td>');
+      L(3, '<td' + a(C.td) + '>' + (C.badge ? '<span' + a(j(C.badge, C[tone])) + '>' + status + '</span>' : status) + '</td>');
+      L(3, '<td' + a(j(C.td, C.num)) + '>' + qty + '</td>');
+      L(3, '<td' + a(j(C.td, C.num)) + '>' + sum + '</td>');
+      L(2, '</tr>');
+    });
+    L(1, '</tbody>');
+    L(1, '<tfoot' + a(C.tfoot) + '>');
+    L(2, '<tr>');
+    L(3, '<th scope="row" colspan="3"' + a(C.footTh) + '>Tổng cộng</th>');
+    L(3, '<td' + a(j(C.td, C.num)) + '>5</td>');
+    L(3, '<td' + a(j(C.td, C.num)) + '>11.310.000₫</td>');
+    L(2, '</tr>');
+    L(1, '</tfoot>');
+    L(0, '</table>');
+    if (C.wrap) out.push('</div>');
+    return out;
+  }
+  // Đánh dấu dòng mới/vừa sửa so với bước trước: diff theo dãy con chung dài nhất (LCS), giống git diff
+  function tbChanged(prev, cur) {
+    // so sánh bỏ thụt lề: bọc thêm một thẻ ngoài cùng không làm cả khối bị tính là "đổi"
+    const a = prev.map(l => l.trim()), b = cur.map(l => l.trim());
+    const n = a.length, m = b.length;
+    const dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let k = m - 1; k >= 0; k--)
+      dp[i][k] = a[i] === b[k] ? dp[i + 1][k + 1] + 1 : Math.max(dp[i + 1][k], dp[i][k + 1]);
+    const out = cur.map(() => true);
+    let i = 0, k = 0;
+    while (i < n && k < m) {
+      if (a[i] === b[k]) { out[k] = false; i++; k++; }
+      else if (dp[i + 1][k] >= dp[i][k + 1]) i++;
+      else k++;
+    }
+    return out.map((v, x) => v && !!b[x]);
+  }
+  function tbPaint(codeEl, lines, flags, lang) {
+    const grammar = window.Prism && Prism.languages && Prism.languages[lang];
+    const hi = l => (grammar ? Prism.highlight(l, grammar, lang) : l.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])));
+    codeEl.innerHTML = lines.map((l, i) => '<span class="tb-ln' + (flags[i] ? ' add' : '') + '">' + (l ? hi(l) : ' ') + '</span>').join('\n');
+  }
+  $$('[data-tb]').forEach(tb => {
+    const steps = $$('.tb-src > li', tb).map(li => {
+      const flags = (li.dataset.flags || '').split(/\s+/);
+      const has = f => flags.includes(f);
+      const C = { num: has('num') ? 'num' : '', id: has('id') ? 'id' : '', wrap: has('wrap') ? 'table-wrap' : '' };
+      if (has('badge')) Object.assign(C, { badge: 'badge', ok: 'ok', ship: 'ship', wait: 'wait' });
+      const desc = Array.from(li.children).filter(el => el.tagName === 'P').map(p => p.outerHTML).join('');
+      return {
+        title: li.querySelector('b').textContent,
+        short: li.dataset.short,
+        desc,
+        css: li.querySelector('script').textContent.split('\n'),
+        html: tbTableLines(C)
+      };
+    });
+    const N = steps.length;
+    const ui = document.createElement('div');
+    ui.innerHTML =
+      '<div class="tb-rail" role="tablist" aria-label="Các bước">' +
+      steps.map((s, i) => '<button type="button" class="tb-step" data-i="' + i + '"><b>' + (i + 1) + '</b>' + s.short + '</button>').join('') +
+      '</div><div class="tb-progress"><i></i></div>' +
+      '<div class="tb-body">' +
+      '<div class="tb-head"><span class="tb-count"></span><span class="tb-title"></span>' +
+      '<div class="tb-nav"><button type="button" class="icon-btn tb-prev">← Trước</button><button type="button" class="icon-btn tb-play">▶ Tự chạy</button><button type="button" class="icon-btn tb-next">Tiếp →</button></div></div>' +
+      '<div class="tb-desc" aria-live="polite"></div>' +
+      '<div class="tb-cap"><span>Kết quả chạy thật</span><span class="tb-size">kéo góc phải dưới để đổi bề rộng</span></div>' +
+      '<div class="tb-frame"><iframe title="Kết quả bảng ở bước hiện tại" loading="lazy"></iframe></div>' +
+      '<div class="tb-tabs" role="tablist"><button type="button" class="tb-tab" role="tab" data-tab="css"><i></i>CSS</button><button type="button" class="tb-tab" role="tab" data-tab="html"><i></i>HTML</button><span class="tb-legend">dòng mới / vừa sửa</span></div>' +
+      '<pre class="tb-pre" data-tab="css"><code class="language-css"></code></pre>' +
+      '<pre class="tb-pre" data-tab="html"><code class="language-markup"></code></pre>' +
+      '</div>';
+    tb.append(ui);
+    tb.classList.add('ready');
+    const frame = $('iframe', ui);
+    const sizeEl = $('.tb-size', ui);
+    const codes = { css: $('pre[data-tab="css"] code', ui), html: $('pre[data-tab="html"] code', ui) };
+    const tabs = $$('.tb-tab', ui);
+    let cur = 0, tab = 'css', timer = null, ready = false;
+    frame.srcdoc = '<!doctype html><html><head><meta charset="utf-8"><style>html,body{background:#fff}body{margin:16px}</style><style id="s"></style></head><body></body></html>';
+    function fit() {
+      const d = frame.contentDocument;
+      if (!ready || !d || !d.body) return;
+      frame.style.blockSize = '0px';
+      frame.style.blockSize = d.documentElement.scrollHeight + 'px';
+      sizeEl.textContent = 'rộng ' + Math.round(frame.getBoundingClientRect().width) + 'px · kéo góc phải dưới để đổi';
+    }
+    function paintFrame() {
+      const d = frame.contentDocument;
+      if (!ready || !d || !d.body) return;
+      const s = steps[cur];
+      d.getElementById('s').textContent = s.css.join('\n');
+      d.body.innerHTML = s.html.join('\n');
+      fit();
+    }
+    frame.addEventListener('load', () => { ready = true; paintFrame(); });
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(frame);
+    function showTab(t) {
+      tab = t;
+      tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+      $$('pre.tb-pre', ui).forEach(pre => { (pre.closest('.code') || pre).hidden = pre.dataset.tab !== t; });
+    }
+    function go(i, fromPlay) {
+      if (!fromPlay) stop();
+      cur = Math.max(0, Math.min(N - 1, i));
+      const s = steps[cur], p = steps[cur - 1];
+      $$('.tb-step', ui).forEach((b, k) => {
+        b.classList.toggle('done', k < cur);
+        if (k === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      });
+      const active = $$('.tb-step', ui)[cur];
+      const rail = $('.tb-rail', ui);
+      rail.scrollLeft = active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2;
+      $('.tb-progress i', ui).style.setProperty('--p', String((cur + 1) / N));
+      $('.tb-count', ui).textContent = 'Bước ' + (cur + 1) + '/' + N;
+      $('.tb-title', ui).textContent = s.title;
+      $('.tb-desc', ui).innerHTML = s.desc;
+      $('.tb-prev', ui).disabled = cur === 0;
+      $('.tb-next', ui).disabled = cur === N - 1;
+      const fc = p ? tbChanged(p.css, s.css) : s.css.map(() => false);
+      const fh = p ? tbChanged(p.html, s.html) : s.html.map(() => false);
+      tbPaint(codes.css, s.css, fc, 'css');
+      tbPaint(codes.html, s.html, fh, 'markup');
+      const cssCh = fc.some(Boolean), htmlCh = fh.some(Boolean);
+      tabs[0].classList.toggle('changed', cssCh);
+      tabs[1].classList.toggle('changed', htmlCh);
+      tabs[0].title = cssCh ? 'CSS có thay đổi ở bước này' : '';
+      tabs[1].title = htmlCh ? 'HTML có thay đổi ở bước này' : '';
+      showTab(htmlCh && !cssCh ? 'html' : (cur === 0 ? 'html' : 'css'));
+      paintFrame();
+    }
+    function stop() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+      $('.tb-play', ui).textContent = '▶ Tự chạy';
+    }
+    $('.tb-play', ui).addEventListener('click', () => {
+      if (timer) { stop(); return; }
+      if (cur === N - 1) go(0, true);
+      $('.tb-play', ui).textContent = '⏸ Dừng';
+      timer = setInterval(() => { if (cur >= N - 1) stop(); else go(cur + 1, true); }, 2600);
+    });
+    $('.tb-prev', ui).addEventListener('click', () => go(cur - 1));
+    $('.tb-next', ui).addEventListener('click', () => go(cur + 1));
+    $$('.tb-step', ui).forEach(b => b.addEventListener('click', () => go(+b.dataset.i)));
+    tabs.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+    tb.addEventListener('keydown', e => {
+      if (!e.target.closest('.tb-rail, .tb-nav')) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+    });
+    // Chờ khối "Code blocks" bên dưới bọc <pre> và Prism.highlightAll chạy xong rồi mới tô dòng
+    queueMicrotask(() => go(0));
   });
 
   /* ---------- Code blocks: header + copy ---------- */
