@@ -1,0 +1,12 @@
+{
+  "name": "tw-compiler-bundle",
+  "private": true,
+  "description": "Đóng gói trình biên dịch Tailwind CSS chạy trong trình duyệt cho tailwind/index.html",
+  "scripts": {
+    "build": "esbuild compiler-entry.js --bundle --minify --format=iife --loader:.css=text --target=es2020 --banner:js=\"/*! Tailwind CSS (MIT License, tailwindcss.com) — compile() đóng gói để chạy trong trình duyệt */\" --outfile=../../tailwind/tw-compiler.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "tailwindcss": "4.3.5"
+  }
+}

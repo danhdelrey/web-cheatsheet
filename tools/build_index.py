@@ -15,7 +15,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parent.parent
-SLUGS = ["html", "css", "js-ts", "angular"]  # thêm thư mục mới vào đây
+SLUGS = ["html", "css", "js-ts", "angular", "tailwind"]  # thêm thư mục mới vào đây
 
 
 def fold(s):
