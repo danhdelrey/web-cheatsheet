@@ -742,6 +742,97 @@
       'Thứ tự trong withInterceptors([auth, retry, logging]) là thứ tự request đi xuống; response đi ngược lên. Mỗi interceptor gọi next(req) để chuyển tiếp và có thể pipe() vào response.'));
   });
 
+  /* ---------- 14. CSR / SSR / incremental hydration ---------- */
+  VZ.add('a-ssr', function (root) {
+    // mốc thời gian (ms) cho từng chế độ; số liệu minh hoạ, không phải đo thật
+    var M = {
+      csr: { label: 'CSR', end: 2000, bars: [['net', 0, 150, 'HTML rỗng'], ['net', 150, 1250, 'tải JS'], ['cpu', 1250, 1650, 'render + gọi API']], paint: 1650, live: 1650, below: 1650 },
+      ssr: { label: 'SSR + hydration', end: 2000, bars: [['srv', 0, 450, 'render ở server'], ['net', 450, 600, 'HTML đầy đủ'], ['net', 600, 1450, 'tải JS'], ['cpu', 1450, 1700, 'hydrate']], paint: 600, live: 1700, below: 1700 },
+      inc: { label: 'SSR + incremental', end: 2000, bars: [['srv', 0, 450, 'render ở server'], ['net', 450, 600, 'HTML đầy đủ'], ['net', 600, 1050, 'tải JS chính'], ['cpu', 1050, 1150, 'hydrate']], paint: 600, live: 1150, below: null }
+    };
+    var mode = 'ssr', t = 0, replay = true, queued = 0, scrolled = false, tm = VZ.timers(), playing = false;
+    var W = 640, L = 92, R = 12;
+    function x(v) { return L + v / 2000 * (W - L - R); }
+    var svg = s('svg', { viewBox: '0 0 ' + W + ' 128', role: 'img', 'aria-label': 'Dòng thời gian tải trang', style: { minWidth: '480px' } });
+    var head = h('div', { class: 'vz-out', 'aria-live': 'polite' });
+    var page = h('div', { style: { borderRadius: '10px', border: '1.5px solid var(--vz-line)', background: 'var(--vz-bg)', minHeight: '150px', padding: '10px', display: 'grid', gap: '8px', alignContent: 'start', transition: 'all .2s' } });
+    var log = h('pre', { class: 'vz-log', style: { minHeight: '0' } });
+    var slider = VZ.range('t =', 0, 2000, 10, t, function (v) { stop(); t = v; render(); }, function (v) { return v + 'ms'; });
+    function lane(y, label) {
+      svg.appendChild(s('text', { x: 0, y: y + 4, 'font-size': 11.5, 'font-weight': 600 }, label));
+      svg.appendChild(s('line', { x1: L, x2: W - R, y1: y, y2: y, stroke: 'var(--vz-line)' }));
+    }
+    var Y = { srv: 20, net: 50, cpu: 80 }, COL = { srv: 'var(--vz-purple)', net: 'var(--vz-blue)', cpu: 'var(--vz-amber)' };
+    function drawTimeline() {
+      VZ.clear(svg);
+      lane(Y.srv, 'Server'); lane(Y.net, 'Mạng'); lane(Y.cpu, 'Trình duyệt');
+      var m = M[mode];
+      m.bars.forEach(function (b) {
+        svg.appendChild(s('rect', { x: x(b[1]), y: Y[b[0]] - 8, width: x(b[2]) - x(b[1]), height: 16, rx: 4, fill: COL[b[0]], opacity: .85 }));
+        if (x(b[2]) - x(b[1]) > b[3].length * 5.6 + 8) svg.appendChild(s('text', { x: (x(b[1]) + x(b[2])) / 2, y: Y[b[0]] + 4, 'font-size': 10, 'text-anchor': 'middle', style: 'fill:var(--vz-bg)' }, b[3]));
+        else if (b[0] === 'cpu') svg.appendChild(s('text', { x: x(b[2]) + 4, y: Y[b[0]] + 4, 'font-size': 10, style: 'fill:var(--vz-muted)' }, b[3]));
+      });
+      [['paint', 'thấy nội dung', 'var(--vz-green)'], ['live', 'bấm được', 'var(--vz-acc)']].forEach(function (k, i) {
+        var v = m[k[0]];
+        svg.appendChild(s('line', { x1: x(v), x2: x(v), y1: 6, y2: 96, stroke: k[2], 'stroke-width': 2, 'stroke-dasharray': '4 3' }));
+        svg.appendChild(s('text', { x: x(v) + (i ? 4 : -4), y: 108 + i * 12, 'font-size': 10.5, 'font-weight': 700, 'text-anchor': i ? 'start' : 'end', style: 'fill:' + k[2] }, k[1] + ' ' + v + 'ms'));
+      });
+      svg.cursor = s('line', { y1: 2, y2: 98, stroke: 'var(--vz-fg)', 'stroke-width': 1.5 });
+      svg.appendChild(svg.cursor);
+    }
+    function state() {
+      var m = M[mode];
+      return { painted: t >= m.paint, live: t >= m.live, below: m.below == null ? (scrolled && t >= m.live) : t >= m.below };
+    }
+    function render() {
+      var m = M[mode], st = state();
+      svg.cursor.setAttribute('x1', x(t)); svg.cursor.setAttribute('x2', x(t));
+      slider.setValue(t);
+      VZ.clear(page);
+      if (!st.painted) {
+        page.style.background = 'var(--vz-bg)';
+        page.appendChild(h('div', { class: 'vz-muted', style: { textAlign: 'center', paddingTop: '50px', fontSize: '13px' } }, mode === 'csr' ? 'Trang trắng: <app-root></app-root> rỗng, đợi JS' : 'Đang đợi server…'));
+      } else {
+        page.appendChild(h('div', { style: { fontWeight: '700', fontSize: '15px' } }, 'Áo khoác gió · 450.000đ'));
+        var b = h('button', { type: 'button', class: 'vz-btn' + (st.live ? ' vz-pri' : '') }, st.live ? 'Thêm vào giỏ' : 'Thêm vào giỏ (chưa hydrate)');
+        b.addEventListener('click', function () {
+          if (state().live) { log.textContent += 't=' + t + 'ms  click → chạy handler ngay\n'; }
+          else if (replay || mode === 'inc') { queued++; log.textContent += 't=' + t + 'ms  click → ghi lại, sẽ replay khi hydrate xong (' + m.live + 'ms)' + (mode === 'inc' && !replay ? ' — incremental hydration tự bật event replay' : '') + '\n'; }
+          else log.textContent += 't=' + t + 'ms  click → MẤT (không bật withEventReplay)\n';
+          log.scrollTop = log.scrollHeight;
+        });
+        page.appendChild(h('div', null, b));
+        var below = h('div', { style: { borderTop: '1px dashed var(--vz-line)', paddingTop: '8px', fontSize: '12.5px' } });
+        if (mode === 'inc' && !st.below) {
+          below.appendChild(h('span', { class: 'vz-muted' }, 'Bình luận: HTML có sẵn, JS chưa tải (@defer hydrate on viewport) '));
+          below.appendChild(VZ.btn('Cuộn tới', function () { scrolled = true; if (t < m.live) t = m.live; log.textContent += 'cuộn tới → tải JS khối bình luận và hydrate riêng khối đó\n'; render(); }));
+        } else below.appendChild(h('span', { class: st.below ? '' : 'vz-muted' }, st.below ? '💬 Bình luận: đã hydrate, tương tác được' : '💬 Bình luận: thấy được, chưa tương tác'));
+        page.appendChild(below);
+      }
+      if (st.live && queued) { log.textContent += 'hydrate xong → replay ' + queued + ' click đã ghi\n'; queued = 0; }
+      head.textContent = {
+        csr: 'CSR: người dùng nhìn trang trắng tới khi JS tải và chạy xong. Bot không chạy JS chỉ thấy HTML rỗng.',
+        ssr: 'SSR: HTML đầy đủ tới sớm nên thấy nội dung ngay, nhưng phải đợi JS tải + hydrate mới bấm được.',
+        inc: 'Incremental: chỉ hydrate phần trên trước nên bấm được sớm hơn; khối bên dưới tải JS khi cần.'
+      }[mode];
+    }
+    function stop() { playing = false; tm.stop(); }
+    function play() {
+      stop(); playing = true; if (t >= 2000) t = 0;
+      (function step() { tm.after(40, function () { t = Math.min(2000, t + 20); render(); if (t < 2000 && playing) step(); else playing = false; }); })();
+    }
+    function reset() { stop(); t = 0; queued = 0; scrolled = false; log.textContent = ''; drawTimeline(); render(); }
+    root.appendChild(h('div', { class: 'vz-row' },
+      VZ.seg([['csr', 'CSR'], ['ssr', 'SSR + hydration'], ['inc', 'SSR + incremental hydration']], mode, function (v) { mode = v; reset(); }, 'Chế độ render'),
+      VZ.check('withEventReplay()', replay, function (v) { replay = v; })));
+    root.appendChild(h('div', { class: 'vz-row' }, VZ.btn('▶ Phát', play, true), slider));
+    root.appendChild(h('div', { class: 'vz-stage' }, svg));
+    root.appendChild(head);
+    root.appendChild(h('div', { class: 'vz-split' }, page, h('div', { class: 'vz-col' },
+      h('span', { class: 'vz-lbl' }, 'Thử bấm nút trong trang ở các thời điểm khác nhau'), log)));
+    reset();
+  });
+
   /* ---------- 13. Form control state ---------- */
   VZ.add('a-formstate', function (root) {
     var st = { value: '', touched: false, dirty: false, status: 'INVALID', errors: { required: true } }, pend = null;

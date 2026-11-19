@@ -2284,6 +2284,30 @@ body:has(dialog[open]) { overflow: hidden; }
   </article>
 
   <article class="entry">
+    <h3><code>@supports</code>: dùng tính năng mới có dự phòng</h3>
+    <p>Chỉ áp dụng khối CSS khi trình duyệt hỗ trợ một property/giá trị hoặc selector. Viết bản dự phòng trước, bản nâng cao đặt trong <code>@supports</code>.</p>
+<pre><code class="language-css">/* Dự phòng cho mọi trình duyệt */
+.modal-backdrop { background: rgb(0 0 0 / .6); }
+
+/* Có backdrop-filter thì làm nền mờ kính */
+@supports (backdrop-filter: blur(8px)) {
+  .modal-backdrop { background: rgb(0 0 0 / .25); backdrop-filter: blur(8px); }
+}
+
+/* Kiểm tra selector */
+@supports selector(:has(a)) {
+  .card:has(img) { grid-template-rows: auto 1fr; }
+}
+
+/* Phủ định và kết hợp */
+@supports not (aspect-ratio: 1) { .thumb { padding-top: 100%; } }
+@supports (display: grid) and (gap: 1rem) { /* … */ }</code></pre>
+    <div class="note map"><span class="note-tag">📱 Flutter / Compose</span><div><p>Giống kiểm tra <code>Build.VERSION.SDK_INT</code> trên Android trước khi gọi API mới. Ở JS dùng <code>CSS.supports('backdrop-filter', 'blur(8px)')</code>.</p></div></div>
+    <div class="note warn"><span class="note-tag">⚠️ Lưu ý</span><div><p><code>@supports</code> chỉ cho biết trình duyệt <b>hiểu cú pháp</b>, không đảm bảo hiển thị đúng hết. Property mà trình duyệt không hiểu vốn đã bị bỏ qua, nên với thay đổi nhỏ chỉ cần viết hai dòng nối tiếp (dòng dự phòng trước), không cần <code>@supports</code>.</p></div></div>
+  </article>
+
+
+  <article class="entry">
     <h3>Logical properties</h3>
     <div class="table-wrap"><table>
       <thead><tr><th>Physical</th><th>Logical</th><th>Ghi chú</th></tr></thead>
