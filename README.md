@@ -52,6 +52,7 @@ Mở trực tiếp file `index.html` bằng trình duyệt cũng xem được, n
 ├── assets/
 │   ├── site.js             # theme dùng chung + nút "Cheatsheets" chuyển trang + hỗ trợ ?q=
 │   ├── index-data.js       # dữ liệu tìm kiếm (sinh bởi tools/build_index.py)
+│   ├── viz.js, viz-*.js    # minh hoạ tương tác (lõi + từng trang)
 │   └── vendor/prism/       # Prism 1.29.0 (MIT) để tô màu code
 ├── tools/build_index.py    # sinh lại index-data.js
 ├── tools/tailwind/         # đóng gói lại tw-compiler.js + sync_code.py
@@ -73,6 +74,16 @@ Mở trực tiếp file `index.html` bằng trình duyệt cũng xem được, n
    `SLUGS` trong `tools/build_index.py`, `PAGES` trong `assets/site.js`, `SHEETS` trong `index.html`.
 
 Theme (Hệ thống / Sáng / Tối) lưu chung một khoá `cheatsheet-theme`, chọn ở trang nào cũng áp dụng cho cả site.
+
+## Minh hoạ trực quan
+
+HTML, CSS, JS/TS và Angular có các khối **Minh hoạ** tương tác (event loop từng bước, marble diagram RxJS, cascade, injector tree…), vẽ bằng JS thuần, không thư viện:
+
+- `assets/viz.js`: lõi dùng chung (helper, CSS, tự theo theme Sáng/Tối qua biến của trang).
+- `assets/viz-<slug>.js`: các minh hoạ của từng trang, đăng ký bằng `VZ.add('ten', fn)`.
+- Trong trang: `<figure class="vz" data-viz="ten"><figcaption>Mô tả</figcaption></figure>`. Figure ẩn cho tới khi vẽ xong; caption vẫn được `build_index.py` đưa vào ô tìm kiếm.
+
+Thêm minh hoạ mới: viết hàm trong `viz-<slug>.js`, chèn `<figure>` vào mục `<h3>` tương ứng, rồi chạy lại `python tools/build_index.py`.
 
 ## Trang Tailwind
 
