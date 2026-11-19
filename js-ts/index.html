@@ -6,6 +6,8 @@
 <title>JS & TS Cheatsheet</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <script src="../assets/site.js" data-page="js-ts"></script>
+<script src="../assets/viz.js" defer></script>
+<script src="../assets/viz-js-ts.js" defer></script>
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <meta name="description" content="Tra cứu nhanh khi code Angular/React hằng ngày. JavaScript ES2023+, TypeScript ở chế độ strict . Mỗi mục đối chiếu với thứ bạn đã biết và chỉ ra chỗ JS/TS khác hoặc dễ gây bug hơn.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -275,6 +277,7 @@ td code{white-space:nowrap;overflow-wrap:normal}
 <article class="card">
 <h3>TypeScript chỉ tồn tại lúc compile</h3>
 <p>JS là ngôn ngữ dynamic. TypeScript kiểm tra type rồi bị xóa sạch khi build: runtime không biết <code>interface User</code> là gì, không có cast check, không có generic reified.</p>
+<figure class="vz" data-viz="j-compile"><figcaption>tsc xoá sạch type trước khi code chạy</figcaption></figure>
 <script type="text/x-code" data-lang="ts">
 interface User { id: number; name: string }
 
@@ -363,6 +366,7 @@ console.log(user, count);
 <article class="card">
 <h3>Block scope, hoisting, TDZ</h3>
 <p><code>let</code>/<code>const</code> có block scope. Chúng được "hoist" nhưng không truy cập được trước dòng khai báo (Temporal Dead Zone). Function declaration được hoist toàn bộ.</p>
+<figure class="vz" data-viz="j-tdz"><figcaption>Trạng thái của var, let, const, function theo từng dòng</figcaption></figure>
 <script type="text/x-code" data-lang="js" data-run>
 {
   try { console.log(x); } catch (e) { console.log(e.name + ':', e.message); }
@@ -508,6 +512,7 @@ createUser({ name: 'An', rol: 'admin' });
 <article class="card">
 <h3>Closures &amp; higher-order functions</h3>
 <p>Function "nhớ" biến của scope nơi nó được tạo. Dùng để giữ state riêng tư, tạo factory, wrapper.</p>
+<figure class="vz" data-viz="j-closure"><figcaption>Mỗi closure giữ một scope riêng</figcaption></figure>
 <script type="text/x-code" data-lang="js" data-run>
 function makeCounter(start = 0) {
   let n = start;                       // "private" nhờ closure
@@ -620,6 +625,7 @@ console.log(opts);
 <article class="card">
 <h3>Array methods</h3>
 <p>Phần lớn method trả mảng mới. Một số method cũ mutate mảng gốc; ES2023 thêm bản không mutate: <code>toSorted</code>, <code>toReversed</code>, <code>toSpliced</code>, <code>with</code>.</p>
+<figure class="vz" data-viz="j-array"><figcaption>Method duyệt mảng thế nào, cái nào dừng sớm</figcaption></figure>
 <script type="text/x-code" data-lang="js" data-run>
 const nums = [5, 1, 4, 2, 3];
 console.log(nums.map((n) => n * 2));
@@ -712,6 +718,7 @@ console.log(Object.hasOwn(prices, 'kiwi'));
 <article class="card">
 <h3>Shallow copy, deep copy, immutability</h3>
 <p>Spread chỉ copy một tầng. <code>structuredClone</code> copy sâu và giữ Date, Map, Set. <code>Object.freeze</code> chặn sửa nhưng cũng chỉ một tầng.</p>
+<figure class="vz" data-viz="j-copy"><figcaption>Biến chỉ giữ tham chiếu tới object trên heap</figcaption></figure>
 <script type="text/x-code" data-lang="js" data-run>
 const original = { name: 'An', tags: ['a'], createdAt: new Date(0) };
 const shallow = { ...original };
@@ -1076,7 +1083,8 @@ console.log('E sync');
 // Đáp án: E, B, D, A, C
 </script>
 <p class="eq"><b>🎯 Dart / Kotlin tương đương:</b> Dart gần như y hệt: microtask queue (<code>scheduleMicrotask</code>, <code>Future.then</code>) và event queue (<code>Timer</code>, I/O). Kotlin trên <code>Dispatchers.Main</code> tương tự, nhưng coroutine có thể chuyển thread; JS không bao giờ.</p>
-</article>
+
+<figure class="vz" data-viz="j-eventloop"><figcaption>Chạy từng bước ví dụ “đoán thứ tự” bên trên</figcaption></figure></article>
 
 <article class="card">
 <h3>Promise: tạo, then/catch/finally</h3>
@@ -1105,6 +1113,7 @@ console.log(await promise);
 
 <article class="card">
 <h3>Promise combinators</h3>
+<figure class="vz" data-viz="j-combinators"><figcaption>Chỉnh kết quả và thời gian của 3 promise</figcaption></figure>
 <div class="tw"><table>
 <thead><tr><th>JS</th><th>Kết quả</th><th>Reject khi</th><th>Dart / Kotlin</th></tr></thead>
 <tbody>
@@ -1279,6 +1288,7 @@ li.remove();
 <article class="card">
 <h3>Events, delegation, preventDefault</h3>
 <p>Event nổi bọt (bubble) từ element lên cha. Event delegation: gắn một listener ở cha để xử lý cho mọi con, kể cả con thêm sau.</p>
+<figure class="vz" data-viz="j-events"><figcaption>Một click đi qua capture → target → bubble</figcaption></figure>
 <script type="text/x-code" data-lang="js">
 const button = document.querySelector('button#save');
 const onSave = (e) => console.log('saved', e.currentTarget);
@@ -1528,6 +1538,7 @@ const ns = parse(['1', '2']);   // number[]
 <article class="card">
 <h3>Union, intersection &amp; type narrowing</h3>
 <p>TS thu hẹp type trong từng nhánh dựa vào <code>typeof</code>, <code>instanceof</code>, <code>in</code>, so sánh literal, truthiness, hoặc type guard bạn tự viết.</p>
+<figure class="vz" data-viz="j-narrow"><figcaption>TypeScript thu hẹp union sau mỗi lần kiểm tra</figcaption></figure>
 <script type="text/x-code" data-lang="ts">
 function formatId(id: string | number) {
   if (typeof id === 'string') return id.toUpperCase();   // id: string
@@ -1660,6 +1671,7 @@ const n = getConfig('retries');           // number
 
 <article class="card">
 <h3>Utility types</h3>
+<figure class="vz" data-viz="j-utility"><figcaption>Utility type biến đổi các field của User thế nào</figcaption></figure>
 <div class="tw"><table>
 <thead><tr><th>Utility</th><th>Tác dụng</th><th>Dùng khi</th></tr></thead>
 <tbody>
@@ -2186,6 +2198,7 @@ export const sleep = (ms: number, signal?: AbortSignal): Promise<void> =>
 <article class="card">
 <h3>Debounce &amp; throttle</h3>
 <p>Debounce: chỉ chạy khi ngừng gọi một khoảng (ô tìm kiếm). Throttle: chạy tối đa một lần mỗi khoảng (scroll, resize, kéo thả).</p>
+<figure class="vz" data-viz="j-debounce"><figcaption>Tự tạo sự kiện và xem debounce, throttle bắn khi nào</figcaption></figure>
 <script type="text/x-code" data-lang="ts">
 export function debounce<A extends unknown[]>(fn: (...args: A) => void, ms: number) {
   let timer: ReturnType<typeof setTimeout> | undefined;

@@ -6,6 +6,8 @@
 <title>HTML cho dev Flutter &amp; Compose</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <script src="../assets/site.js" data-page="html"></script>
+<script src="../assets/viz.js" defer></script>
+<script src="../assets/viz-html.js" defer></script>
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <meta name="description" content="Cheatsheet HTML tra cứu hằng ngày, đối chiếu từng thẻ với Flutter và Jetpack Compose.">
 <meta name="color-scheme" content="light dark">
@@ -351,6 +353,7 @@ dialog::backdrop{background:rgb(8 10 14 / .55)}
   <div class="entry">
     <h3>Ba lớp: HTML lo ý nghĩa, CSS lo giao diện, JS lo hành vi</h3>
     <p>Trong Flutter, một widget gộp cả cấu trúc, style và callback. Trên web, HTML chỉ nói <em>đây là cái gì</em> (một nút, một tiêu đề, một danh sách), CSS nói <em>trông thế nào</em>, JS nói <em>làm gì khi tương tác</em>.</p>
+<figure class="vz" data-viz="h-layers"><figcaption>Cùng một nút “Thích”, bật từng lớp HTML → CSS → JS</figcaption></figure>
 <div class="code"><div class="code-head"><span>Flutter: một widget làm cả ba việc</span></div><pre><code class="language-dart">ElevatedButton(
   style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange), // style
   onPressed: save,                                                     // hành vi
@@ -410,6 +413,7 @@ dialog::backdrop{background:rgb(8 10 14 / .55)}
   <div class="entry">
     <h3>Block và inline</h3>
     <p>Mỗi thẻ có kiểu hiển thị mặc định. Block (<code>div</code>, <code>p</code>, <code>h1</code>–<code>h6</code>, <code>ul</code>, <code>section</code>…) chiếm hết chiều ngang và tự xuống dòng. Inline (<code>span</code>, <code>a</code>, <code>strong</code>, <code>code</code>, <code>img</code>…) chảy theo dòng chữ.</p>
+<figure class="vz" data-viz="h-block-inline"><figcaption>Block xếp dọc, inline chảy theo dòng chữ</figcaption></figure>
 <div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;p&gt;Inline nằm &lt;strong&gt;trong dòng&lt;/strong&gt; và &lt;a href="#"&gt;không xuống hàng&lt;/a&gt;.&lt;/p&gt;
 &lt;div&gt;Block 1: chiếm cả hàng&lt;/div&gt;
 &lt;div&gt;Block 2: tự xuống dòng&lt;/div&gt;
@@ -613,6 +617,7 @@ dialog::backdrop{background:rgb(8 10 14 / .55)}
   &lt;footer&gt;© 2026 MyApp&lt;/footer&gt;
 &lt;/body&gt;</code></pre></div>
     <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>Scaffold(appBar, drawer, body, bottomNavigationBar)</code> chia màn hình theo vị trí. Landmark HTML chia theo vai trò: <code>&lt;nav&gt;</code> có thể nằm trên cùng, bên trái hay dưới đáy; vị trí do CSS quyết định.</span></p>
+<figure class="vz" data-viz="h-landmarks"><figcaption>Khung trang và role ngầm định của từng landmark</figcaption></figure>
     <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Có nhiều <code>&lt;nav&gt;</code> hoặc <code>&lt;aside&gt;</code> thì đặt <code>aria-label</code> khác nhau ("Chính", "Mục lục") để screen reader phân biệt. Đừng ghi chữ "navigation" vào label vì role đã được đọc sẵn.</span></p>
   </div>
 
@@ -640,6 +645,7 @@ dialog::backdrop{background:rgb(8 10 14 / .55)}
   <div class="entry">
     <h3>Heading hierarchy (h1–h6)</h3>
     <p>Heading tạo dàn ý của trang, giống mục lục. Một <code>h1</code> cho nội dung chính, đi xuống từng cấp, không nhảy cấp. Cỡ chữ là việc của CSS.</p>
+<figure class="vz" data-viz="h-headings"><figcaption>Cây heading đúng và sai</figcaption></figure>
 <div class="code"><div class="code-head"><span>HTML</span></div><pre><code class="language-markup">&lt;h1&gt;Cài đặt&lt;/h1&gt;
   &lt;h2&gt;Tài khoản&lt;/h2&gt;
   &lt;h2&gt;Thông báo&lt;/h2&gt;
@@ -870,6 +876,7 @@ dialog::backdrop{background:rgb(8 10 14 / .55)}
   &lt;img src="hero.jpg" alt="…" width="1600" height="900"&gt;  &lt;!-- bắt buộc có img; alt đặt ở đây --&gt;
 &lt;/picture&gt;</code></pre></div>
     <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span>Giống thư mục <code>2.0x/</code>, <code>3.0x/</code> của asset Flutter hay <code>drawable-xxhdpi</code> của Android: trình duyệt chọn file phù hợp màn hình. Khác biệt: descriptor <code>w</code> cùng <code>sizes</code> chọn theo <em>bề rộng hiển thị</em>, không chỉ theo mật độ điểm ảnh.</span></p>
+<figure class="vz" data-viz="h-srcset"><figcaption>Trình duyệt chọn file nào trong srcset</figcaption></figure>
     <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Có <code>srcset</code> dạng <code>w</code> mà thiếu <code>sizes</code>, trình duyệt giả định ảnh rộng 100vw và thường tải file to hơn cần.</span></p>
   </div>
 
@@ -1639,6 +1646,7 @@ form.addEventListener('submit', async (e) =&gt; {
   &lt;main id="main" tabindex="-1"&gt;…&lt;/main&gt;
 &lt;/body&gt;</code></pre></div>
     <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>el.focus()</code> ≈ <code>focusNode.requestFocus()</code> / <code>focusRequester.requestFocus()</code>. Flutter có <code>FocusTraversalGroup</code> + <code>OrderedTraversalPolicy</code> để đổi thứ tự; web không có policy, thứ tự Tab chính là thứ tự DOM.</span></p>
+<figure class="vz" data-viz="h-focus"><figcaption>Bấm Tab để xem focus đi đâu</figcaption></figure>
     <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span>Trang này có skip link: tải lại trang và nhấn Tab một lần để thấy. <code>display: none</code> và <code>hidden</code> ẩn với cả screen reader; <code>.visually-hidden</code> chỉ ẩn với mắt.</span></p>
   </div>
 
@@ -1797,6 +1805,7 @@ button.addEventListener('click', async () =&gt; {
   openEditor();
 });</code></pre></div>
     <p class="note wa"><span class="tag"><span aria-hidden="true">⚠️</span> Lưu ý</span><span>Script thường (không <code>defer</code>) trong <code>head</code> mà truy cập DOM sẽ nhận <code>null</code>, vì <code>body</code> chưa được parse. Cách cũ là đặt script cuối <code>body</code>; cách nên dùng là để trong <code>head</code> kèm <code>defer</code>.</span></p>
+<figure class="vz" data-viz="h-scripts"><figcaption>Script chặn parse HTML thế nào</figcaption></figure>
   </div>
 
   <div class="entry">
@@ -1924,6 +1933,7 @@ button.addEventListener('click', async () =&gt; {
   Pro
 &lt;/user-badge&gt;</code></pre></div>
     <p class="note fl"><span class="tag"><span aria-hidden="true">📱</span> Flutter / Compose</span><span><code>slot</code> ≈ tham số <code>child</code>/<code>children</code> của widget, hay đúng tên gọi trong Compose: <em>slot API</em> (<code>content: @Composable () -&gt; Unit</code>, <code>title = { … }</code>). Custom element ≈ widget/composable tái sử dụng, nhưng không có cơ chế state và rebuild sẵn.</span></p>
+<figure class="vz" data-viz="h-shadow"><figcaption>Light DOM được chiếu vào slot của Shadow DOM</figcaption></figure>
     <p class="note ax"><span class="tag"><span aria-hidden="true">♿</span> A11y</span><span><code>aria-labelledby</code> và <code>label for</code> không trỏ xuyên qua ranh giới shadow DOM. Cẩn thận khi bọc input trong custom element.</span></p>
   </div>
 </section>

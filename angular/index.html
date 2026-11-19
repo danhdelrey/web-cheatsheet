@@ -6,6 +6,8 @@
 <title>Angular Cheatsheet</title>
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <script src="../assets/site.js" data-page="angular"></script>
+<script src="../assets/viz.js" defer></script>
+<script src="../assets/viz-angular.js" defer></script>
 <style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <meta name="description" content="Tra cú pháp nhanh khi code hằng ngày. Mặc định viết theo kiểu hiện đại: standalone component, signals, built-in control flow và functional API. Cú pháp cũ vẫn gặp nhiều trong code base được ghi chú kèm cách viết mới.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -484,6 +486,7 @@ td code { font-size: 12.5px; }
 
           <article class="card wide">
             <h3>Lifecycle hooks: dùng khi nào</h3>
+<figure class="vz" data-viz="a-lifecycle"><figcaption>Bấm từng sự kiện để xem hook nào chạy, theo thứ tự nào</figcaption></figure>
             <div class="table-wrap"><table>
               <thead><tr><th>Hook</th><th>Chạy khi</th><th>Dùng để</th></tr></thead>
               <tbody>
@@ -680,8 +683,9 @@ td code { font-size: 12.5px; }
         <div class="section-head"><span class="idx">04</span><h2>Giao tiếp giữa các component</h2></div>
         <p class="section-intro">Cha → con qua input, con → cha qua output, truyền nội dung qua <code>ng-content</code>, và truy cập con qua query.</p>
         <div class="grid">
-          <article class="card">
+          <article class="card wide">
             <h3><code>input()</code> / <code>output()</code> <span class="tag new">mới</span></h3>
+<figure class="vz" data-viz="a-io"><figcaption>Dữ liệu xuống qua input, sự kiện lên qua output</figcaption></figure>
             <script type="text/x-code" data-lang="ts" data-file="product-item.ts">
               import { Component, input, output, booleanAttribute } from '@angular/core';
 
@@ -736,9 +740,10 @@ td code { font-size: 12.5px; }
             </table></div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>Content projection với <code>ng-content</code></h3>
             <p>Cho phép component cha "nhét" nội dung vào trong component con. Multi-slot dùng <code>select</code> (CSS selector).</p>
+<figure class="vz" data-viz="a-projection"><figcaption>Nội dung của cha được chiếu vào đúng ng-content</figcaption></figure>
             <script type="text/x-code" data-lang="ts" data-file="card.ts">
               @Component({
                 selector: 'app-card',
@@ -1021,8 +1026,9 @@ td code { font-size: 12.5px; }
         <div class="section-head"><span class="idx">07</span><h2>Signals</h2></div>
         <p class="section-intro">Signal là giá trị reactive: đọc bằng cách gọi <code>count()</code>, Angular tự biết template/computed nào phụ thuộc vào nó để cập nhật đúng chỗ.</p>
         <div class="grid">
-          <article class="card">
+          <article class="card wide">
             <h3><code>signal</code>, <code>computed</code></h3>
+<figure class="vz" data-viz="a-signals"><figcaption>Đồ thị phụ thuộc: đổi một signal, ai chạy lại?</figcaption></figure>
             <script type="text/x-code" data-lang="ts">
               import { signal, computed } from '@angular/core';
 
@@ -1163,9 +1169,10 @@ td code { font-size: 12.5px; }
             <div class="note"><strong>⚠️ Lưu ý:</strong> <code>inject()</code> chỉ gọi được trong injection context: field initializer, constructor, factory, hoặc trong <code>runInInjectionContext()</code>. Gọi trong <code>ngOnInit</code> hay callback sẽ lỗi NG0203.</div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>Hierarchical injector</h3>
             <p>Khi <code>inject(X)</code>, Angular tìm từ dưới lên: element injector của chính nó → các element cha → environment injector → root. Gặp provider đầu tiên thì dừng.</p>
+<figure class="vz" data-viz="a-injector"><figcaption>inject() đi tìm provider từ dưới lên</figcaption></figure>
             <div class="stack">
               <div class="el"><b>Element injector</b><span><code>providers</code> trong <code>@Component</code>/<code>@Directive</code> của chính nó</span></div>
               <div class="arrow">↓ không thấy thì đi lên</div>
@@ -1258,6 +1265,7 @@ td code { font-size: 12.5px; }
         <div class="grid">
           <article class="card wide">
             <h3>Eager (Default) và OnPush</h3>
+<figure class="vz" data-viz="a-cd"><figcaption>Component nào được kiểm tra trong một lượt change detection</figcaption></figure>
             <div class="table-wrap"><table>
               <thead><tr><th></th><th><code>Eager</code> (trước v22 tên là <code>Default</code>)</th><th><code>OnPush</code> (mặc định từ v22)</th></tr></thead>
               <tbody>
@@ -1419,6 +1427,7 @@ td code { font-size: 12.5px; }
           <article class="card wide">
             <h3>Subject, BehaviorSubject, ReplaySubject</h3>
             <p>Subject vừa là Observable vừa phát được giá trị (<code>next</code>), dùng để multicast cho nhiều subscriber.</p>
+<figure class="vz" data-viz="a-subjects"><figcaption>Subscriber đến muộn nhận được gì</figcaption></figure>
             <div class="table-wrap"><table>
               <thead><tr><th>Loại</th><th>Giá trị ban đầu</th><th>Subscriber mới nhận được</th><th>Dùng cho</th></tr></thead>
               <tbody>
@@ -1462,8 +1471,9 @@ td code { font-size: 12.5px; }
             </table></div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>So sánh 4 map operators</h3>
+<figure class="vz" data-viz="a-maps"><figcaption>Marble diagram: mergeMap, concatMap, switchMap, exhaustMap</figcaption></figure>
             <div class="table-wrap"><table>
               <thead><tr><th>Operator</th><th>Khi có giá trị mới mà request cũ chưa xong</th><th>Dùng cho</th></tr></thead>
               <tbody>
@@ -1476,8 +1486,9 @@ td code { font-size: 12.5px; }
             <div class="note"><strong>⚠️ Lưu ý:</strong> Không dùng <code>switchMap</code> cho POST/PUT/DELETE: request bị hủy phía client có thể đã chạy xong phía server. Dùng <code>concatMap</code> hoặc <code>exhaustMap</code>.</div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>Ví dụ kết hợp: ô tìm kiếm</h3>
+<figure class="vz" data-viz="a-search"><figcaption>Gõ thật và xem từng operator lọc sự kiện</figcaption></figure>
             <script type="text/x-code" data-lang="ts">
               export class UserSearch {
                 private api = inject(UserApi);
@@ -1664,6 +1675,7 @@ td code { font-size: 12.5px; }
           <article class="card wide">
             <h3>Functional interceptor</h3>
             <p>Hàm chặn mọi request/response. Request đi qua theo thứ tự trong mảng, response đi ngược lại.</p>
+<figure class="vz" data-viz="a-interceptor"><figcaption>Request đi xuống chuỗi interceptor, response đi ngược lên</figcaption></figure>
             <script type="text/x-code" data-lang="ts" data-file="interceptors.ts">
               import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 
@@ -1750,7 +1762,7 @@ td code { font-size: 12.5px; }
             <div class="note"><strong>⚠️ Lưu ý:</strong> Trong <code>&lt;form&gt;</code>, mỗi <code>ngModel</code> phải có <code>name</code>, nếu không sẽ báo lỗi.</div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>Trạng thái form &amp; control</h3>
             <div class="table-wrap"><table>
               <thead><tr><th>Thuộc tính</th><th>Ý nghĩa</th><th>CSS class</th></tr></thead>
@@ -1764,6 +1776,7 @@ td code { font-size: 12.5px; }
               </tbody>
             </table></div>
             <p>Hiện lỗi khi <code>invalid &amp;&amp; (touched || submitted)</code> để không báo đỏ ngay lúc form vừa mở.</p>
+<figure class="vz" data-viz="a-formstate"><figcaption>Gõ, rời ô, nhập sai để xem trạng thái control thay đổi</figcaption></figure>
           </article>
 
           <article class="card wide">
@@ -2057,8 +2070,9 @@ td code { font-size: 12.5px; }
             <div class="note"><strong>⚠️ Lưu ý:</strong> Trả về <code>UrlTree</code> thay vì gọi <code>router.navigate()</code> trong guard để tránh điều hướng chồng chéo. Guard chỉ để cải thiện UX, phân quyền thật phải kiểm tra ở backend.</div>
           </article>
 
-          <article class="card">
+          <article class="card wide">
             <h3>Các loại guard &amp; resolver</h3>
+<figure class="vz" data-viz="a-guards"><figcaption>Một lần điều hướng đi qua những guard nào</figcaption></figure>
             <div class="table-wrap"><table>
               <thead><tr><th>Loại</th><th>Chạy khi</th></tr></thead>
               <tbody>
@@ -2108,7 +2122,7 @@ td code { font-size: 12.5px; }
         <div class="section-head"><span class="idx">14</span><h2>Deferrable views</h2></div>
         <p class="section-intro"><code>@defer</code> tách phần template (cùng component, directive, pipe bên trong) thành chunk riêng và chỉ tải khi trigger xảy ra. Giảm bundle ban đầu mà không cần sửa routing.</p>
         <div class="grid">
-          <article class="card">
+          <article class="card wide">
             <h3>Cấu trúc đầy đủ</h3>
             <script type="text/x-code" data-lang="html">
               @defer (on viewport; prefetch on idle) {
@@ -2121,6 +2135,7 @@ td code { font-size: 12.5px; }
                 <p>Không tải được biểu đồ</p>
               }
             </script>
+<figure class="vz" data-viz="a-defer"><figcaption>@defer chuyển qua placeholder → loading → nội dung theo thời gian</figcaption></figure>
             <ul>
               <li><code>@placeholder (minimum 300ms)</code>: placeholder hiện ít nhất 300ms, tránh nháy.</li>
               <li><code>@loading (after 100ms; minimum 500ms)</code>: chỉ hiện spinner nếu tải lâu hơn 100ms, và khi đã hiện thì giữ ít nhất 500ms.</li>
