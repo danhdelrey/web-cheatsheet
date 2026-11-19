@@ -177,12 +177,12 @@ kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4p
 .card > p, .card li { margin: 0; font-size: 14.5px; }
 .card p + p { margin-top: -4px; }
 .card ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
-.tag {
+.tag:not(.token) {   /* :not(.token): tránh đụng class "tag" của Prism trong code HTML */
   font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; border-radius: 5px; padding: 2px 6px; line-height: 1.4;
   background: var(--surface-2); color: var(--muted);
 }
-.tag.new { background: var(--new-soft); color: var(--new); }
-.tag.old { background: var(--surface-2); color: var(--muted); text-decoration: none; }
+.tag.new:not(.token) { background: var(--new-soft); color: var(--new); }
+.tag.old:not(.token) { background: var(--surface-2); color: var(--muted); text-decoration: none; }
 .note {
   border: 1px solid var(--warn-line); background: var(--warn-soft); border-radius: 9px; padding: 10px 12px; font-size: 14px; color: var(--fg);
 }
@@ -288,8 +288,9 @@ td code { font-size: 12.5px; }
       <li><a href="#forms"><span class="num">12</span>Forms</a></li>
       <li><a href="#routing"><span class="num">13</span>Routing</a></li>
       <li><a href="#defer"><span class="num">14</span>Deferrable views</a></li>
-      <li><a href="#testing"><span class="num">15</span>Testing</a></li>
-      <li><a href="#migrate"><span class="num">16</span>Cũ → Mới</a></li>
+      <li><a href="#production"><span class="num">15</span>SSR, hiệu năng, bảo mật</a></li>
+      <li><a href="#testing"><span class="num">16</span>Testing</a></li>
+      <li><a href="#migrate"><span class="num">17</span>Cũ → Mới</a></li>
     </ul>
     <div class="sidebar-foot">Nhấn <kbd>/</kbd> để tìm, <kbd>Esc</kbd> để xóa từ khóa.</div>
   </aside>
@@ -674,6 +675,50 @@ td code { font-size: 12.5px; }
               <p>{{ user?.name }} có {{ total }} sản phẩm</p>
             </script>
             <div class="note"><strong>⚠️ Lưu ý:</strong> <code>track</code> là bắt buộc. Dùng id ổn định (<code>track item.id</code>); chỉ dùng <code>track $index</code> khi danh sách tĩnh. Track sai làm DOM bị tạo lại toàn bộ, mất focus và trạng thái input.</div>
+          </article>
+                  <article class="card wide">
+            <h3>Animation: <code>animate.enter</code> / <code>animate.leave</code> <span class="tag new">v20.2+</span></h3>
+            <p>Gắn class CSS lúc phần tử được thêm vào hoặc gỡ khỏi DOM (bởi <code>@if</code>, <code>@for</code>, <code>@switch</code>). Animation viết bằng CSS thuần, không cần package <code>@angular/animations</code>.</p>
+            <script type="text/x-code" data-lang="ts" data-file="toast.ts">
+              @Component({
+                selector: 'app-toast',
+                template: `
+                  @if (open()) {
+                    <div class="toast" animate.enter="slide-in" animate.leave="fade-out">
+                      Đã lưu thay đổi
+                    </div>
+                  }
+                  <button (click)="open.set(!open())">Toggle</button>
+                `,
+                styles: `
+                  .slide-in { animation: slide-in 200ms ease-out; }
+                  .fade-out { animation: slide-in 150ms ease-in reverse; }   /* chạy ngược để biến mất */
+                  @keyframes slide-in { from { opacity: 0; translate: 0 8px; } }
+                `,
+              })
+              export class Toast {
+                open = signal(false);
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              <!-- Class động từ signal; nhận chuỗi nhiều class cách nhau bằng dấu cách hoặc mảng -->
+              <li [animate.enter]="enterClass()" animate.leave="collapse">…</li>
+
+              <!-- Dùng thư viện JS (GSAP…) khi rời DOM: PHẢI gọi animationComplete() -->
+              <div (animate.leave)="onLeave($event)">…</div>
+            </script>
+            <script type="text/x-code" data-lang="ts">
+              onLeave(event: AnimationCallbackEvent) {
+                gsap.to(event.target, { opacity: 0, duration: 0.3, onComplete: () => event.animationComplete() });
+              }
+            </script>
+            <ul>
+              <li><b>enter</b>: class bị gỡ khi animation chạy xong. Dùng CSS <code>transition</code> thay vì keyframes thì cần <code>@starting-style</code> để khai báo trạng thái bắt đầu.</li>
+              <li><b>leave</b>: Angular đợi animation dài nhất chạy xong rồi mới gỡ phần tử khỏi DOM. Quên gọi <code>animationComplete()</code> thì sau 4 giây Angular tự gỡ (đổi bằng token <code>MAX_ANIMATION_TIMEOUT</code>).</li>
+              <li>Phần tử con có <code>animate.leave</code> trong cùng template được chạy trước khi cha bị gỡ; component con thì không, nên đặt <code>animate.leave</code> trên thẻ host của con ở template cha.</li>
+              <li>TestBed tắt animation mặc định; bật lại bằng <code>TestBed.configureTestingModule({ animationsEnabled: true })</code>.</li>
+            </ul>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> <code>@angular/animations</code> (<code>trigger</code>, <code>state</code>, <code>transition</code>, <code>provideAnimations</code>) bị deprecated từ v20.2, dự kiến gỡ ở v23. Không trộn kiểu cũ và <code>animate.enter/leave</code> trong <b>cùng một component</b>: class enter có thể bị kẹt hoặc phần tử không được gỡ.</div>
           </article>
         </div>
       </section>
@@ -1134,6 +1179,59 @@ td code { font-size: 12.5px; }
               </tbody>
             </table></div>
             <p>Quy tắc ngắn: <b>state → signal, event/stream → RxJS</b>, nối hai bên bằng <code>toSignal</code>/<code>toObservable</code> (mục 10).</p>
+          </article>
+                  <article class="card wide">
+            <h3>NgRx Signal Store: state dùng chung</h3>
+            <p>Khi vài <code>signal</code> trong một service bắt đầu rối (nhiều chỗ sửa, loading/error, computed chồng chéo), Signal Store gom state, computed và method vào một chỗ có cấu trúc. Cài bằng <code>npm i @ngrx/signals</code>.</p>
+            <script type="text/x-code" data-lang="ts" data-file="cart.store.ts">
+              import { computed, inject } from '@angular/core';
+              import { signalStore, withState, withComputed, withMethods, withHooks, patchState } from '@ngrx/signals';
+
+              type CartState = { items: CartItem[]; loading: boolean };
+
+              export const CartStore = signalStore(
+                { providedIn: 'root' },                       // bỏ dòng này nếu muốn mỗi component một instance
+                withState<CartState>({ items: [], loading: false }),
+                withComputed(({ items }) => ({
+                  count: computed(() => items().length),
+                  total: computed(() => items().reduce((sum, i) => sum + i.price * i.qty, 0)),
+                })),
+                withMethods((store, api = inject(CartApi)) => ({
+                  add(item: CartItem) {
+                    patchState(store, (s) => ({ items: [...s.items, item] }));   // bất biến, như setState
+                  },
+                  async load() {
+                    patchState(store, { loading: true });
+                    const items = await api.getCart();
+                    patchState(store, { items, loading: false });
+                  },
+                })),
+                withHooks({
+                  onInit(store) { store.load(); },
+                }),
+              );
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="cart-badge.ts">
+              @Component({
+                selector: 'app-cart-badge',
+                template: `{{ store.count() }} món · {{ store.total() | currency: 'VND' }}`,
+                // providers: [CartStore]   ← nếu store không providedIn: 'root'
+              })
+              export class CartBadge {
+                readonly store = inject(CartStore);   // mỗi field state là một signal: store.items(), store.loading()
+              }
+            </script>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Phần</th><th>Vai trò</th><th>Tương đương Flutter</th></tr></thead>
+              <tbody>
+                <tr><td><code>withState</code></td><td>State gốc; mỗi field thành một signal chỉ đọc</td><td>State của Cubit/BLoC</td></tr>
+                <tr><td><code>withComputed</code></td><td>Giá trị suy ra, có cache</td><td>getter trên state</td></tr>
+                <tr><td><code>withMethods</code> + <code>patchState</code></td><td>Cách duy nhất để sửa state (từ v18 state được bảo vệ, bên ngoài không gọi <code>patchState</code> được)</td><td><code>emit(state.copyWith(…))</code></td></tr>
+                <tr><td><code>withHooks</code></td><td><code>onInit</code> / <code>onDestroy</code> của store</td><td>constructor / <code>close()</code></td></tr>
+                <tr><td><code>rxMethod</code> (<code>@ngrx/signals/rxjs-interop</code>)</td><td>Method nhận Observable/signal, dùng operator RxJS (debounce, switchMap)</td><td><code>transformer</code> của event</td></tr>
+              </tbody>
+            </table></div>
+            <div class="tip">Không bắt buộc dùng store. App nhỏ: service + <code>signal</code> + <code>computed</code> là đủ (xem mục Signals ở trên). Chọn Signal Store khi nhiều màn hình cùng đọc/ghi một nguồn state, hoặc cần quy ước chung cho cả team.</div>
           </article>
         </div>
       </section>
@@ -1940,6 +2038,62 @@ td code { font-size: 12.5px; }
             </script>
             <div class="note"><strong>⚠️ Lưu ý:</strong> API Signal Forms đổi tên nhiều lần trong giai đoạn experimental (v21: <code>[field]</code> → <code>[formField]</code>). Bài viết hoặc ví dụ cũ có thể dùng tên cũ, đối chiếu với <a href="https://angular.dev/essentials/signal-forms" target="_blank" rel="noopener">angular.dev</a>. Field đọc bằng cách gọi: <code>loginForm.email().value()</code>, <code>.valid()</code>, <code>.errors()</code>.</div>
           </article>
+                  <article class="card wide">
+            <h3><code>ControlValueAccessor</code>: tự viết form control</h3>
+            <p>Muốn component của mình dùng được với <code>formControlName</code>, <code>[formControl]</code> hay <code>[(ngModel)]</code> như một <code>&lt;input&gt;</code> (rating, chọn màu, ô số tiền…) thì implement <code>ControlValueAccessor</code>. Bốn method là "cầu nối" hai chiều giữa form và UI.</p>
+            <script type="text/x-code" data-lang="ts" data-file="rating.ts">
+              import { Component, forwardRef, signal } from '@angular/core';
+              import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+              @Component({
+                selector: 'app-rating',
+                template: `
+                  @for (star of stars; track star) {
+                    <button type="button" [class.on]="star <= value()" [disabled]="disabled()"
+                            (click)="pick(star)" (blur)="onTouched()">★</button>
+                  }
+                `,
+                providers: [
+                  { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Rating), multi: true },
+                ],
+              })
+              export class Rating implements ControlValueAccessor {
+                stars = [1, 2, 3, 4, 5];
+                value = signal(0);
+                disabled = signal(false);
+
+                private onChange: (v: number) => void = () => {};
+                onTouched: () => void = () => {};
+
+                writeValue(v: number | null) { this.value.set(v ?? 0); }            // form → UI (setValue, reset)
+                registerOnChange(fn: (v: number) => void) { this.onChange = fn; }    // UI → form
+                registerOnTouched(fn: () => void) { this.onTouched = fn; }           // để form biết "touched"
+                setDisabledState(d: boolean) { this.disabled.set(d); }               // control.disable()
+
+                pick(v: number) {
+                  this.value.set(v);
+                  this.onChange(v);     // báo form giá trị mới → dirty, chạy validator
+                  this.onTouched();
+                }
+              }
+            </script>
+            <script type="text/x-code" data-lang="html">
+              <form [formGroup]="review">
+                <app-rating formControlName="stars" />
+              </form>
+              <app-rating [(ngModel)]="score" />
+            </script>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Method</th><th>Ai gọi</th><th>Khi nào</th></tr></thead>
+              <tbody>
+                <tr><td><code>writeValue</code></td><td>Form</td><td>Khởi tạo, <code>setValue</code>, <code>patchValue</code>, <code>reset</code>. Không gọi <code>onChange</code> ở đây.</td></tr>
+                <tr><td><code>registerOnChange</code></td><td>Form (một lần)</td><td>Đưa hàm để component gọi mỗi khi người dùng đổi giá trị</td></tr>
+                <tr><td><code>registerOnTouched</code></td><td>Form (một lần)</td><td>Đưa hàm để gọi khi blur</td></tr>
+                <tr><td><code>setDisabledState</code></td><td>Form</td><td><code>control.disable()</code> / <code>enable()</code></td></tr>
+              </tbody>
+            </table></div>
+            <div class="tip">Signal Forms dùng cơ chế đơn giản hơn: implement <code>FormValueControl&lt;T&gt;</code> với <code>value = model&lt;T&gt;()</code> (và output <code>touch</code> phát lúc blur), rồi gắn bằng <code>[formField]</code>. Theo angular.dev, control kiểu này cũng dùng được với Reactive và Template-driven forms.</div>
+          </article>
         </div>
       </section>
 
@@ -2189,9 +2343,178 @@ td code { font-size: 12.5px; }
         </div>
       </section>
 
-      <!-- ============ 15 TESTING ============ -->
+            <!-- ============ 15 PRODUCTION ============ -->
+      <section class="section" id="production">
+        <div class="section-head"><span class="idx">15</span><h2>SSR, hiệu năng &amp; bảo mật</h2></div>
+        <p class="section-intro">Những thứ cần trước khi đưa app lên production: render ở server cho SEO và tốc độ hiển thị, tối ưu ảnh, chống XSS/XSRF, và bắt lỗi toàn cục.</p>
+        <div class="grid">
+          <article class="card wide">
+            <h3>SSR, SSG &amp; hydration</h3>
+            <p>Server render sẵn HTML (người dùng thấy nội dung ngay, bot đọc được), sau đó <b>hydration</b> gắn Angular vào DOM có sẵn thay vì vẽ lại. Mỗi route chọn một chế độ: render lúc request, render sẵn lúc build, hoặc chỉ render ở client.</p>
+            <figure class="vz" data-viz="a-ssr"><figcaption>CSR, SSR + hydration và incremental hydration theo thời gian</figcaption></figure>
+            <script type="text/x-code" data-lang="bash">
+              ng new my-app --ssr        # project mới
+              ng add @angular/ssr        # thêm vào project có sẵn
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="app.routes.server.ts">
+              import { RenderMode, ServerRoute } from '@angular/ssr';
+
+              export const serverRoutes: ServerRoute[] = [
+                { path: '', renderMode: RenderMode.Prerender },              // SSG: HTML tạo lúc build
+                { path: 'products/:id', renderMode: RenderMode.Prerender,
+                  async getPrerenderParams() {                                 // liệt kê các id cần build sẵn
+                    const ids = await inject(ProductApi).topIds();             // inject phải gọi trước mọi await
+                    return ids.map((id) => ({ id }));
+                  } },
+                { path: 'account/**', renderMode: RenderMode.Client },       // CSR: trang sau đăng nhập
+                { path: '**', renderMode: RenderMode.Server },               // SSR mỗi request
+              ];
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.server.ts">
+              import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
+              import { provideServerRendering, withRoutes } from '@angular/ssr';
+
+              const serverConfig: ApplicationConfig = {
+                providers: [provideServerRendering(withRoutes(serverRoutes))],
+              };
+              export const config = mergeApplicationConfig(appConfig, serverConfig);
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              provideClientHydration(
+                withEventReplay(),            // click/gõ phím trước khi hydrate xong được ghi lại rồi chạy lại
+                // withIncrementalHydration(), // hydrate từng khối @defer (hydrate on …); đã gồm event replay
+              ),
+            </script>
+            <div class="table-wrap"><table>
+              <thead><tr><th>RenderMode</th><th>HTML tạo lúc</th><th>Dùng cho</th></tr></thead>
+              <tbody>
+                <tr><td><code>Prerender</code> (SSG)</td><td>Build</td><td>Trang giới thiệu, blog, docs: nhanh nhất, host tĩnh được</td></tr>
+                <tr><td><code>Server</code> (SSR)</td><td>Mỗi request</td><td>Nội dung đổi liên tục hoặc theo người dùng, cần SEO</td></tr>
+                <tr><td><code>Client</code> (CSR)</td><td>Trên trình duyệt</td><td>Dashboard sau đăng nhập, không cần SEO (mặc định)</td></tr>
+              </tbody>
+            </table></div>
+            <div class="tip">Incremental hydration: <code>@defer (hydrate on viewport) { &lt;app-comments /&gt; }</code> vẫn render HTML ở server, nhưng chỉ tải JS và hydrate khối đó khi người dùng cuộn tới. Xem thêm mục Deferrable views.</div>
+          </article>
+
+          <article class="card">
+            <h3>Viết code chạy được cả ở server</h3>
+            <p>Cùng một component chạy hai lần: trên Node (không có <code>window</code>, <code>document</code>, <code>localStorage</code>) rồi trên trình duyệt.</p>
+            <script type="text/x-code" data-lang="ts">
+              export class Chart {
+                private doc = inject(DOCUMENT);           // thay cho biến global document
+                private el = inject(ElementRef);
+
+                constructor() {
+                  // Chỉ chạy ở trình duyệt, sau khi DOM đã vẽ: đo kích thước, thư viện DOM, localStorage
+                  afterNextRender(() => {
+                    this.chart = new ChartLib(this.el.nativeElement);
+                  });
+                }
+              }
+
+              // HttpClient: response GET/HEAD ở server được nhúng vào HTML, client dùng lại, không gọi API 2 lần
+              this.http.get('/api/me', { transferCache: false });   // tắt cho dữ liệu nhạy cảm
+            </script>
+            <ul>
+              <li>Tránh <code>@if (isBrowser)</code> hiển thị nội dung khác nhau ở server và client: HTML lệch nhau gây lỗi hydration và layout shift.</li>
+              <li>Request có header <code>Authorization</code>/<code>Cookie</code> mặc định không được cache sang client.</li>
+              <li>Provider <code>useValue</code> ở cấp app bị dùng chung giữa các request trên server; dữ liệu theo request thì dùng <code>useFactory</code>.</li>
+              <li>Component không hydrate được (thư viện tự sửa DOM): thêm <code>ngSkipHydration</code> trên thẻ host.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3><code>NgOptimizedImage</code>: ảnh nhanh, không layout shift</h3>
+            <p>Thay <code>src</code> bằng <code>ngSrc</code>. Directive tự thêm <code>loading="lazy"</code>, sinh <code>srcset</code>, ưu tiên ảnh quan trọng và cảnh báo lúc dev nếu dùng sai.</p>
+            <script type="text/x-code" data-lang="html">
+              <!-- imports: [NgOptimizedImage] từ @angular/common -->
+
+              <!-- Ảnh LCP (ảnh lớn đầu trang): tải sớm, fetchpriority=high, preload khi SSR -->
+              <img ngSrc="hero.jpg" width="1200" height="600" priority alt="Bộ sưu tập mùa thu" />
+
+              <!-- Ảnh thường: lazy mặc định. width/height bắt buộc (chống layout shift) -->
+              <img ngSrc="avatar.jpg" width="48" height="48" alt="Ảnh đại diện" />
+
+              <!-- Responsive: thêm sizes để sinh srcset theo bề rộng -->
+              <img ngSrc="photo.jpg" width="800" height="533" sizes="(max-width: 768px) 100vw, 50vw" alt="…" />
+
+              <!-- Phủ kín khung cha (cha phải position: relative/absolute/fixed) -->
+              <div class="banner"><img ngSrc="bg.jpg" fill alt="" /></div>
+            </script>
+            <script type="text/x-code" data-lang="ts">
+              // CDN ảnh: loader tự thêm domain và tham số resize vào URL
+              providers: [provideImgixLoader('https://my-shop.imgix.net/')]
+              // Có sẵn: Cloudflare, Cloudinary, ImageKit, Imgix, Netlify; hoặc tự viết qua IMAGE_LOADER
+              // Có loader mới dùng được placeholder: <img ngSrc="…" width="…" height="…" placeholder />
+            </script>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> Ảnh cố định kích thước thì width/height là kích thước hiển thị; ảnh responsive hoặc <code>fill</code> thì là kích thước gốc của file (để giữ tỉ lệ). Có loader thì <code>ngSrc</code> chỉ ghi đường dẫn, không ghi domain.</div>
+          </article>
+
+          <article class="card wide">
+            <h3>Bảo mật: XSS, sanitization, XSRF, CSP</h3>
+            <p>Angular coi mọi giá trị là không tin cậy. Interpolation <code>{{ }}</code> luôn escape; binding vào <code>innerHTML</code>, <code>href</code>, <code>src</code>, <code>style</code> được <b>sanitize</b> tự động.</p>
+            <script type="text/x-code" data-lang="ts">
+              comment = '<b>Hay</b><img src=x onerror="alert(1)">';   // dữ liệu người dùng gửi lên
+              // {{ comment }}             → hiện nguyên văn chuỗi, an toàn
+              // [innerHTML]="comment"     → giữ <b>, bỏ onerror (và mọi thẻ script), console cảnh báo "sanitizing HTML"
+
+              // Chỉ "bỏ qua" sanitize với giá trị BẠN tạo ra và đã kiểm tra, đúng ngữ cảnh sử dụng
+              private sanitizer = inject(DomSanitizer);
+              videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+                'https://www.youtube.com/embed/' + encodeURIComponent(this.videoId),
+              );
+              // <iframe [src]="videoUrl"></iframe>
+              // Các hàm khác: bypassSecurityTrustHtml / Style / Url / Script
+            </script>
+            <script type="text/x-code" data-lang="ts" data-file="app.config.ts">
+              // XSRF: interceptor có sẵn đọc cookie XSRF-TOKEN, gửi header X-XSRF-TOKEN
+              // cho request thay đổi dữ liệu (POST/PUT/DELETE…) tới cùng origin. Backend phải set cookie và kiểm tra header.
+              provideHttpClient(
+                withXsrfConfiguration({ cookieName: 'CSRF', headerName: 'X-CSRF' }),   // nếu backend dùng tên khác
+              ),
+            </script>
+            <ul>
+              <li>✓ Hiển thị qua template và binding. ✗ <code>el.nativeElement.innerHTML = …</code>, <code>document.write</code>, thư viện DOM không sanitize.</li>
+              <li>✓ Buộc phải đụng DOM thì <code>sanitizer.sanitize(SecurityContext.HTML, value)</code>. ✗ Ghép chuỗi input người dùng thành template, hoặc sinh template Angular bằng ngôn ngữ template phía server.</li>
+              <li>✓ CSP: host tĩnh bật <code>"security": { "autoCsp": true }</code> trong build options của <code>angular.json</code>; có server thì dùng nonce (<code>ngCspNonce</code> hoặc token <code>CSP_NONCE</code>). ✗ Thêm <code>'unsafe-inline'</code> cho nhanh.</li>
+              <li>✓ Build AOT (mặc định), cập nhật Angular thường xuyên. ✗ Gọi <code>bypassSecurityTrust*</code> với dữ liệu từ API hoặc URL.</li>
+            </ul>
+            <div class="note"><strong>⚠️ Lưu ý:</strong> <code>autoCsp</code> chỉ lo phần script (băm các script inline lúc build), không áp dụng cho SSR; <code>style-src</code> vẫn phải tự cấu hình. Nonce phải khác nhau mỗi request, nên đừng để CDN cache HTML có nonce.</div>
+          </article>
+
+          <article class="card">
+            <h3><code>ErrorHandler</code>: bắt lỗi toàn cục</h3>
+            <p>Lỗi không ai bắt trong code Angular gọi (constructor, lifecycle, event handler trong template, <code>async</code> pipe…) đều đổ về <code>ErrorHandler</code>. Thay bằng bản của mình để gửi lên Sentry/analytics.</p>
+            <script type="text/x-code" data-lang="ts">
+              @Injectable()
+              export class AppErrorHandler implements ErrorHandler {
+                private monitor = inject(MonitoringService);
+                private router = inject(Router);
+
+                handleError(error: unknown) {
+                  this.monitor.report(error, { url: this.router.url });
+                  console.error(error);          // vẫn giữ log khi dev
+                }
+              }
+
+              // app.config.ts
+              providers: [
+                provideBrowserGlobalErrorListeners(),   // CLI mới có sẵn: chuyển lỗi 'error' và 'unhandledrejection' của window về ErrorHandler
+                { provide: ErrorHandler, useClass: AppErrorHandler },
+              ]
+            </script>
+            <ul>
+              <li>ErrorHandler dành cho lỗi <b>không lường trước</b> (để báo cáo). Lỗi biết trước (HTTP 404, validate) thì xử lý tại chỗ bằng <code>try/catch</code>, <code>catchError</code>, hoặc <code>error()</code> của <code>resource</code>.</li>
+              <li>Lỗi trong code bạn tự gọi trực tiếp (vd. trong <code>setTimeout</code> của thư viện ngoài) Angular không bắt; chỉ tới được nhờ global listener ở trên.</li>
+              <li>Test: TestBed ném lại lỗi mặc định; tắt bằng <code>rethrowApplicationErrors: false</code>.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 16 TESTING ============ -->
       <section class="section" id="testing">
-        <div class="section-head"><span class="idx">15</span><h2>Testing</h2></div>
+        <div class="section-head"><span class="idx">16</span><h2>Testing</h2></div>
         <p class="section-intro">Từ v21 project mới dùng Vitest. API <code>TestBed</code> vẫn giữ nguyên; thay đổi chính là <code>await fixture.whenStable()</code> thay cho <code>detectChanges()</code> ở chế độ zoneless.</p>
         <div class="grid">
           <article class="card">
@@ -2261,9 +2584,9 @@ td code { font-size: 12.5px; }
         </div>
       </section>
 
-      <!-- ============ 16 MIGRATE ============ -->
+      <!-- ============ 17 MIGRATE ============ -->
       <section class="section" id="migrate">
-        <div class="section-head"><span class="idx">16</span><h2>Bảng tra nhanh: cú pháp cũ → mới</h2></div>
+        <div class="section-head"><span class="idx">17</span><h2>Bảng tra nhanh: cú pháp cũ → mới</h2></div>
         <p class="section-intro">Gặp code cũ trong project, tra bảng này để biết cách viết tương ứng hiện nay. Nhiều mục có schematic migrate tự động.</p>
         <div class="grid">
           <article class="card wide">

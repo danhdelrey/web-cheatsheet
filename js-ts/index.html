@@ -1408,6 +1408,37 @@ ro.observe(container);
 io.disconnect(); ro.disconnect();
 </script>
 </article>
+<article class="card">
+<h3>Realtime: WebSocket &amp; Server-Sent Events <span class="add">bổ sung</span></h3>
+<p>Server cần đẩy dữ liệu xuống liên tục (thông báo, tiến độ xử lý, chat) thì dùng SSE nếu chỉ một chiều server → client, WebSocket nếu cần hai chiều.</p>
+<script type="text/x-code" data-lang="js">
+// SSE: HTTP thường, chỉ server → client, dữ liệu text, trình duyệt TỰ kết nối lại
+const es = new EventSource('/api/jobs/42/progress', { withCredentials: true });
+es.onmessage = (e) => render(JSON.parse(e.data));                  // dòng "data: ..." từ server
+es.addEventListener('done', (e) => { show(e.data); es.close(); }); // dòng "event: done"
+es.onerror = () => console.warn('Mất kết nối, đang thử lại…');      // không cần tự reconnect
+
+// WebSocket: kênh hai chiều, text hoặc binary, phải TỰ reconnect
+const ws = new WebSocket('wss://chat.example.com/rooms/a');
+ws.addEventListener('open', () => ws.send(JSON.stringify({ type: 'join', user: 'danh' })));
+ws.addEventListener('message', (e) => addMessage(JSON.parse(e.data)));
+ws.addEventListener('close', (e) => {
+  if (!e.wasClean) setTimeout(connect, backoff());                  // xem "Retry với exponential backoff"
+});
+ws.close(1000, 'bye');                                              // dọn dẹp khi rời trang/component
+</script>
+<div class="tw"><table>
+<thead><tr><th></th><th>Server-Sent Events</th><th>WebSocket</th></tr></thead>
+<tbody>
+<tr><th scope="row">Chiều</th><td>Server → client</td><td>Hai chiều</td></tr>
+<tr><th scope="row">Giao thức</th><td>HTTP thường (dễ qua proxy, dùng cookie)</td><td><code>ws://</code> / <code>wss://</code> sau bước upgrade</td></tr>
+<tr><th scope="row">Kết nối lại</th><td>Tự động, gửi kèm <code>Last-Event-ID</code></td><td>Tự viết</td></tr>
+<tr><th scope="row">Dữ liệu</th><td>Text (thường là JSON)</td><td>Text hoặc <code>ArrayBuffer</code>/<code>Blob</code></td></tr>
+<tr><th scope="row">Hợp với</th><td>Thông báo, tiến độ job, log, feed giá</td><td>Chat, cộng tác realtime, game</td></tr>
+</tbody></table></div>
+<p class="warn"><b>⚠️ Lưu ý:</b> <code>EventSource</code> không gửi được header tuỳ ý (như <code>Authorization</code>): xác thực bằng cookie, hoặc tự đọc stream bằng <code>fetch</code>. Trên HTTP/1.1 mỗi domain chỉ có khoảng 6 kết nối, mở SSE ở nhiều tab dễ hết; HTTP/2 không bị giới hạn này.</p>
+<p class="eq"><b>🎯 Dart / Kotlin tương đương:</b> Dart <code>WebSocketChannel</code> (package <code>web_socket_channel</code>); Kotlin OkHttp <code>WebSocket</code> hoặc Ktor client <code>webSocket { }</code>. SSE gần với một <code>Stream</code>/<code>Flow</code> nhận từ HTTP.</p>
+</article>
 </section>
 
 <!-- ===================================================== PART B ===================================================== -->
@@ -1998,6 +2029,40 @@ export default defineConfig(
 );
 </script>
 <p class="eq"><b>🎯 Dart / Kotlin tương đương:</b> ESLint ≈ <code>analysis_options.yaml</code> lints / detekt; Prettier ≈ <code>dart format</code> / ktlint, ktfmt.</p>
+</article>
+<article class="card">
+<h3>File <code>.d.ts</code>: khai báo type cho JS <span class="add">bổ sung</span></h3>
+<p><code>.d.ts</code> chỉ chứa type, không có code chạy. Dùng khi thư viện JS không có type, khi cần thêm field vào type có sẵn (<code>window</code>, biến môi trường), hoặc cho phép import file không phải JS.</p>
+<script type="text/x-code" data-lang="ts">
+// src/types/legacy-viewer.d.ts — thư viện JS không có type
+declare module 'legacy-viewer' {
+  export interface ViewerOptions { container: HTMLElement; zoom?: number }
+  export function createViewer(opts: ViewerOptions): { destroy(): void };
+}
+
+// Import file không phải JS/TS
+declare module '*.svg' {
+  const url: string;
+  export default url;
+}
+
+// Bổ sung vào type toàn cục (file phải là module: có ít nhất một export/import)
+export {};
+declare global {
+  interface Window { __APP_CONFIG__: { apiUrl: string } }
+}
+
+// Mở rộng type của thư viện có sẵn (module augmentation)
+declare module 'express-serve-static-core' {
+  interface Request { userId?: string }
+}
+</script>
+<ul>
+<li>Thư viện phổ biến: thử <code>npm i -D @types/ten-thu-vien</code> trước khi tự viết.</li>
+<li>File <code>.d.ts</code> phải nằm trong phạm vi <code>include</code> của <code>tsconfig.json</code> thì mới có hiệu lực.</li>
+<li>Viết thư viện TS: bật <code>"declaration": true</code> để tsc sinh <code>.d.ts</code> kèm file <code>.js</code>.</li>
+</ul>
+<p class="warn"><b>⚠️ Lưu ý:</b> <code>declare</code> chỉ là lời hứa với compiler, không kiểm tra lúc chạy. Khai báo sai (field không tồn tại thật) vẫn compile được và lỗi lúc runtime.</p>
 </article>
 </section>
 

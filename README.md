@@ -7,7 +7,7 @@ Năm cheatsheet web cho dev đã quen Flutter, Jetpack Compose, Dart và Kotlin:
 | [`html/`](html/) | HTML: thẻ, thuộc tính, forms, dialog, accessibility, SEO, Web Components |
 | [`css/`](css/) | CSS: box model, Flexbox, Grid, theming, responsive, animation, debug |
 | [`js-ts/`](js-ts/) | JavaScript ES2023+ và TypeScript strict, có snippet chạy được trên trang |
-| [`angular/`](angular/) | Angular v17+ → v22: signals, DI, RxJS, forms, routing, `@defer` |
+| [`angular/`](angular/) | Angular v17+ → v22: signals, DI, RxJS, forms, routing, `@defer`, SSR/hydration, bảo mật |
 | [`tailwind/`](tailwind/) | Tailwind CSS v4.3 trực quan: demo chạy thật, lab flex/grid, bảng màu, breakpoint, playground |
 
 Trang chủ (`index.html`) có ô **tìm xuyên cả 5 cheatsheet**, tìm được cả tiêu đề lẫn nội dung/code (ví dụ `switchMap`, `inputmode`, `z-index`). Bấm vào kết quả sẽ mở đúng trang và tự lọc theo từ khóa (`?q=`).
